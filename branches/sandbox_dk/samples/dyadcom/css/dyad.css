@@ -1,0 +1,105 @@
+body {
+	font-family: Georgia;
+}
+body > ul > li > a {
+
+    color: #fff;
+    background: url(img/listArrow.png) no-repeat right center;
+    text-transform: lowercase;
+}
+
+.intro {
+    padding: 12px 10px;
+}
+
+body > ul > li {
+    font-weight: normal;
+    border-bottom: 1px solid rgba(0, 0, 0, .15);
+}
+
+body > .panel:not(.toolbar) {
+	padding-top: 70px;
+	background: #fff none;
+
+}
+
+#home {
+	background-color: #c30;
+	
+}
+
+body > .toolbar {
+	background: #c30 none;
+    border-bott om: 1px solid rgba(0, 0, 0, .15);
+    height: 60px;
+    z-index: 1000;
+    position: relative;
+}
+
+body > *:not(.toolbar) {
+	min-height: 417px;
+    padding-top: 60px;
+    top: 0;
+}
+
+#backButton {
+    display: none;
+    top: 6px;
+    right: 6px;
+    padding: 0;
+    position: absolute;
+    max-width: 55px;
+    width: 55px;
+    text-align: right;
+    border-width: 0;
+    -webkit-border-image: none;
+    font-style: italic;
+    color: #fff;
+    text-decoration: none;
+    text-transform: lowercase;
+}
+
+
+#new {
+	background: #c30 none;
+	color: #fff;
+	line-height: 20px;
+	font-size: 14px;
+}
+
+#new strong {
+	color: #000;
+	font-weight: normal;
+}
+
+#profile {
+	background-color: #300;
+}
+#profile > li > a {
+	color: #c62f00;
+}
+
+#portfolio {
+	background-color: #fff;
+}
+
+#portfolio .intro, .portfolio_sub .intro {
+	color: #999;
+	font-size: 16px;
+	line-height: 20px;
+}
+
+#portfolio > li > a {
+	color: #666;
+}
+.portfolio_sub > li > a {
+	color: #666;
+}
+
+#access {
+	background: #fff none;
+}
+
+.toolbar > h1 {
+    margin: 0;
+}

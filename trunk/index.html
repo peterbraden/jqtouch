@@ -1,0 +1,274 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>jQTouch</title>
+    
+    <style type="text/css" media="screen">@import "themes/jqt/jqtouch.css";</style>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript"> google.load("jquery", "1.3.2"); </script>
+    <script src="js/jqtouch.events.js" type="application/x-javascript" charset="utf-8"></script>
+    <script src="js/jqtouch.js" type="application/x-javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+    $.jQTouch({
+        icon: 'jqtouch.png',
+        statusBar: 'black-translucent',
+        preloadImages: [
+            'themes/jqt/img/chevron_white.png',
+            'themes/jqt/img/bg_row_select.gif',
+            'themes/jqt/img/back_button.png',
+            'themes/jqt/img/back_button_clicked.png',
+            'themes/jqt/img/button_clicked.png',
+            'themes/jqt/img/grayButton.png',
+            'themes/jqt/img/whiteButton.png'
+            ]
+    });
+    
+    $(function(){
+        $('body').bind('orientChange', function(event, o2){
+            // alert(o2);
+        });
+        
+    });
+    
+    </script>
+</head>
+<body>
+    <div id="home" selected="true">
+        <div class="toolbar">
+            <h1>jQTouch</h1>
+            <a class="button slideup" id="infoButton" href="#about">About</a>
+        </div>
+        <ul class="edgetoedge">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#demos">Demos</a></li>
+            <li><a href="docs.html">Docs</a></li>
+            <li><a href="#license">License</a></li>
+            <li><a href="http://www.jqtouch.com/" target="_blank">Download &raquo;</a></li>
+        </ul>
+    </div>
+    
+    <div id="about" class="panel">        
+        <div class="pad" style="padding-top: 80px;">
+            <p>jQTouch was created by David Kaneda as a means of easily creating iPhone-styled websites. It is released open source, under the MIT license. It is still in its early stages of development and is currently lacking in documentation. For more information about jQTouch, please contact <a href="http://twitter.com/davidkaneda/">David on Twitter, @davidkaneda.</a></p>
+            <a href="#" class="grayButton back">Close</a>
+        </div>
+    </div>
+
+    <div id="demos">
+        <div class="toolbar">
+            <h1>Demos</h1>
+            <a class="back button" href="#home">jQTouch</a>
+            <a class="button flip" href="#flipdemo">Flip Demo</a>
+        </div>
+        <ul class="edgetoedge">
+            <li><a href="#artists">Navigation Demo</a></li>
+            <li><a href="#formdemo">Form Demo (POST)</a></li>
+            <li><a href="settings.html">Settings Demo (GET)</a></li>
+        </ul>
+    </div>
+    
+    
+    <div id="features" class="panel">
+        <div class="toolbar">
+            <h1>Features</h1>
+            <a class="back button" href="#home">jQTouch</a>
+        </div>
+        <div class="pad">
+            <ul>
+                <li>One-line setup, with options for selectors, viewport settings, icon path and glossiness, and status bar style</li>
+                <li>Pages can be built in a single HTML file, or loaded dynamically via GET or POST</li>
+                <li>Native, hardware-accelerated, page animations, including slide in/out, slide up/down, and 3D flip. All with history support.</li>
+                <li>Image preloading functions</li>
+                <li>Easy to theme</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="flipdemo" class="panel">
+        <div class="pad">
+            <div style="font-size: 1.5em; text-align: center; margin: 160px 0 160px; font-family: Marker felt;">
+                Pretty smooth, eh?            
+            </div>
+
+            <a href="#" class="back whiteButton">Go back</a>
+        </div>
+
+    </div>
+
+    <div id="artists">
+        <div class="toolbar">
+            <h1>Artists</h1>
+            <a class="back button" href="#">Demos</a>
+        </div>
+        <ul class="edgetoedge" title="Artists">
+            <li class="group">B</li>
+            <li><a href="#TheBeatles">The Beatles</a></li>
+            <li><a href="#BelleSebastian">Belle & Sebastian</a></li>
+            <li class="group">C</li>
+            <li><a href="#CrowdedHouse">Crowded House</a></li>
+            <li class="group">J</li>
+            <li><a href="#JennyLewis">Jenny Lewis</a></li>
+            <li><a href="#JohnMayer">John Mayer</a></li>
+            <li class="group">Z</li>
+            <li><a href="#Zero7">Zero 7</a></li>
+        </ul>
+    </div>
+
+    <div id="TheBeatles">
+        <div class="toolbar">
+            <h1>The Beatles</h1>
+            <a class="back button" href="#artists">Artists</a>
+        </div>
+        <ul class="edgetoedge">
+            <li><a href="#songs">Abbey Road</a></li>
+            <li><a href="#songs">Help!</a></li>
+            <li><a href="#songs">Rubber Soul</a></li>
+            <li><a href="#songs">Sgt. Pepper's</a></li>
+            <li><a href="#songs">White Album</a></li>
+        </ul>
+        
+    </div>
+    
+    <div id="BelleSebastian">
+        <div class="toolbar">
+            <h1>Belle &amp; Sebastian</h1>
+            <a class="back button" href="#artists">Artists</a>
+        </div>
+        <ul class="edgetoedge">
+            <li><a href="#songs">Boy With The Arab Strap</a></li>
+            <li><a href="#songs">Dear Catastrophe Waitress</a></li>
+            <li><a href="#songs">The Life Pursuit</a></li>
+        </ul>
+    </div>
+
+    <div id="CrowdedHouse">
+        <div class="toolbar">
+            <h1>Demos</h1>
+            <a class="back button" href="#">Home</a>
+        </div>
+        <ul id="CrowdedHouse" title="Crowded House">
+            <li><a href="#songs">Crowded House</a></li>
+            <li><a href="#songs">Temple of Low Men</a></li>
+            <li><a href="#songs">Time on Earth</a></li>
+            <li><a href="#songs">Together Alone</a></li>
+            <li><a href="#songs">Woodface</a></li>
+        </ul>
+    </div>
+
+    <div id="JennyLewis">
+        <div class="toolbar">
+            <h1>Demos</h1>
+            <a class="back button" href="#">Home</a>
+        </div>
+        <ul class="edgetoedge">
+            <li><a href="#songs">White Rabbit Fur Coat</a></li>
+        </ul>
+    </div>
+    <div id="JohnMayer">
+        <div class="toolbar">
+            <h1>John Mayer</h1>
+            <a class="back button" href="#">Home</a>
+        </div>
+        <ul class="edgetoedge">
+            <li><a href="#songs">Continuum</a></li>
+            <li><a href="#songs">Heavier Things</a></li>
+            <li><a href="#songs">Room for Squares</a></li>
+        </ul>
+    </div>
+
+    <div id="Zero7">
+        <div class="toolbar">
+            <h1>Zero 7</h1>
+            <a class="back button" href="#">Demo</a>
+        </div>
+        <ul class="edgetoedge">
+            <li><a href="#songs">The Garden</a></li>
+            <li><a href="#songs">Simple Things</a></li>
+            <li><a href="#songs">When it Falls</a></li>
+        </ul>
+    </div>
+    
+    <div id="songs">
+        <div class="toolbar">
+            <h1>Songs</h1>
+            <a class="back button" href="#">Artist</a>
+        </div>
+        <ul class="edgetoedge">
+            <li><a href="#player">Song 1</a></li>
+            <li><a href="#player">Song 2</a></li>
+            <li><a href="#player">Song 3</a></li>
+            <li><a href="#player">Song 4</a></li>
+            <li><a href="#player">Song 5</a></li>
+            <li><a href="#player">Song 6</a></li>
+            <li><a href="#player">Song 7</a></li>
+            <li><a href="#player">Song 8</a></li>
+            <li><a href="#player">Song 9</a></li>
+            <li><a href="#player">Song 10</a></li>
+            <li><a href="#player">Song 11</a></li>
+        </ul>
+    </div>
+
+    <div id="player" class="panel" title="Now Playing">
+        <h2>If this weren't just a demo, you might be hearing a song...</h2>
+    </div>
+    
+    <form id="formdemo" title="Movie Search" class="panel" action="search.php" method="POST">
+        <div class="toolbar">
+            <h1>Demos</h1>
+            <a class="back button" href="#">Home</a>
+        </div>
+        <div class="pad">
+            <fieldset>
+                <div class="row">
+                    <label>Movie</label>
+                    <input type="text" name="movie" value=""/>
+                </div>
+                <div class="row">
+                    <label>Zip</label>
+                    <input type="text" name="zip" value=""/>
+                </div>
+            </fieldset>
+            <input type="submit" />
+        </div>
+    </form>
+    
+    <form id="searchForm" class="dialog" action="search.php">
+        <fieldset>
+            <h1>Music Search</h1>
+            <a class="button leftButton" type="cancel">Cancel</a>
+            <a class="button blueButton" type="submit">Search</a>
+            <label>Artist:</label>
+            <input id="artist" type="text" name="artist"/>
+            <label>Song:</label>
+            <input type="text" name="song"/>
+            <p>This form retrieves the next page with Ajax via a POST request.</p>
+        </fieldset>
+    </form>
+    
+    <div id="license" class="panel">
+        <div class="pad">
+            <p><strong>The MIT License</strong></p>
+            <p>Copyright &copy; 2009 David Kaneda</p>
+            <p>Permission is hereby granted, free of charge, to any person obtaining a copy
+            of this software and associated documentation files (the "Software"), to deal
+            in the Software without restriction, including without limitation the rights
+            to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+            copies of the Software, and to permit persons to whom the Software is
+            furnished to do so, subject to the following conditions:</p>
+            <p>The above copyright notice and this permission notice shall be included in
+            all copies or substantial portions of the Software.</p>
+            <p>THE SOFTWARE IS PROVIDED &ldquo;AS IS&rdquo;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+            THE SOFTWARE.</p>
+            
+            <a href="#" class="grayButton back">Return</a>
+            
+        </div>
+    </div>
+</body>
+</html>
