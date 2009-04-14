@@ -3,80 +3,74 @@
     var jQTouchHandler = {
         
         currentTouch : {},
+
+        handleStart : function(e){
+            
+            jQTouchHandler.currentTouch = {
+                startX : event.changedTouches[0].clientX,
+                startY : event.changedTouches[0].clientY,
+                startTime : (new Date).getTime(),
+                deltaX : 0,
+                deltaY : 0,
+                deltaT : 0
+            };
+
+            $(this).bind('touchmove touchend', jQTouchHandler.handle);
+            return true;
+        },
         
-        handle : function(){
+        handle : function(e){
             var touches = event.changedTouches,
             first = touches[0] || null,
             type = '';
 
             switch(event.type)
             {
-                case 'touchstart':
-                    currentTouch = {
-                        startX : first.clientX,
-                        startY : first.clientY,
-                        startTime : (new Date).getTime()
-                    };
-                    
-                    type = 'mousedown';
-                break;
-
                 case 'touchmove':
-                    if (currentTouch.startX != first.pageX || currentTouch.startY != first.pageY)
+                    jQTouchHandler.currentTouch.deltaX = first.pageX - jQTouchHandler.currentTouch.startX;
+                    jQTouchHandler.currentTouch.deltaY = first.pageY - jQTouchHandler.currentTouch.startY;
+                    jQTouchHandler.currentTouch.deltaT = (new Date).getTime() - jQTouchHandler.currentTouch.startTime;
+
+                    if (jQTouchHandler.currentTouch.deltaX > jQTouchHandler.currentTouch.deltaY && jQTouchHandler.currentTouch.deltaX > 50 && jQTouchHandler.currentTouch.deltaT < 1000)
                     {
-                        currentTouch.deltaX = first.pageX - currentTouch.startX;
-                        currentTouch.deltaY = first.pageY - currentTouch.startY;
-                        currentTouch.deltaT = (new Date).getTime() - currentTouch.startTime;
-                    }
-                    
-                    if (currentTouch.deltaX > currentTouch.deltaY && currentTouch.deltaX > 100 && currentTouch.deltaT < 300)
-                    {
-                        console.log('swipe!');
+                        $(this).trigger('swiped');
                     }
                     
                     type = 'mousemove';
                 break;
 
                 case 'touchend':
-                    if (currentTouch.deltaY || currentTouch.deltaX)
+                    // event.preventDefault();
+                    if (jQTouchHandler.currentTouch.deltaY || jQTouchHandler.currentTouch.deltaX)
                     {
 
                     }
                     else
                     {
-                        // type = 'click';
-                        // event.preventDefault();
+                        type = 'mouseup';
+                        $(this).attr('selected', true).trigger('tap');
                     }
-                    
-                    
-
+                    // $(this).unbind('touchmove touchend');
+                    // setTimeout(jQTouchHandler.ready, jQTouchHandler.timeDelay);
                     delete currentTouch;
-                    
-
                 break;
-
-                default:
             }
             if (type != '' && first)
             {
-
-                var simulatedEvent = document.createEvent('MouseEvent');
-                simulatedEvent.initMouseEvent(type, true, true, window, 1, first.screenX, first.screenY, first.pageX, first.pageY, false, false, false, false, 0/*left*/, null);
-
-                first.target.dispatchEvent(simulatedEvent);
+                $(this).trigger(type);
                 return false;
             }
-
-
         }
     }
 
     $.fn.addTouchHandlers = function()
     {
-        return this.each(function(i, el){
-            $(el).bind('touchstart touchmove touchend touchcancel', function(){
-                jQTouchHandler.handle(event);
-            })
+        return this.each(function(i, el){        
+            $(el).unbind('click').bind('touchstart', jQTouchHandler.handleStart).css({
+                '-webkit-touch-callout': 'none',
+                '-webkit-user-select': 'ignore'
+            });
+            
         })
     }
 })(jQuery);

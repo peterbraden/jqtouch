@@ -2,7 +2,7 @@
          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>jQTouch</title>
+    <title>jQTouch &alpha;3</title>
     
     <style type="text/css" media="screen">@import "themes/jqt/jqtouch.css";</style>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
@@ -23,14 +23,13 @@
             'themes/jqt/img/whiteButton.png'
             ]
     });
-    
     $(function(){
-        $('body').bind('orientChange', function(event, o2){
-            // alert(o2);
+        $('#home a').bind('swipe', function(){
+            alert('home link swiped');
         });
-        
     });
     
+
     </script>
 </head>
 <body>
@@ -42,7 +41,6 @@
         <ul class="edgetoedge">
             <li><a href="#features">Features</a></li>
             <li><a href="#demos">Demos</a></li>
-            <li><a href="docs.html">Docs</a></li>
             <li><a href="#license">License</a></li>
             <li><a href="http://www.jqtouch.com/" target="_blank">Download &raquo;</a></li>
         </ul>

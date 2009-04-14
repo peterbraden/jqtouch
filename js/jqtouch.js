@@ -11,9 +11,16 @@
     var pageHistoryInfo = [];
     var newPageCount = 0;
     var checkTimer;
+    var browser = {
+        type: navigator.userAgent,
+        safari: (/AppleWebKit\/([^\s]+)/.exec(navigator.userAgent) || [,false])[1],
+        webkit: (/Safari\/(.+)/.exec(navigator.userAgent) || [,false])[1]
+    };
 
     $.jQTouch = function(options)
-    {        
+    {
+        console.log(navigator);
+
         var defaults = {
             fullScreen: true,
             fullScreenClass: 'fullscreen',
@@ -46,7 +53,7 @@
         // Set back buttons
         if (settings.backSelector)
         {
-            $(settings.backSelector).live('click',function(){
+            $(settings.backSelector).live('tap',function(){
 
                 if (pageHistory[pageHistory.length-2]) 
                     $.jQTouch.showPageById(pageHistory[pageHistory.length-2]);
@@ -90,7 +97,7 @@
         // Selector settings
         if (liveSelectors.length > 0)
         {
-            $(liveSelectors.join(', ')).live('click',function(){
+            $(liveSelectors.join(', ')).live('tap',function(){
 
                 var jelem = $(this);
                 var hash = jelem.attr('hash');
@@ -109,8 +116,7 @@
                 else if ( jelem.attr('href') != '#' )
                 {
                     jelem.attr('selected', 'progress');
-
-                    try {
+                    try {                        
                         $.jQTouch.showPageByHref($(this).attr('href'), null, null, null, transition, function(){ setTimeout($.fn.unselect, 350, jelem);
                          });
                     }
@@ -124,10 +130,9 @@
             
             // Initialize on document load:
             $(function(){
-                
-                if (settings.fullScreenClass && window.navigator.standalone == true)
+                if (settings.fullScreenClass && typeof window.navigator.standalone != 'undefined')
                 {                
-                    $('body').addClass(settings.fullScreenClass);
+                    $('body').addClass(settings.fullScreenClass );
                 }
                 
                 if (settings.initializeTouch)
@@ -242,24 +247,27 @@
 
     $.jQTouch.showPageByHref = function(href, data, method, replace, transition, cb)
     {
+
         $.ajax({
             url: href,
             data: data,
             type: method || "GET",
             success: function (data, textStatus)
             {
+
                 $('a[selected="progress"]').attr('selected', 'true');
                 
                 if (replace) $(replace).replaceWith(data);
                 else
                 {
-                    $.jQTouch.insertPages( $(data) );
+                    $.jQTouch.insertPages( $(data), transition );
                 }
                 
                 if (cb) cb(true);
             },
             error: function (data)
             {
+                console.log(data);
                 if (cb) cb(false);
             }
         });
