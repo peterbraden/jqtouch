@@ -51,14 +51,14 @@
                         $(this).attr('selected', true).trigger('tap');
                     }
                     // $(this).unbind('touchmove touchend');
-                    // setTimeout(jQTouchHandler.ready, jQTouchHandler.timeDelay);
+                    setTimeout(jQTouchHandler.ready, jQTouchHandler.timeDelay);
                     delete currentTouch;
                 break;
             }
             if (type != '' && first)
             {
                 $(this).trigger(type);
-                return false;
+                // return false;
             }
         }
     }
@@ -66,11 +66,7 @@
     $.fn.addTouchHandlers = function()
     {
         return this.each(function(i, el){        
-            $(el).unbind('click').bind('touchstart', jQTouchHandler.handleStart).css({
-                '-webkit-touch-callout': 'none',
-                '-webkit-user-select': 'ignore'
-            });
-            
-        })
+            $(el).bind('touchstart', jQTouchHandler.handleStart);  
+        });
     }
 })(jQuery);

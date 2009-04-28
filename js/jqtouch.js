@@ -19,8 +19,6 @@
 
     $.jQTouch = function(options)
     {
-        console.log(navigator);
-
         var defaults = {
             fullScreen: true,
             fullScreenClass: 'fullscreen',
@@ -53,8 +51,7 @@
         // Set back buttons
         if (settings.backSelector)
         {
-            $(settings.backSelector).live('tap',function(){
-
+            $(settings.backSelector).live('click',function(){
                 if (pageHistory[pageHistory.length-2]) 
                     $.jQTouch.showPageById(pageHistory[pageHistory.length-2]);
 
@@ -84,9 +81,10 @@
             {
                 head.append('<meta name="apple-mobile-web-app-status-bar-style" content="' + settings.statusBar + '" />');
             }
-
         }
         
+        // Create an array of the "next page" selectors
+        // TODO: DRY
         var liveSelectors = [];
         
         if (settings.slideInSelector) liveSelectors.push(settings.slideInSelector);
@@ -97,7 +95,7 @@
         // Selector settings
         if (liveSelectors.length > 0)
         {
-            $(liveSelectors.join(', ')).live('tap',function(){
+            $(liveSelectors.join(', ')).live('click',function liveClick(){
 
                 var jelem = $(this);
                 var hash = jelem.attr('hash');
@@ -111,28 +109,25 @@
                 {
                     jelem.attr('selected', 'true');
                     $.jQTouch.showPage($(hash), transition);
-                    setTimeout($.fn.unselect, 350, $(this));
+                    setTimeout($.fn.unselect, 250, $(this));
                 }
-                else if ( jelem.attr('href') != '#' )
+                else if ( jelem.attr('href') != '#' && jelem.attr('target') != '_blank')
                 {
                     jelem.attr('selected', 'progress');
-                    try {                        
-                        $.jQTouch.showPageByHref($(this).attr('href'), null, null, null, transition, function(){ setTimeout($.fn.unselect, 350, jelem);
-                         });
-                    }
-                    catch(err)
-                    {
-                        console.log(err);
-                    }
-                }
+
+                    $.jQTouch.showPageByHref($(this).attr('href'), null, null, null, transition, function(){ setTimeout($.fn.unselect, 250, jelem) });
+                
                 return false;
+                }
             });
             
             // Initialize on document load:
             $(function(){
-                if (settings.fullScreenClass && typeof window.navigator.standalone != 'undefined')
-                {                
-                    $('body').addClass(settings.fullScreenClass );
+                console.log();
+                
+                if (settings.fullScreenClass && window.navigator.standalone == true)
+                {
+                    $('body').addClass(settings.fullScreenClass);
                 }
                 
                 if (settings.initializeTouch)
@@ -159,7 +154,7 @@
           var s = [];
           
           for(var i in css) s.push(i);
-          $(this).css({ webkitTransitionProperty: s.join(", "), webkitTransitionDuration: 350 + "ms", webkitTransitionTimingFunction: 'ease-in-out' });
+          $(this).css({ webkitTransitionProperty: s.join(", "), webkitTransitionDuration: 250 + "ms", webkitTransitionTimingFunction: 'ease-in-out' });
           if (callback) $(this).one('webkitTransitionEnd', callback);
           
           setTimeout(function(el){ el.css(css) }, 0, this);
@@ -267,7 +262,7 @@
             },
             error: function (data)
             {
-                console.log(data);
+                // console.log(data);
                 if (cb) cb(false);
             }
         });
@@ -333,7 +328,7 @@
     
     $.jQTouch.startCheck = function()
     {
-        checkTimer = setInterval($.jQTouch.checkOrientAndLocation, 350);
+        checkTimer = setInterval($.jQTouch.checkOrientAndLocation, 250);
     }
     
     $.jQTouch.updatePage = function(page, fromPage, transition)
@@ -381,7 +376,7 @@
             $(this).css({
                 '-webkit-backface-visibility': 'hidden',
                 '-webkit-transform': 'rotateY(' + ((dir == 1) ? '0' : (!settings.backwards ? '-' : '') + '180') + 'deg)'
-            }).transition({'-webkit-transform': 'rotateY(' + ((dir == 1) ? (settings.backwards ? '-' : '') + '180' : '0') + 'deg)'}, 350, settings.callback);
+            }).transition({'-webkit-transform': 'rotateY(' + ((dir == 1) ? (settings.backwards ? '-' : '') + '180' : '0') + 'deg)'}, 250, settings.callback);
         })
     }
     
@@ -407,7 +402,7 @@
                         .transition({'opacity': 1}, 100)
                         .end()
                     .css({'-webkit-transform': 'translateX(' + (settings.backwards ? -1 : 1) * currentWidth + 'px)'})
-                    .transition({'-webkit-transform': 'translateX(0px)'}, 350, settings.callback)
+                    .transition({'-webkit-transform': 'translateX(0px)'}, 250, settings.callback)
                         
 
             }
@@ -419,7 +414,7 @@
                         .transition( {'opacity': 0}, 100)
                         .end()
                     .transition(
-                        {'-webkit-transform': 'translateX(' + ((settings.backwards ? 1 : -1) * dir * currentWidth) + 'px)'}, 350, settings.callback);
+                        {'-webkit-transform': 'translateX(' + ((settings.backwards ? 1 : -1) * dir * currentWidth) + 'px)'}, 250, settings.callback);
             }
         })
     }
@@ -442,7 +437,7 @@
 
                 $(this).attr('selected', 'true')
                     .css({'-webkit-transform': 'translateY(' + (settings.backwards ? -1 : 1) * currentHeight + 'px)'})
-                    .transition({'-webkit-transform': 'translateY(0px)'}, 350, settings.callback)
+                    .transition({'-webkit-transform': 'translateY(0px)'}, 250, settings.callback)
                         .find('h1, .button')
                         .css('opacity', 0)
                         .transition({'opacity': 1}, 100);
@@ -452,7 +447,7 @@
             {
                 $(this)
                     .transition(
-                        {'-webkit-transform': 'translateY(' + currentHeight + 'px)'}, 350, settings.callback)
+                        {'-webkit-transform': 'translateY(' + currentHeight + 'px)'}, 250, settings.callback)
                     .find('h1, .button')
                         .transition( {'opacity': 0}, 100);
             }
