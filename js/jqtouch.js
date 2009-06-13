@@ -123,7 +123,6 @@
             
             // Initialize on document load:
             $(function(){
-                console.log();
                 
                 if (settings.fullScreenClass && window.navigator.standalone == true)
                 {
@@ -133,7 +132,7 @@
                 if (settings.initializeTouch)
                     $(settings.initializeTouch).addTouchHandlers();
 
-                var page = $.jQTouch.getSelectedPage();
+                var page = $('body > *:first');
                 if (page) $.jQTouch.showPage(page);
                 $.jQTouch.startCheck();
                 
@@ -178,11 +177,6 @@
         
         if (location.hash != currentHash)
             $.jQTouch.showPageById(location.hash);
-    }
-
-    $.jQTouch.getSelectedPage = function()
-    {
-        return $('body > *[selected!=false]').slice(0,1);
     }
     
     $.jQTouch.showPage = function( page, transition, backwards )
