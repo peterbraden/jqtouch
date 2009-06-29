@@ -3,7 +3,6 @@
 (function($) {
     
     var currentPage = null;
-    var currentDialog = null;
     var currentHash = location.hash;
     var hashPrefix = "#";
     var currentWidth = 0;
@@ -16,6 +15,9 @@
         safari: (/AppleWebKit\/([^\s]+)/.exec(navigator.userAgent) || [,false])[1],
         webkit: (/Safari\/(.+)/.exec(navigator.userAgent) || [,false])[1]
     };
+
+    // Cached elements
+    var $body, $head = $('head');
 
     $.jQTouch = function(options)
     {
@@ -34,13 +36,11 @@
             backSelector: '.back',
             flipSelector: '.flip',
             slideUpSelector: '.slideup',
-
             initializeTouch: 'a'
-        };
-        
-        var settings = $.extend({}, defaults, options);
-        var head = $('head');
-        
+        };        
+        var settings = $.extend({}, defaults, options),
+            hairextensions;
+
         if (settings.preloadImages)
         {
             for (var i = settings.preloadImages.length - 1; i >= 0; i--){
@@ -63,25 +63,27 @@
         if (settings.icon)
         {
             var precomposed = (settings.iconIsGlossy) ? '' : '-precomposed';
-            head.append('<link rel="apple-touch-icon' + precomposed + '" href="' + settings.icon + '" />');
+            hairextensions += '<link rel="apple-touch-icon' + precomposed + '" href="' + settings.icon + '" />';
         }
 
         // Set viewport
         if (settings.fixedViewport)
         {
-            head.append('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>');
+            hairextensions += '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>';
         }
 
         // Set full-screen
         if (settings.fullScreen)
         {
-            head.append('<meta name="apple-mobile-web-app-capable" content="yes" />');
+            hairextensions += '<meta name="apple-mobile-web-app-capable" content="yes" />';
 
             if (settings.statusBar)
             {
-                head.append('<meta name="apple-mobile-web-app-status-bar-style" content="' + settings.statusBar + '" />');
+                hairextensions += '<meta name="apple-mobile-web-app-status-bar-style" content="' + settings.statusBar + '" />';
             }
         }
+        
+        if (hairextensions) $head.append(hairextensions);
         
         // Create an array of the "next page" selectors
         // TODO: DRY
@@ -124,9 +126,11 @@
             // Initialize on document load:
             $(function(){
                 
+                $body = $('body');
+                
                 if (settings.fullScreenClass && window.navigator.standalone == true)
                 {
-                    $('body').addClass(settings.fullScreenClass);
+                    $body.addClass(settings.fullScreenClass);
                 }
                 
                 if (settings.initializeTouch)
@@ -170,8 +174,9 @@
             currentHeight = window.innerHeight;
 
             var orient = currentWidth < currentHeight ? "profile" : "landscape";
-            $('body').trigger('orientChange', orient);
-            document.body.setAttribute("orient", orient);
+
+            $body.trigger('orientChange', orient).removeClass('profile landscape').addClass(orient);
+
             setTimeout(scrollTo, 100, 0, 0);
         }
         
@@ -224,7 +229,7 @@
             if (!$(this).attr('id'))
                 $(this).attr('id', (++newPageCount));
                 
-            $(this).appendTo($('body'));
+            $(this).appendTo($body);
             
             if ( $(this).attr('selected') == 'true' || ( !targetPage && !$(this).hasClass('btn')) )
                 targetPage = $(this);
@@ -295,7 +300,6 @@
             toPage.flip({backwards: backwards});
             fromPage.flip({backwards: backwards, callback: callback});
         }
-        
         else if (transition == 'slideUp')
         {
             if (backwards)

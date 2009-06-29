@@ -1,6 +1,6 @@
 body {
     font-family: Helvetica;
-    background-color: #1d1e20;
+    background: #303134;
 }
 
 * {
@@ -8,21 +8,18 @@ body {
 }
 
 a {
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
 	-webkit-touch-callout: none;
 }
 
 .edgetoedge a[selected=true], .edgetoedge a:active {
-    background-color: #177ebf !important;
-    background-image: url(img/chevron_white.png), url(img/bg_row_select.gif) !important;
-    background-repeat: no-repeat, repeat-x  !important;
-    background-position: right center, left top  !important;
-    color: #FFFFFF !important;
+    background-color: #53b401 !important;
 }
 
 a[selected="progress"] {
-    background-image: url(img/loading.gif), url(img/bg_row_select.gif) !important;
-   background-repeat: no-repeat, repeat-x !important;
-   background-position: right center, left top !important;
+   background-image: url(img/loading.gif);
+   background-repeat: no-repeat;
+   background-position: right center;
 
 }
 
@@ -31,7 +28,7 @@ a[selected="progress"] {
 .toolbar {
     -webkit-box-sizing: border-box;
     padding: 10px;
-	height: 59px;
+	height: 45px;
     padding-top: 8px;
     background: url(img/toolbar.png) bottom left repeat-x;
     position: relative;
@@ -40,10 +37,8 @@ a[selected="progress"] {
 
 body.fullscreen .toolbar {
     height: 60px;
-    padding-top: 28px;
+    padding-top: 23px;
 }
-
-
 
 .toolbar > h1 {
     position: absolute;
@@ -150,12 +145,12 @@ body[orient="landscape"] .toolbar > h1 {
 .edgetoedge > li {
     position: relative;
     border-bottom: 1px solid rgba(0,0,0,.8);
-        border-top: 1px solid rgba(255,255,255,.15);
+    border-top: 1px solid rgba(255,255,255,.15);
     padding: 10px 0 10px 10px;
     font-size: 20px;
     font-weight: bold;
     list-style: none;
-    background: url(../img/bg_row.png) 0 2px repeat-x;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(0,0,0,0)), to(#303032));
     color: #999;
 }
 
@@ -166,7 +161,7 @@ body .head {
     border-top: 1px solid #64c114;
     border-bottom: 1px solid rgba(0,0,0,.5);
     padding: 1px 10px;
-    background: url(img/rowhead.png) repeat-x;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#488019), to(#53B401));
     font-size: 17px;
     font-weight: bold;
     text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
