@@ -37,12 +37,13 @@
                 }
                 else
                 {
+                    $(this).removeAttr('selected');
                     return false;
                 }
             });
             if ($('body').hasClass('fullscreen'))
             {
-                $('#home .info').css('display', 'none')
+                $('#home .info').css('display', 'none');
             }
         });
     </script>
@@ -58,8 +59,6 @@
             <li><a class="flip" href="#flipdemo">Flip Demo</a></li>
             <li><a href="#ui">User Interface</a></li>
             <li><a href="#ajax">AJAX</a></li>
-            <!-- <li><a href="#formdemo">Form Demo (POST)</a></li>
-            <li><a href="settings.html">Settings Demo (GET)</a></li> -->
             <li class="head">External Links</li>
             <li><a href="http://www.jqtouch.com/" target="_blank">Homepage</a></li>
             <li><a href="http://www.twitter.com/jqtouch" target="_blank">Twitter</a></li>
@@ -70,34 +69,34 @@
         </ul>
         <div class="inset">
             <ul>
-                <li class="head">My heading</li>
+                <li class="head">Inset list demo</li>
                 <li><a href="#">Test</a></li>
                 <li><a href="#">Test</a></li>
             </ul>
         </div>
         <div class="info">
-            Save this site to your home screen
+            Add this page to your home screen to view the custom icon, startup screen, and full screen mode.
         </div>
     </div>
     
     <div id="about" class="panel" style="text-shadow: rgba(255, 255, 255, 0.3) 0px -1px 0; font-size: 14px;">        
         <div class="pad" style="padding-top: 20px;">
             <p>jQTouch was created by <a href="http://www.davidkaneda.com">David Kaneda</a> as a means of easily creating iPhone-styled websites. It is released open source, under the MIT license. It is still in its early stages of development and is currently lacking in documentation. For more information about jQTouch, please contact <a href="http://twitter.com/davidkaneda/">David on Twitter, @davidkaneda.</a></p>
-            <h2>Features</h2>
+            <!-- <h2>Features</h2>
             <ul>
                 <li>One-line setup, with options for selectors, viewport settings, icon path and glossiness, and status bar style</li>
                 <li>Pages can be built in a single HTML file, or loaded dynamically via GET or POST</li>
                 <li>Native, hardware-accelerated, page animations, including slide in/out, slide up/down, and 3D flip. All with history support.</li>
                 <li>Image preloading functions</li>
                 <li>Easy to theme</li>
-            </ul>
+            </ul> -->
             <a href="#" class="grayButton back">Close</a>
-            <fieldset>
+            <!-- <fieldset>
                 <div class="row">
                     <label>jQTouch Custom Theme</label>
                     <div class="toggle"><span class="thumb"></span><span class="toggleOn">ON</span><span class="toggleOff">OFF</span></div>
                 </div>
-            </fieldset>
+            </fieldset> -->
         </div>
     </div>
 
@@ -108,7 +107,7 @@
         </div>
         <ul class="edgetoedge">
             <li><a href="#ajax_links">Links</a></li>
-            <li><a href="#ajax_forms">Forms</a></li>
+            <li><a href="#ajax_post">POST Form Example</a></li>
             <li><a href="#ajax_inserts">Inserts</a></li>
         </ul>
     </div>
@@ -120,10 +119,9 @@
             </div>
             <a href="#" class="back whiteButton">Go back</a>
         </div>
-
     </div>
 
-    <form id="formdemo" title="Movie Search" class="panel" action="search.php" method="POST">
+    <form id="ajax_post" title="Movie Search" class="panel" action="search.php" method="POST">
         <div class="toolbar">
             <h1>Demos</h1>
             <a class="back button" href="#">Home</a>
@@ -141,19 +139,6 @@
             </fieldset>
             <input type="submit" />
         </div>
-    </form>
-    
-    <form id="searchForm" class="dialog" action="search.php">
-        <fieldset>
-            <h1>Music Search</h1>
-            <a class="button leftButton" type="cancel">Cancel</a>
-            <a class="button blueButton" type="submit">Search</a>
-            <label>Artist:</label>
-            <input id="artist" type="text" name="artist"/>
-            <label>Song:</label>
-            <input type="text" name="song"/>
-            <p>This form retrieves the next page with Ajax via a POST request.</p>
-        </fieldset>
     </form>
     
     <ul id="replace" class="edgetoedge">

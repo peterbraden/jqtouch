@@ -1,5 +1,6 @@
 // David Kaneda, jQuery jQTouch extensions
 
+
 (function($) {
     
     var currentPage = null;
@@ -99,30 +100,40 @@
         {
             $(liveSelectors.join(', ')).live('click',function liveClick(){
 
-                var jelem = $(this);
-                var hash = jelem.attr('hash');
+                var $el = $(this);
+                var hash = $el.attr('hash');
                 var transition = 'slideInOut';
 
-                if ($(this).is(settings.flipSelector)) transition = 'flip';
-                if ($(this).is(settings.slideRightSelector)) transition = 'slideRight';
-                if ($(this).is(settings.slideUpSelector)) transition = 'slideUp';
+                if ($el.is(settings.flipSelector)) transition = 'flip';
+                if ($el.is(settings.slideRightSelector)) transition = 'slideRight';
+                if ($el.is(settings.slideUpSelector)) transition = 'slideUp';
 
                 if ( hash && hash != '#')
                 {
-                    jelem.attr('selected', 'true');
-                    $.jQTouch.showPage($(hash), transition);
-                    setTimeout($.fn.unselect, 250, $(this));
-                }
-                else if ( jelem.attr('href') != '#' && jelem.attr('target') != '_blank')
-                {
-                    jelem.attr('selected', 'progress');
+                    if ($(hash).length > 0)
+                    {
+                        $el.attr('selected', 'true');
+                        $.jQTouch.showPage($(hash), transition);
+                        setTimeout($.fn.unselect, 250, $el);
+                    }
+                    else
+                    {
+                        console.warn('There is no panel with that ID.');
+                        $el.unselect();
+                        return false;
+                    }
 
-                    $.jQTouch.showPageByHref($(this).attr('href'), null, null, null, transition, function(){ setTimeout($.fn.unselect, 250, jelem) });
+                }
+                else if ( $el.attr('target') != '_blank' )
+                {
+                    $el.attr('selected', 'progress');
+
+                    $.jQTouch.showPageByHref($(this).attr('href'), null, null, null, transition, function(){ setTimeout($.fn.unselect, 250, $el) });
                 
-                return false;
+                    return false;
                 }
             });
-            
+
             // Initialize on document load:
             $(function(){
                 
@@ -138,29 +149,39 @@
 
                 var page = $('body > *:first');
                 if (page) $.jQTouch.showPage(page);
-                $.jQTouch.startCheck();
                 
+                // TODO: Find best way to customize and make event live...
+                $('form').submit($.jQTouch.submitForm);
+
+                $.jQTouch.startCheck();
             })
 
         }
     }
     
-    $.fn.transition = function(css, speed, callback) {
-        
-      // TODO: Autoconvert top,left to translate();
-      //  ease | linear | ease-in | ease-out | ease-in-out | cubic-bezier(x1, y1, x2, y2)
+    $.fn.transition = function(css, options) {
+      
+      var $el = $(this);
+      
+      var defaults = {
+          speed : '250ms',
+          callback: null,
+          ease: 'ease-in-out',
+      };
 
-      if(speed === 0) { // differentiate 0 from null
-          this.css(css);
+      var settings = $.extend({}, defaults, options);
+      
+      if(settings.speed === 0) { // differentiate 0 from null
+          $el.css(css);
           window.setTimeout(callback, 0);
       } else {
           var s = [];
           
           for(var i in css) s.push(i);
-          $(this).css({ webkitTransitionProperty: s.join(", "), webkitTransitionDuration: 250 + "ms", webkitTransitionTimingFunction: 'ease-in-out' });
-          if (callback) $(this).one('webkitTransitionEnd', callback);
+          $el.css({ webkitTransitionProperty: s.join(", "), webkitTransitionDuration: settings.speed, webkitTransitionTimingFunction: settings.ease });
+          if (settings.callback) $el.one('webkitTransitionEnd', settings.callback);
           
-          setTimeout(function(el){ el.css(css) }, 0, this);
+          setTimeout(function(el){ el.css(css) }, 0, $el);
 
           return this;
         }
@@ -177,11 +198,18 @@
 
             $body.trigger('orientChange', orient).removeClass('profile landscape').addClass(orient);
 
-            setTimeout(scrollTo, 100, 0, 0);
+            setTimeout(scrollTo, 0, 0, 20);
         }
         
-        if (location.hash != currentHash)
+        if (location.hash != currentHash && $(location.hash).length == 1)
+        {
             $.jQTouch.showPageById(location.hash);
+        }
+        else
+        {
+            location.hash = currentHash;
+        }
+            
     }
     
     $.jQTouch.showPage = function( page, transition, backwards )
@@ -261,7 +289,6 @@
             },
             error: function (data)
             {
-                // console.log(data);
                 if (cb) cb(false);
             }
         });
@@ -272,13 +299,6 @@
     {
         $.jQTouch.showPageByHref($(this).attr('action') || "POST", $(this).serialize(), $(this).attr('method'));
         return false;
-    }
-    
-    $.fn.showForm = function ()
-    {
-        return this.each(function(){
-            $(this).submit($.jQTouch.submitForm);
-        });
     }
     
     $.jQTouch.animatePages = function(fromPage, toPage, transition, backwards)
@@ -292,7 +312,7 @@
             $.jQTouch.updatePage(toPage, fromPage, transition);
             fromPage.attr('selected', 'false');
             $.jQTouch.startCheck();
-            toPage.trigger('pageTransitionEnd', { direction: 'in' })
+            toPage.trigger('pageTransitionEnd', { direction: 'in' });
 	        fromPage.trigger('pageTransitionEnd', { direction: 'out' });
         }
 
@@ -351,6 +371,7 @@
     
     $.fn.unselect = function(obj)
     {
+        obj = obj || $(this);
         obj.attr('selected', false);
     }
     
@@ -374,7 +395,7 @@
             $(this).css({
                 '-webkit-backface-visibility': 'hidden',
                 '-webkit-transform': 'rotateY(' + ((dir == 1) ? '0' : (!settings.backwards ? '-' : '') + '180') + 'deg)'
-            }).transition({'-webkit-transform': 'rotateY(' + ((dir == 1) ? (settings.backwards ? '-' : '') + '180' : '0') + 'deg)'}, 250, settings.callback);
+            }).transition({'-webkit-transform': 'rotateY(' + ((dir == 1) ? (settings.backwards ? '-' : '') + '180' : '0') + 'deg)'}, {callback: settings.callback});
         })
     }
     
@@ -397,10 +418,10 @@
                 $(this).attr('selected', 'true')
                     .find('h1, .button')
                         .css('opacity', 0)
-                        .transition({'opacity': 1}, 100)
+                        .transition({'opacity': 1})
                         .end()
                     .css({'-webkit-transform': 'translateX(' + (settings.backwards ? -1 : 1) * currentWidth + 'px)'})
-                    .transition({'-webkit-transform': 'translateX(0px)'}, 250, settings.callback)
+                    .transition({'-webkit-transform': 'translateX(0px)'}, {callback: settings.callback})
                         
 
             }
@@ -409,10 +430,10 @@
             {
                 $(this)
                     .find('h1, .button')
-                        .transition( {'opacity': 0}, 100)
+                        .transition( {'opacity': 0} )
                         .end()
                     .transition(
-                        {'-webkit-transform': 'translateX(' + ((settings.backwards ? 1 : -1) * dir * currentWidth) + 'px)'}, 250, settings.callback);
+                        {'-webkit-transform': 'translateX(' + ((settings.backwards ? 1 : -1) * dir * currentWidth) + 'px)'}, { callback: settings.callback});
             }
         })
     }
@@ -435,22 +456,22 @@
 
                 $(this).attr('selected', 'true')
                     .css({'-webkit-transform': 'translateY(' + (settings.backwards ? -1 : 1) * currentHeight + 'px)'})
-                    .transition({'-webkit-transform': 'translateY(0px)'}, 250, settings.callback)
+                    .transition({'-webkit-transform': 'translateY(0px)'}, {callback: settings.callback})
                         .find('h1, .button')
                         .css('opacity', 0)
-                        .transition({'opacity': 1}, 100);
+                        .transition({'opacity': 1});
             }
             // Animate out
             else
             {
                 $(this)
                     .transition(
-                        {'-webkit-transform': 'translateY(' + currentHeight + 'px)'}, 250, settings.callback)
+                        {'-webkit-transform': 'translateY(' + currentHeight + 'px)'}, {callback: settings.callback})
                     .find('h1, .button')
-                        .transition( {'opacity': 0}, 100);
+                        .transition( {'opacity': 0});
             }
 
         })
     }
-    
+
 })(jQuery);

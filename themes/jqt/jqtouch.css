@@ -12,7 +12,7 @@ a {
 	-webkit-touch-callout: none;
 }
 
-.edgetoedge a[selected=true], .edgetoedge a:active {
+.edgetoedge a[selected=true], .edgetoedge a:active, .inset a[selected=true], .inset a:active {
     background-color: #53b401 !important;
 }
 
@@ -142,7 +142,7 @@ body[orient="landscape"] .toolbar > h1 {
 /* @group Edge to edge */
 
 
-.edgetoedge > li {
+.edgetoedge li, .inset li {
     position: relative;
     border-bottom: 1px solid rgba(0,0,0,.8);
     border-top: 1px solid rgba(255,255,255,.15);
@@ -150,7 +150,7 @@ body[orient="landscape"] .toolbar > h1 {
     font-size: 20px;
     font-weight: bold;
     list-style: none;
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(0,0,0,0)), to(#303032));
+    background: -webkit-gradient(linear, 0% 0%, 0% 75%, from(rgba(0,0,0,0)), to(#303032));
     color: #999;
 }
 
@@ -168,7 +168,12 @@ body .head {
     color: #FFFFFF;
 }
 
-.edgetoedge > li.head:first-child, .inset > li.head:first-child {
+body .inset .head {
+    background:#222;
+	color: #3ea1cb;
+}
+
+.edgetoedge li.head:first-child, .inset li.head:first-child {
     top: 0;
     border-top: none;
 }
@@ -185,16 +190,13 @@ body .head {
     text-shadow: rgba(0,0,0,.7) 0 1px 2px;
 }
 
-.inset ul {
+.inset {
 	margin: 15px;
-   -webkit-border-radius: 10px;
-   -webkit-box-shadow: rgba(0,0,0,.7) 0 1px 2px;
+   -webkit-box-shadow: rgba(0,0,0,.9) 0 1px 2px;
    overflow: hidden !important;
-   border: 1px solid white;
-}
-
-.inset li a {
-	background-color: #404042;
+   -webkit-background-clip: border;
+   background-color: #404142;
+   border: 1px solid #404c4f;
 }
 
 /* @end */
@@ -241,7 +243,6 @@ input {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     width: 100%;
-    margin: 8px 0 0 0;
     padding: 6px 6px 6px 44px;
     font-size: 16px;
     font-weight: normal;
@@ -252,7 +253,6 @@ input {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     overflow: auto;
-    background-color: #fff;
 }
 
 .pad {
@@ -263,11 +263,13 @@ input {
     position: relative;
     margin: 0 0 20px 0;
     padding: 0;
-    background: #FFFFFF;
+    background: #222;
+    color: #fff;
     -webkit-border-radius: 10px;
     border: 1px solid #999999;
     text-align: right;
-    font-size: 16px;
+    font-size: 14px;
+    line-height: 18px;
 }
 
 /* @group Edge to edge lists */
@@ -409,4 +411,16 @@ fieldset .row:last-child {
 
 .panel p a {
 	color: #4195ca;
+}
+
+.info {
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ccc), to(#aaa), color-stop(.6,#CCCCCC));
+	font-size: 12px;
+	line-height: 16px;
+	text-align: center;
+	text-shadow: rgba(255,255,255,.8) 0 1px 0;
+	color: #444;
+	padding: 15px;
+	border-top: 1px solid rgba(255,255,255,.2);
+	font-weight: bold;
 }
