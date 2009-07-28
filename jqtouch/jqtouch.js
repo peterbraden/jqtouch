@@ -37,6 +37,7 @@
             backSelector: '.back',
             fixedViewport: true,
             flipSelector: '.flip',
+            formSelector: 'form',
             fullScreen: true,
             fullScreenClass: 'fullscreen',
             icon: null,
@@ -44,7 +45,7 @@
             slideInSelector: 'ul li a',
             slideRightSelector: '',
             slideUpSelector: '.slideup',
-            formSelector: 'form',
+            startupScreen: null,
             statusBar: 'default', // other options: black-translucent, black
             titleSelector: '.panel h1'
         };        
@@ -70,6 +71,12 @@
             var precomposed = (settings.addGlossToIcon) ? '' : '-precomposed';
             hairextensions += '<link rel="apple-touch-icon' + precomposed + '" href="' + settings.icon + '" />';
         }
+        
+        // Set startup screen
+        if (settings.startupScreen) {
+            hairextensions += '<link rel="apple-touch-startup-image" href="' + settings.startupScreen + '" />';
+        }
+
 
         // Set viewport
         if (settings.fixedViewport) {
