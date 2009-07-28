@@ -184,9 +184,9 @@ body .inset .head {
     padding: 10px 32px 10px 10px;
     text-decoration: none;
     color: #fff;
-    background-image: url(img/chevron.png), url(img/bg_row.png);
-    background-repeat: no-repeat, repeat-x;
-    background-position: right center, left bottom;
+    background-image: url(img/chevron.png);
+    background-repeat: no-repeat;
+    background-position: right center;
     text-shadow: rgba(0,0,0,.7) 0 1px 2px;
 }
 

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
 
-    <title>jQTouch &alpha;3</title>
+    <title>jQTouch &beta;</title>
 
     <style type="text/css" media="screen">@import "../../jqtouch/jqtouch.css";</style>
     <style type="text/css" media="screen">@import "../../themes/jqt/jqtouch.css";</style>
@@ -13,16 +13,7 @@
     <script type="text/javascript" charset="utf-8">
         $.jQTouch({
             icon: 'jqtouch.png',
-            statusBar: 'black-translucent',
-            preloadImages: [
-                'themes/jqt/img/chevron_white.png',
-                'themes/jqt/img/bg_row_select.gif',
-                'themes/jqt/img/back_button.png',
-                'themes/jqt/img/back_button_clicked.png',
-                'themes/jqt/img/button_clicked.png',
-                'themes/jqt/img/grayButton.png',
-                'themes/jqt/img/whiteButton.png'
-                ]
+            statusBar: 'black-translucent'
         });
         
         // Some sample Javascript functions:
@@ -49,7 +40,7 @@
     </script>
 </head>
 <body>
-    <div id="home" selected="true">
+    <div class="panel" id="home" selected="true">
         <div class="toolbar">
             <h1>jQTouch</h1>
             <a class="button slideup" id="infoButton" href="#about">About</a>
@@ -65,7 +56,6 @@
             <li><a href="http://code.google.com/p/jqtouch/w/list" target="_blank">Google Code</a></li>
 
             <li class="head">More Info</li>
-            <li><a href="#license">License</a></li>
         </ul>
         <div class="inset">
             <ul>
@@ -157,32 +147,6 @@
             <a href="#">Demo White Button</a>
             <a href="#">Demo Gray Button</a>
             
-        </div>
-    </div>
-    
-    <div id="license" class="panel">
-        <div class="toolbar">
-            <h1>MIT License</h1>
-            <a class="back button" href="#">jQTouch</a>
-        </div>
-        <div class="pad">
-            <p><strong>The MIT License</strong></p>
-            <p>Copyright &copy; 2009 David Kaneda</p>
-            <p>Permission is hereby granted, free of charge, to any person obtaining a copy
-            of this software and associated documentation files (the "Software"), to deal
-            in the Software without restriction, including without limitation the rights
-            to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-            copies of the Software, and to permit persons to whom the Software is
-            furnished to do so, subject to the following conditions:</p>
-            <p>The above copyright notice and this permission notice shall be included in
-            all copies or substantial portions of the Software.</p>
-            <p>THE SOFTWARE IS PROVIDED &ldquo;AS IS&rdquo;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-            THE SOFTWARE.</p>
         </div>
     </div>
 </body>
