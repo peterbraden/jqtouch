@@ -1,85 +1,86 @@
-// David Kaneda, jQuery jQTouch extensions
+/*
+
+            _/    _/_/    _/_/_/_/_/                              _/       
+               _/    _/      _/      _/_/    _/    _/    _/_/_/  _/_/_/    
+          _/  _/  _/_/      _/    _/    _/  _/    _/  _/        _/    _/   
+         _/  _/    _/      _/    _/    _/  _/    _/  _/        _/    _/    
+        _/    _/_/  _/    _/      _/_/      _/_/_/    _/_/_/  _/    _/     
+       _/                                                                  
+    _/
+
+    Created by David Kaneda <http://www.davidkaneda.com>
+    Documentation and issue tracking on Google Code <http://code.google.com/p/jqtouch/>
+    
+    Special thanks to Jonathan Stark <http://jonathanstark.com/>
+    and pinch/zoom <http://www.pinchzoom.com/>
+    
+    (c) 2009 by jQTouch project members.
+    See LICENSE.txt for license.
+    
+*/
 
 
 (function($) {
-    
-    var currentPage = null;
-    var currentHash = location.hash;
-    var hashPrefix = "#";
-    var currentWidth = 0;
-    var pageHistory = [];
-    var pageHistoryInfo = [];
-    var newPageCount = 0;
-    var checkTimer;
+    var $body, $head = $('head');
     var browser = {
         type: navigator.userAgent,
         safari: (/AppleWebKit\/([^\s]+)/.exec(navigator.userAgent) || [,false])[1],
         webkit: (/Safari\/(.+)/.exec(navigator.userAgent) || [,false])[1]
     };
-
-    // Cached elements
-    var $body, $head = $('head');
-
-    $.jQTouch = function(options)
-    {
+    var currentHeight = 0;
+    var currentWidth = 0;
+    var hist = []
+    var newPageCount = 0;
+    $.jQTouch = function(options) {
         var defaults = {
+            addGlossToIcon: true,
+            backSelector: '.back',
+            fixedViewport: true,
+            flipSelector: '.flip',
             fullScreen: true,
             fullScreenClass: 'fullscreen',
-            statusBar: 'default', // other options: black-translucent, black
             icon: null,
-            iconIsGlossy: false,
-            fixedViewport: true,
-
-            // Quick setup selectors 
-            // TODO: Replace with dynamic events system $('ul li a').drillDown();
+            initializeTouch: 'a', 
             slideInSelector: 'ul li a',
             slideRightSelector: '',
-            backSelector: '.back',
-            flipSelector: '.flip',
             slideUpSelector: '.slideup',
-            initializeTouch: 'a'
+            formSelector: 'form',
+            statusBar: 'default', // other options: black-translucent, black
+            titleSelector: '.panel h1'
         };        
-        var settings = $.extend({}, defaults, options),
-            hairextensions;
+        var settings = $.extend({}, defaults, options), hairextensions;
 
-        if (settings.preloadImages)
-        {
+        // Preload images
+        if (settings.preloadImages) {
             for (var i = settings.preloadImages.length - 1; i >= 0; i--){
                 (new Image()).src = settings.preloadImages[i];
             };
         }
 
         // Set back buttons
-        if (settings.backSelector)
-        {
+        if (settings.backSelector) {
             $(settings.backSelector).live('click',function(){
-                if (pageHistory[pageHistory.length-2]) 
-                    $.jQTouch.showPageById(pageHistory[pageHistory.length-2]);
-
+                $.jQTouch.goBack();
                 return false;
             });
         }
 
         // Set icon
-        if (settings.icon)
-        {
-            var precomposed = (settings.iconIsGlossy) ? '' : '-precomposed';
+        if (settings.icon) {
+            var precomposed = (settings.addGlossToIcon) ? '' : '-precomposed';
             hairextensions += '<link rel="apple-touch-icon' + precomposed + '" href="' + settings.icon + '" />';
         }
 
         // Set viewport
-        if (settings.fixedViewport)
-        {
+        if (settings.fixedViewport) {
             hairextensions += '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>';
         }
 
         // Set full-screen
-        if (settings.fullScreen)
-        {
+        if (settings.fullScreen) {
             hairextensions += '<meta name="apple-mobile-web-app-capable" content="yes" />';
 
-            if (settings.statusBar)
-            {
+            if (settings.statusBar) {
                 hairextensions += '<meta name="apple-mobile-web-app-status-bar-style" content="' + settings.statusBar + '" />';
             }
         }
@@ -89,294 +90,199 @@
         // Create an array of the "next page" selectors
         // TODO: DRY
         var liveSelectors = [];
-        
         if (settings.slideInSelector) liveSelectors.push(settings.slideInSelector);
         if (settings.slideRightSelector) liveSelectors.push(settings.slideRightSelector);
         if (settings.flipSelector) liveSelectors.push(settings.flipSelector);
         if (settings.slideUpSelector) liveSelectors.push(settings.slideUpSelector);
-
-        // Selector settings
-        if (liveSelectors.length > 0)
-        {
+        if (liveSelectors.length > 0) {
             $(liveSelectors.join(', ')).live('click',function liveClick(){
-
+                
+                // Cache some stuff
                 var $el = $(this);
                 var hash = $el.attr('hash');
+                
+                // Set transition
                 var transition = 'slideInOut';
-
                 if ($el.is(settings.flipSelector)) transition = 'flip';
                 if ($el.is(settings.slideRightSelector)) transition = 'slideRight';
                 if ($el.is(settings.slideUpSelector)) transition = 'slideUp';
-
-                if ( hash && hash != '#')
-                {
-                    if ($(hash).length > 0)
-                    {
+                
+                // Branch on internal or external href
+                if (hash && hash != '#') {
+                    if ($(hash).length > 0) {
                         $el.attr('selected', 'true');
                         $.jQTouch.showPage($(hash), transition);
                         setTimeout($.fn.unselect, 250, $el);
-                    }
-                    else
-                    {
+                    } else {
                         console.warn('There is no panel with that ID.');
                         $el.unselect();
                         return false;
                     }
-
-                }
-                else if ( $el.attr('target') != '_blank' )
-                {
+                } else if ($el.attr('target') != '_blank') {
                     $el.attr('selected', 'progress');
-
                     $.jQTouch.showPageByHref($(this).attr('href'), null, null, null, transition, function(){ setTimeout($.fn.unselect, 250, $el) });
-                
                     return false;
                 }
             });
-
-            // Initialize on document load:
-            $(function(){
-                
-                $body = $('body');
-                
-                if (settings.fullScreenClass && window.navigator.standalone == true)
-                {
-                    $body.addClass(settings.fullScreenClass);
-                }
-                
-                if (settings.initializeTouch)
-                    $(settings.initializeTouch).addTouchHandlers();
-
-                var page = $('body > *:first');
-                if (page) $.jQTouch.showPage(page);
-                
-                // TODO: Find best way to customize and make event live...
-                $('form').submit($.jQTouch.submitForm);
-
-                $.jQTouch.startCheck();
-            })
-
         }
-    }
-    
-    $.fn.transition = function(css, options) {
-      
-      var $el = $(this);
-      
-      var defaults = {
-          speed : '250ms',
-          callback: null,
-          ease: 'ease-in-out',
-      };
 
-      var settings = $.extend({}, defaults, options);
-      
-      if(settings.speed === 0) { // differentiate 0 from null
-          $el.css(css);
-          window.setTimeout(callback, 0);
-      } else {
-          var s = [];
-          
-          for(var i in css) s.push(i);
-          $el.css({ webkitTransitionProperty: s.join(", "), webkitTransitionDuration: settings.speed, webkitTransitionTimingFunction: settings.ease });
-          if (settings.callback) $el.one('webkitTransitionEnd', settings.callback);
-          
-          setTimeout(function(el){ el.css(css) }, 0, $el);
 
-          return this;
-        }
-      }
-    
-    $.jQTouch.checkOrientAndLocation = function()
-    {
-        if (window.innerWidth != currentWidth)
-        {   
-            currentWidth = window.innerWidth;
-            currentHeight = window.innerHeight;
-
-            var orient = currentWidth < currentHeight ? "profile" : "landscape";
-
-            $body.trigger('orientChange', orient).removeClass('profile landscape').addClass(orient);
-
-            setTimeout(scrollTo, 0, 0, 20);
-        }
-        
-        if (location.hash != currentHash && $(location.hash).length == 1)
-        {
-            $.jQTouch.showPageById(location.hash);
-        }
-        else
-        {
-            location.hash = currentHash;
-        }
-            
-    }
-    
-    $.jQTouch.showPage = function( page, transition, backwards )
-    {
-        if (page)
-        {
-            var fromPage = currentPage;
-            currentPage = page;
-
-            if (fromPage)
-                $.jQTouch.animatePages(fromPage, page, transition, backwards);
-            else
-                $.jQTouch.updatePage(page, fromPage, transition);
-        }
-    }
-    
-    $.jQTouch.showPageById = function( hash )
-    {
-        var page = $(hash);
-        
-        if (page)
-        {
-            var transition;
-            var currentIndex = pageHistory.indexOf(currentHash);
-            var index = pageHistory.indexOf(hash);
-            var backwards = index != -1;
-
-            if (backwards) {
-                transition = pageHistoryInfo[currentIndex].transition;
-                
-                pageHistory.splice(index, pageHistory.length);
-                pageHistoryInfo.splice(index, pageHistoryInfo.length);                
+        // Initialize on document load:
+        $(document).ready(function(){
+            // TODO: Find best way to customize and make event live...
+            $body = $('body');
+            $body.bind('orientationchange', $.jQTouch.updateOrientation).trigger('orientationchange');
+            if (settings.fullScreenClass && window.navigator.standalone == true) $body.addClass(settings.fullScreenClass);
+            if (settings.initializeTouch) $(settings.initializeTouch).addTouchHandlers();
+            $(settings.formSelector).submit($.jQTouch.submitForm);
+            var page = $('body > *[selected="true"]') || $('body > *:first');
+            if (page) {
+                $.jQTouch.addPageToHistory(page);
+            } else {
+                console.warn('Looks like your body has no elements.');
             }
-            
-            $.jQTouch.showPage(page, transition, backwards);
-        }
+        });
     }
-    
-    $.jQTouch.insertPages = function( nodes, transition )
-    {
-        var targetPage;
+    $.jQTouch.addPageToHistory = function(page, transition) {
         
-        nodes.each(function(index, node){
-            
-            if (!$(this).attr('id'))
-                $(this).attr('id', (++newPageCount));
-                
-            $(this).appendTo($body);
-            
-            if ( $(this).attr('selected') == 'true' || ( !targetPage && !$(this).hasClass('btn')) )
-                targetPage = $(this);
+        // Grab some info
+        var pageId = page.attr('id');
+        var title = page.find(settings.titleSelector).html();
+        
+        // Prepend info to page history
+        hist.unshift({
+            page: page, 
+            transition: transition, 
+            id: pageId, 
+            title: title
         });
         
-        if (targetPage) $.jQTouch.showPage(targetPage, transition);
-        
+        // Update the browser location
+        location.hash = pageId;
     }
+    $.jQTouch.animatePages = function(fromPage, toPage, transition, backwards) {
+        
+        // Define callback to run after animation completes
+        var callback = function(event){
+            fromPage.attr('selected', 'false');
+            toPage.trigger('pageTransitionEnd', { direction: 'in' });
+	        fromPage.trigger('pageTransitionEnd', { direction: 'out' });
+        }
+        
+        // Branch on type transition
+        if (transition == 'flip'){
+            toPage.flip({backwards: backwards});
+            fromPage.flip({backwards: backwards, callback: callback});
+        } else if (transition == 'slideUp') {
+            if (backwards) {
+                toPage.attr('selected', true);
+                fromPage.slideUpDown({backwards: backwards, callback: callback});
+            } else {
+                toPage.slideUpDown({backwards: backwards, callback: callback});
+            }
+        } else if (transition == 'slideRightSelector') {
+            
+        } else {
+            toPage.slideInOut({backwards: backwards, callback: callback});
+            fromPage.slideInOut({backwards: backwards});
+        }
+    }
+    $.jQTouch.goBack = function(numberOfPages) {
 
-    $.jQTouch.showPageByHref = function(href, data, method, replace, transition, cb)
-    {
+        // Init the param
+        var numberOfPages = numberOfPages || 1;
+        
+        // Grab the current page for the "from" info
+        var transition = hist[0].transition;
+        var fromPage = hist[0].page;
+        
+        // Remove all pages in front of the target page 
+        hist.splice(0, numberOfPages);
+        
+        // Grab the target page
+        var toPage = hist[0].page;
+        
+        // Update the location bar
+        history.back();
+        
+        // Make the transition
+        $.jQTouch.animatePages(fromPage, toPage, transition, true);
 
+    }
+    $.jQTouch.insertPages = function(nodes, transition) {
+        var targetPage;
+        nodes.each(function(index, node){
+            if (!$(this).attr('id')) {
+                $(this).attr('id', (++newPageCount));
+            }
+            $(this).appendTo($body);
+            if ($(this).attr('selected') == 'true' || (!targetPage && !$(this).hasClass('btn'))) {
+                targetPage = $(this);
+            }
+        });
+        if (targetPage) {
+            $.jQTouch.showPage(targetPage, transition);
+        }
+    }
+    $.jQTouch.showPage = function(page, transition) {
+        var fromPage = hist[0].page;
+        $.jQTouch.addPageToHistory(page, transition);
+        $.jQTouch.animatePages(fromPage, page, transition);
+    }
+    $.jQTouch.showPageByHref = function(href, data, method, replace, transition, cb) {
         $.ajax({
             url: href,
             data: data,
             type: method || "GET",
-            success: function (data, textStatus)
-            {
-
+            success: function (data, textStatus) {
                 $('a[selected="progress"]').attr('selected', 'true');
-                
-                if (replace) $(replace).replaceWith(data);
-                else
-                {
-                    $.jQTouch.insertPages( $(data), transition );
+                if (replace) {
+                    $(replace).replaceWith(data);
+                } else {
+                    $.jQTouch.insertPages($(data), transition);
                 }
-                
-                if (cb) cb(true);
+                if (cb) {
+                    cb(true);
+                }
             },
-            error: function (data)
-            {
-                if (cb) cb(false);
+            error: function (data) {
+                if (cb) {
+                    cb(false);
+                }
             }
         });
-
     }
-    
-    $.jQTouch.submitForm = function()
-    {
+    $.jQTouch.showPageById = function(id) {
+        if (id) {
+            var page = $(id);
+            if (page){
+                var offset = -1;
+                for (var i=0; i < hist.length; i++) {
+                    if(hist[i].id == id) {
+                        offset = i;
+                        break;
+                    }
+                }
+                if (offset == -1) {
+                    $.jQTouch.showPage(page);
+                } else {
+                    $.jQTouch.goBack(offset);
+                }
+            }
+        }
+    }
+    $.jQTouch.submitForm = function() {
         $.jQTouch.showPageByHref($(this).attr('action') || "POST", $(this).serialize(), $(this).attr('method'));
         return false;
     }
-    
-    $.jQTouch.animatePages = function(fromPage, toPage, transition, backwards)
-    {
-        clearInterval(checkTimer);
-        
-        toPage.trigger('pageTransitionStart', { direction: 'out' });
-        fromPage.trigger('pageTransitionStart', { direction: 'out' });
-        
-        var callback = function(event){
-            $.jQTouch.updatePage(toPage, fromPage, transition);
-            fromPage.attr('selected', 'false');
-            $.jQTouch.startCheck();
-            toPage.trigger('pageTransitionEnd', { direction: 'in' });
-	        fromPage.trigger('pageTransitionEnd', { direction: 'out' });
-        }
-
-        if (transition == 'flip'){
-            toPage.flip({backwards: backwards});
-            fromPage.flip({backwards: backwards, callback: callback});
-        }
-        else if (transition == 'slideUp')
-        {
-            if (backwards)
-            {
-                toPage.attr('selected', true);
-                fromPage.slideUpDown({backwards: backwards, callback: callback});
-            }
-            else
-            {
-                toPage.slideUpDown({backwards: backwards, callback: callback});
-            }
-        }
-        else if (transition == 'slideRightSelector')
-        {
-            
-        }
-        else
-        {
-            toPage.slideInOut({backwards: backwards, callback: callback});
-            fromPage.slideInOut({backwards: backwards});
-        }
-        
+    $.jQTouch.updateOrientation = function() {
+        currentWidth = window.innerWidth;
+        currentHeight = window.innerHeight;
+        var newOrientation = currentWidth < currentHeight ? 'profile' : 'landscape';
+        $body.removeClass('profile landscape').addClass(newOrientation);
+        scrollTo(0, 0);
     }
-    
-    $.jQTouch.startCheck = function()
-    {
-        checkTimer = setInterval($.jQTouch.checkOrientAndLocation, 250);
-    }
-    
-    $.jQTouch.updatePage = function(page, fromPage, transition)
-    {
-        if (page)
-        {
-            if (!page.attr('id'))
-                page.attr('id', (++newPageCount));
-
-            location.replace(hashPrefix + page.attr('id'));
-            currentHash = location.hash;
-
-            var existingIndex = pageHistory.indexOf(currentHash);
-
-            pageHistory.push(currentHash);
-
-            var trans = (existingIndex == -1) ? transition : pageHistoryInfo[existingIndex];
-
-            pageHistoryInfo.push({page: page, transition: trans});
-        }
-    }
-    
-    $.fn.unselect = function(obj)
-    {
-        obj = obj || $(this);
-        obj.attr('selected', false);
-    }
-    
-    $.fn.flip = function(options)
-    {
+    $.fn.flip = function(options) {
         return this.each(function(){
             var defaults = {
                 direction : 'toggle',
@@ -398,23 +304,16 @@
             }).transition({'-webkit-transform': 'rotateY(' + ((dir == 1) ? (settings.backwards ? '-' : '') + '180' : '0') + 'deg)'}, {callback: settings.callback});
         })
     }
-    
-    $.fn.slideInOut = function(options)
-    {
+    $.fn.slideInOut = function(options) {
         var defaults = {
             direction : 'toggle',
             backwards: false,
             callback: null
         };
-
         var settings = $.extend({}, defaults, options);
-        
         return this.each(function(){
-
             var dir = ((settings.direction == 'toggle' && $(this).attr('selected') == 'true') || settings.direction == 'out') ? 1 : -1;                
-            // Animate in
             if (dir == -1){
-
                 $(this).attr('selected', 'true')
                     .find('h1, .button')
                         .css('opacity', 0)
@@ -422,12 +321,7 @@
                         .end()
                     .css({'-webkit-transform': 'translateX(' + (settings.backwards ? -1 : 1) * currentWidth + 'px)'})
                     .transition({'-webkit-transform': 'translateX(0px)'}, {callback: settings.callback})
-                        
-
-            }
-            // Animate out
-            else
-            {
+            } else {
                 $(this)
                     .find('h1, .button')
                         .transition( {'opacity': 0} )
@@ -437,9 +331,7 @@
             }
         })
     }
-    
-    $.fn.slideUpDown = function(options)
-    {
+    $.fn.slideUpDown = function(options) {
         var defaults = {
             direction : 'toggle',
             backwards: false,
@@ -451,19 +343,15 @@
         return this.each(function(){
 
             var dir = ((settings.direction == 'toggle' && $(this).attr('selected') == 'true') || settings.direction == 'out') ? 1 : -1;                
-            // Animate in
-            if (dir == -1){
 
+            if (dir == -1){
                 $(this).attr('selected', 'true')
                     .css({'-webkit-transform': 'translateY(' + (settings.backwards ? -1 : 1) * currentHeight + 'px)'})
                     .transition({'-webkit-transform': 'translateY(0px)'}, {callback: settings.callback})
                         .find('h1, .button')
                         .css('opacity', 0)
                         .transition({'opacity': 1});
-            }
-            // Animate out
-            else
-            {
+            } else {
                 $(this)
                     .transition(
                         {'-webkit-transform': 'translateY(' + currentHeight + 'px)'}, {callback: settings.callback})
@@ -472,6 +360,38 @@
             }
 
         })
+    }
+    $.fn.transition = function(css, options) {
+        var $el = $(this);
+        var defaults = {
+            speed : '250ms',
+            callback: null,
+            ease: 'ease-in-out',
+        };
+        var settings = $.extend({}, defaults, options);
+        if(settings.speed === 0) { // differentiate 0 from null
+            $el.css(css);
+            window.setTimeout(callback, 0);
+        } else {
+            var s = [];
+            for(var i in css) {
+                s.push(i);
+            }
+            $el.css({
+                webkitTransitionProperty: s.join(", "), 
+                webkitTransitionDuration: settings.speed, 
+                webkitTransitionTimingFunction: settings.ease
+            });
+            if (settings.callback) {
+                $el.one('webkitTransitionEnd', settings.callback);
+            }
+            setTimeout(function(el){ el.css(css) }, 0, $el);
+            return this;
+        }
+    }
+    $.fn.unselect = function(obj) {
+        obj = obj || $(this);
+        obj.attr('selected', false);
     }
 
 })(jQuery);
