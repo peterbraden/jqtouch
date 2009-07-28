@@ -40,7 +40,7 @@
                 break;
 
                 case 'touchend':
-                    // event.preventDefault();
+                    event.preventDefault();
                     if (jQTouchHandler.currentTouch.deltaY || jQTouchHandler.currentTouch.deltaX)
                     {
 
