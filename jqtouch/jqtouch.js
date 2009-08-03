@@ -53,7 +53,8 @@
                 startupScreen: null,
                 statusBar: 'default', // other options: black-translucent, black
                 titleSelector: '.toolbar h1'
-            };    
+            };
+
             jQTSettings = $.extend({}, defaults, options)
 
             var hairextensions;
@@ -148,6 +149,8 @@
                 if (jQTSettings.initializeTouch) $(jQTSettings.initializeTouch).addTouchHandlers();
                 $(jQTSettings.formSelector).submit(submitForm);
 
+                setTimeout(function(){window.scrollTo(0, 1);}, 100);
+
                 var page = $('body > *[selected="true"]:first') || $('body > *:first');
                 if (page) {
                     addPageToHistory(page);
@@ -161,9 +164,7 @@
 
             // Grab some info
             var pageId = page.attr('id');
-            console.log(pageId);
             var title = page.find(jQTSettings.titleSelector).html();
-
 
             // Prepend info to page history
             hist.unshift({
@@ -323,8 +324,8 @@
             
             $(this).css({
                 '-webkit-backface-visibility': 'hidden',
-                '-webkit-transform': 'rotateY(' + ((dir == 1) ? '0' : (!settings.backwards ? '-' : '') + '180') + 'deg)'
-            }).transition({'-webkit-transform': 'rotateY(' + ((dir == 1) ? (settings.backwards ? '-' : '') + '180' : '0') + 'deg)'}, {callback: settings.callback});
+                '-webkit-transform': 'scale(' + ((dir==1)? '1' : '.8' ) + ') rotateY(' + ((dir == 1) ? '0' : (!settings.backwards ? '-' : '') + '180') + 'deg)'
+            }).transition({'-webkit-transform': 'scale(' + ((dir == 1) ? '.8' : '1' ) + ') rotateY(' + ((dir == 1) ? (settings.backwards ? '-' : '') + '180' : '0') + 'deg)'}, {callback: settings.callback, speed: '800ms'});
         })
     }
     $.fn.slideInOut = function(options) {

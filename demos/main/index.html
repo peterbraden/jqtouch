@@ -6,7 +6,7 @@
     <title>jQTouch &beta;</title>
 
     <style type="text/css" media="screen">@import "../../jqtouch/jqtouch.css";</style>
-    <style type="text/css" media="screen">@import "../../themes/jqt/jqtouch.css";</style>
+    <style type="text/css" media="screen">@import "../../themes/apple/theme.css";</style>
     <script src="../../jqtouch/jquery.1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="../../jqtouch/jqtouch.events.js" type="application/x-javascript" charset="utf-8"></script>
     <script src="../../jqtouch/jqtouch.js" type="application/x-javascript" charset="utf-8"></script>
@@ -40,33 +40,32 @@
     </script>
 </head>
 <body>
-    <div class="panel" id="home" selected="true">
+    <div id="home" selected="true">
         <div class="toolbar">
             <h1>jQTouch</h1>
             <a class="button slideup" id="infoButton" href="#about">About</a>
         </div>
-        <ul class="edgetoedge">
-            <li class="head">Docs &amp; Demos</li>
+        <h4>Demos</h4>
+        <ul>
             <li><a class="flip" href="#flipdemo">Flip Demo</a></li>
-            <li><a href="#ui">User Interface</a></li>
+            <li><a href="#ui">User Interface Samples</a></li>
             <li><a href="#ajax">AJAX</a></li>
-            <li class="head">External Links</li>
+        </ul>
+        <h4>External Links</h4>
+        <ul>
             <li><a href="http://www.jqtouch.com/" target="_blank">Homepage</a></li>
             <li><a href="http://www.twitter.com/jqtouch" target="_blank">Twitter</a></li>
             <li><a href="http://code.google.com/p/jqtouch/w/list" target="_blank">Google Code</a></li>
-
-            <li class="head">More Info</li>
         </ul>
-        <div class="inset">
-            <ul>
-                <li class="head">Inset list demo</li>
-                <li><a href="#">Test</a></li>
-                <li><a href="#">Test</a></li>
-            </ul>
-        </div>
         <div class="info">
             Add this page to your home screen to view the custom icon, startup screen, and full screen mode.
         </div>
+        
+        <ul class="individual">
+        	<li><a href="#">Email</a></li>
+        	<li><a href="#">Donate</a></li>
+        </ul>
+        
     </div>
     
     <div id="about" class="panel" style="text-shadow: rgba(255, 255, 255, 0.3) 0px -1px 0; font-size: 14px;">        
@@ -95,7 +94,7 @@
             <h1>Using AJAX</h1>
             <a class="back button" href="#home">Docs</a>
         </div>
-        <ul class="edgetoedge">
+        <ul>
             <li><a href="#ajax_links">Links</a></li>
             <li><a href="#ajax_post">POST Form Example</a></li>
             <li><a href="settings.html">GET Example</a></li>
@@ -132,22 +131,119 @@
         </div>
     </form>
     
-    <ul id="replace" class="edgetoedge">
-        <li>Item 1</li>
-        <li class="row">li.row</li>
-        <li>Item 3</li>
-    </ul>
-    
-    <div id="ui" class="panel">
+    <div id="ui">
         <div class="toolbar">
-            <h1>Demos</h1>
+            <h1>UI Demos</h1>
             <a class="back button" href="#">Home</a>
         </div>
-        <div class="pad">
-            <a href="#">Demo White Button</a>
-            <a href="#">Demo Gray Button</a>
-            
-        </div>
+        <h4>Lists</h4>
+        <ul>
+            <li><a href="#standard">Standard</a></li>
+            <li><a href="#edge">Edge to Edge</a></li>
+            <li><a href="#plastic">Plastic</a></li>
+            <li><a href="#metal">Metal</a></li>
+        </ul>
+        <h4>Forms</h4>
+        <ul>
+            <li><a href="#forms">Edit Forms</a></li>
+        </ul>
+        
+    </div>
+
+    <div id="edge" class="edgetoedge">
+    	<div class="toolbar">
+    		<h1>Contact lists</h1>
+    		<a href="#" class="back button">Back</a>
+    	</div>
+
+        <h4>E</h4>
+
+        <ul>
+        	<li><a href="index.html">Elea <em>Peliche</em></a></li>
+        	<li><a href="index.html">Elizabeth <em>Nogales</em></a></li>
+        	<li><small>Es mi hermano</small> <a href="index.html">Emiliano <em>Martín Lafuente</em></a></li>
+        	<li><a href="index.html">Enrique <em>Dans</em></a></li>
+        	<li><a href="index.html">Ernesto <em>González Aro…</em></a></li>
+        </ul>
+
+        <h4>F</h4>
+
+        <ul>
+        	<li><a href="index.html">Fernández <em>Cols Aleix</em></a></li>
+        	<li><a href="index.html">Fernández <em>Dominguez Alex</em></a></li>
+        	<li><a href="index.html">Flavia <em>Olmedo</em></a></li>
+        	<li><a href="index.html">Francesc <em>Esplugas</em></a></li>
+        	<li><a href="index.html">Francisco <em>Perez Garzón</em></a></li>
+        </ul>
+
+        <h4>Optional List</h4>
+
+        <ul>	
+        	<li><small>It's free</small> <a href="index.html" class="arrow">Label + minilabel</a></li>
+        	<li><a href="index.html" class="arrow">Only arrow</a></li>
+        	<li><small>✔</small> Only labels</li>
+        	<li><small>☆</small> <a href="index.html">Only labels</a></li>
+        	<li><small>★</small> <a href="index.html">Only labels</a></li>
+        </ul>
+        
+    </div>
+    
+    <div id="plastic" class="plastic">
+        <div class="toolbar">
+    		<h1>Plastic Lists</h1>
+    		<a href="#" class="back button">Back</a>
+    	</div>
+    	<ul>
+    		<li class="arrow"><small>2,99€</small> <a href="normal-simple.html">Simple list</a></li>
+    		<li class="arrow"><small>Free</small> <a href="normal-contact.html">Contact list</a></li>
+    		<li class="arrow"><small>Open Source</small> <a href="normal-content.html">Content List</a></li>
+    		<li class="arrow"><small>35€</small> <a href="normal-metal.html">Metal list</a></li>
+    		<li class="arrow"><a href="normal-metal.html">Metal list</a></li>
+    		<li class="arrow"><a href="normal-content.html">Content List</a></li>
+    		<li><a href="/flash/player_net9_20080425.swf?link=594&amp;cate=2">Download</a></li>
+    	</ul>
+
+        <p><strong>Best enjoyed on a real iPhone</strong><br />This iPhone UI Framework kit is licenced under GNU Affero General Public License (<a href="http://www.gnu.org/licenses/agpl.html">GNU AGPL 3</a>)</p>
+    </div>
+    
+    <div id="metal" class="metal">
+        <div class="toolbar">
+    		<h1>Metal Lists</h1>
+    		<a href="#" class="back button">Back</a>
+    	</div>
+    	<ul>	
+        	<li class="arrow"><a href="index.html"><small>AM</small> 9:40 <em>Buenos Aires</em></a></li>
+        	<li class="arrow"><a href="index.html"><small>PM</small> 19:40 <em>Singapur</em></a></li>
+        	<li><a href="index.html"><small>PM</small> 22:40 <em>Japan</em></a></li>
+        	<li class="arrow"><a href="index.html">11:40 <em>New York</em></a></li>
+        	<li class="arrow"><a href="index.html">9:40 <em>Ontario</em></a></li>
+        </ul>
+    </div>
+    
+    <div id="forms">
+        <form>
+            <ul class="edit">
+            	<li class="error"><input type="text" name="name" value="Text" id="some_name" /></li>
+            	<li class="error"><input type="text" name="search" value="Search" id="some_name" /></li>
+            	<li><input type="text" name="phone" value="Phone" id="some_name"  /></li>
+            	<li><input type="text" name="zip" value="Numbers" id="some_name" /></li>		 	
+            	<li><textarea>Dirección</textarea></li>
+            	<li><select id="lol"><optgroup label="Swedish Cars">
+            	<option value ="volvo">Volvo</option>
+            	<option value ="saab">Saab</option>
+            	</optgroup>
+            	<optgroup label="German Cars">
+            	<option value ="mercedes">Mercedes</option>
+            	<option value ="audi">Audi</option>
+            	</optgroup></select></li>
+            	<li><input type="password" name="some_name" value="iphonedelcopon" id="some_name" /></li>
+            	<li><input type="file" name="some_name" value="iphonedelcopon" id="some_name" /></li>
+            	<li><input type="checkbox" name="some_name" value="Hello" id="some_name" title="V8 Engine Type" /></li>
+            	<li><input type="checkbox" name="some_name" value="Hello" checked="checked" id="some_name" title="V12 Engine Type" /></li>
+            	<li><input type="radio" name="some_name" value="Hello" id="some_name" title="Only cars" /></li>
+            	<li><input type="radio" name="some_name" value="Hello" id="some_name" title="Only motorbikes" /></li>
+            </ul>
+        </form>
     </div>
 </body>
 </html>
