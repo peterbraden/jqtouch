@@ -20,24 +20,9 @@
 */
 
 (function($) {
-
-    var currentHeight=0, currentWidth=0;
-
     $.jQTouch = function(options) {
-
-        var $body, $head=$('head'),
-
-        // This technically isn't really used...
-        var browser= {
-            type: navigator.userAgent,
-            safari: (/AppleWebKit\/([^\s]+)/.exec(navigator.userAgent) || [,false])[1],
-            webkit: (/Safari\/(.+)/.exec(navigator.userAgent) || [,false])[1]
-        },
-
-        var hist=[], newPageCount=0, jQTSettings={};
-
+        var $body, $head=$('head'), hist=[], newPageCount=0, jQTSettings={};
         init(options);
-        
         function init(options) {
             var defaults = {
                 addGlossToIcon: true,
@@ -50,7 +35,6 @@
                 icon: null,
                 initializeTouch: 'a', 
                 slideInSelector: 'ul li a',
-                slideRightSelector: '',
                 slideUpSelector: '.slideup',
                 startupScreen: null,
                 statusBar: 'default', // other options: black-translucent, black
@@ -68,14 +52,6 @@
                 };
             }
 
-            // Set back buttons
-            if (jQTSettings.backSelector) {
-                $(jQTSettings.backSelector).live('click', function(){
-                    goBack();
-                    return false;
-                } );
-            }
-
             // Set icon
             if (jQTSettings.icon) {
                 var precomposed = (jQTSettings.addGlossToIcon) ? '' : '-precomposed';
@@ -87,7 +63,6 @@
                 hairextensions += '<link rel="apple-touch-startup-image" href="' + jQTSettings.startupScreen + '" />';
             }
 
-
             // Set viewport
             if (jQTSettings.fixedViewport) {
                 hairextensions += '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>';
@@ -96,7 +71,6 @@
             // Set full-screen
             if (jQTSettings.fullScreen) {
                 hairextensions += '<meta name="apple-mobile-web-app-capable" content="yes" />';
-
                 if (jQTSettings.statusBar) {
                     hairextensions += '<meta name="apple-mobile-web-app-status-bar-style" content="' + jQTSettings.statusBar + '" />';
                 }
@@ -107,67 +81,73 @@
             // Create an array of the "next page" selectors
             // TODO: DRY
             var liveSelectors = [];
-            if (jQTSettings.slideInSelector) liveSelectors.push(jQTSettings.slideInSelector);
-            if (jQTSettings.slideRightSelector) liveSelectors.push(jQTSettings.slideRightSelector);
+            if (jQTSettings.backSelector) liveSelectors.push(jQTSettings.backSelector);
             if (jQTSettings.flipSelector) liveSelectors.push(jQTSettings.flipSelector);
+            if (jQTSettings.slideInSelector) liveSelectors.push(jQTSettings.slideInSelector);
             if (jQTSettings.slideUpSelector) liveSelectors.push(jQTSettings.slideUpSelector);
             if (liveSelectors.length > 0) {
                 $(liveSelectors.join(', ')).live('click',function liveClick(){
 
-                    // Cache some stuff
+                    // Grab the clicked element
                     var $el = $(this);
-                    var hash = $el.attr('hash');
 
+                    // Add active class no matter what
+                    $el.addClass('active');
+
+                    // User clicked an external link
+                    if ($el.attr('target') == '_blank') {
+                        return true;
+                    } 
+                    
+                    // User clicked a back button
+                    if ($el.is(jQTSettings.backSelector)) {
+                        goBack();
+                        return false;
+                    }
+                    
                     // Set transition
                     var transition = 'slideInOut';
                     if ($el.is(jQTSettings.flipSelector)) transition = 'flip';
-                    if ($el.is(jQTSettings.slideRightSelector)) transition = 'slideRight';
                     if ($el.is(jQTSettings.slideUpSelector)) transition = 'slideUp';
 
                     // Branch on internal or external href
-                    if (hash && hash != '#') {
-                        if ($(hash).length > 0) {
-                            $el.attr('selected', 'true');
-                            showPage($(hash), transition);
-                            setTimeout($.fn.unselect, 250, $el);
-                        } else {
-                            console.warn('There is no panel with that ID.');
-                            $el.unselect();
-                            return false;
-                        }
+                    var hash = $el.attr('hash');
+                    if (hash) {
+                        showPage($(hash), transition);
                     } else if ($el.attr('target') != '_blank') {
-                        $el.attr('selected', 'progress');
                         showPageByHref($(this).attr('href'), null, null, null, transition, function(){ setTimeout($.fn.unselect, 250, $el) });
-                        return false;
                     }
+                    return false;
+                    
                 });
             }
             // Initialize on document load:
             $(document).ready(function(){
+                
                 // TODO: Find best way to customize and make event live...
                 $body = $('body');
                 $body.bind('orientationchange', updateOrientation).trigger('orientationchange');
-                if (jQTSettings.fullScreenClass && window.navigator.standalone == true)
-                {
+                if (jQTSettings.fullScreenClass && window.navigator.standalone == true) {
                     $body.addClass(jQTSettings.fullScreenClass + ' ' + jQTSettings.statusBar);
-                    
                 } 
                 if (jQTSettings.initializeTouch) $(jQTSettings.initializeTouch).addTouchHandlers();
                 $(jQTSettings.formSelector).submit(submitForm);
 
-                window.scrollTo(0, 0);
-
-                // var page = $('body > .current:first') || $('body > *:first').addClass('current');
-                var page = $('body > *:first').addClass('current');
-                
-                if (page) {
-                    addPageToHistory(page);
+                // Make sure exactly one child of body has "current" class
+                if ($('body > .current').length == 0) {
+                    var page = $('body > *:first');
                 } else {
-                    console.warn('Looks like your body has no elements.');
+                    var page = $('body > .current:first');
+                    $('body > .current').removeClass('current');
                 }
+                
+                // Go to the top of the "current" page
+                $(page).addClass('current');
+                addPageToHistory(page);
+                window.scrollTo(0, 0);
+                
             });
         }
-        
         function addPageToHistory(page, transition) {
 
             // Grab some info
@@ -182,12 +162,18 @@
                 title: title
             });
 
-            // Update the browser location
-            location.hash = pageId;
         }
-        
         function animatePages(fromPage, toPage, transition, backwards) {
 
+            // Error check for target page
+            if(toPage.length == 0){
+                alert('Target element is missing.');
+                return false;
+            }
+
+            // Make sure we are scrolled up to hide location bar
+            window.scrollTo(0, 0);
+            
             // Define callback to run after animation completes
             var callback = function(event){
                 fromPage.removeClass('current');
@@ -204,16 +190,14 @@
                     toPage.addClass('current');
                     fromPage.slideUpDown({backwards: backwards, callback: callback});
                 } else {
+                    toPage.css('z-index', Number(fromPage.css('z-index'))+1); // Make sure incoming page is in front of from page (only matters for slide up because from page doesn't move)
                     toPage.slideUpDown({backwards: backwards, callback: callback});
                 }
-            } else if (transition == 'slideRightSelector') {
-
             } else {
                 toPage.slideInOut({backwards: backwards, callback: callback});
                 fromPage.slideInOut({backwards: backwards});
             }
         }
-
         function goBack(numberOfPages) {
 
             // Init the param
@@ -229,14 +213,11 @@
             // Grab the target page
             var toPage = hist[0].page;
 
-            // Update the location bar
-            history.back();
-
             // Make the transition
             animatePages(fromPage, toPage, transition, true);
         }
-
         function insertPages(nodes, transition) {
+
             var targetPage;
             nodes.each(function(index, node){
                 if (!$(this).attr('id')) {
@@ -251,20 +232,17 @@
                 showPage(targetPage, transition);
             }
         }
-        
-        function showPage(page, transition) {
+        function showPage(toPage, transition) {
             var fromPage = hist[0].page;
-            addPageToHistory(page, transition);
-            animatePages(fromPage, page, transition);
+            addPageToHistory(toPage, transition);
+            animatePages(fromPage, toPage, transition);
         }
-        
         function showPageByHref(href, data, method, replace, transition, cb) {
             $.ajax({
                 url: href,
                 data: data,
                 type: method || "GET",
                 success: function (data, textStatus) {
-                    $('a[selected="progress"]').attr('selected', 'true');
                     if (replace) {
                         $(replace).replaceWith(data);
                     } else {
@@ -281,39 +259,16 @@
                 }
             });
         }
-
-        function showPageById(id) {
-            if (id) {
-                var page = $(id);
-                if (page){
-                    var offset = -1;
-                    for (var i=0; i < hist.length; i++) {
-                        if(hist[i].id == id) {
-                            offset = i;
-                            break;
-                        }
-                    }
-                    if (offset == -1) {
-                        showPage(page);
-                    } else {
-                        goBack(offset);
-                    }
-                }
-            }
-        }
-        
         function submitForm() {
             showPageByHref($(this).attr('action') || "POST", $(this).serialize(), $(this).attr('method'));
             return false;
         }
-        
         function updateOrientation() {
             var newOrientation = window.innerWidth < window.innerHeight ? 'profile' : 'landscape';
             $body.removeClass('profile landscape').addClass(newOrientation);
             scrollTo(0, 0);
         }
     }
-
     $.fn.flip = function(options) {
         return this.each(function(){
             var defaults = {
@@ -423,7 +378,6 @@
     }
     $.fn.unselect = function(obj) {
         obj = obj || $(this);
-        obj.attr('selected', false);
+        obj.removeClass('active');
     }
-
 })(jQuery);
