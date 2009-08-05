@@ -37,6 +37,6 @@ body[orient="landscape"] > * {
     min-height: 320px;
 }
 
-body > *[selected="true"], body > *[selected="selected"] {
-    display: block;
+body > .current {
+    display: block !important;
 }

@@ -3,24 +3,9 @@ body {
 }
 
 body > * {
-	display: none;
-	position: absolute;
-	margin: 0;
-	padding: 0;
-	left: 0;
-	width: 100%;
-	min-height: 480px;
-	-webkit-transform: translate(0px,0px);
 	background: rgb(197,204,211) url(img/pinstripes.png);
 }
 
-body[orient="landscape"] > * {
-	min-height: 268px;
-}
-
-body > *[selected="true"], body > *[selected="selected"] {
-	display: block;
-}
 
 /*ul a[selected=true], ul a:active {
 	background-color: #194fdb !important;

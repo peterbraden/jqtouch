@@ -30,24 +30,20 @@
                     jQTouchHandler.currentTouch.deltaX = first.pageX - jQTouchHandler.currentTouch.startX;
                     jQTouchHandler.currentTouch.deltaY = first.pageY - jQTouchHandler.currentTouch.startY;
                     jQTouchHandler.currentTouch.deltaT = (new Date).getTime() - jQTouchHandler.currentTouch.startTime;
-
-                    if (jQTouchHandler.currentTouch.deltaX > jQTouchHandler.currentTouch.deltaY && jQTouchHandler.currentTouch.deltaX > 50 && jQTouchHandler.currentTouch.deltaT < 1000)
+                    
+                    if (Math.abs(jQTouchHandler.currentTouch.deltaX) > Math.abs(jQTouchHandler.currentTouch.deltaY) && (jQTouchHandler.currentTouch.deltaX > 35 || jQTouchHandler.currentTouch.deltaX < -35) && jQTouchHandler.currentTouch.deltaT < 1000)
                     {
-                        $(this).trigger('swiped');
+                        $(this).trigger('swipe', {direction: (jQTouchHandler.currentTouch.deltaX < 0) ? 'left' : 'right'});
                     }
                     
                     type = 'mousemove';
                 break;
 
                 case 'touchend':
-                    event.preventDefault();
-                    if (jQTouchHandler.currentTouch.deltaY || jQTouchHandler.currentTouch.deltaX)
-                    {
-
-                    }
-                    else
+                    if (!jQTouchHandler.currentTouch.deltaY && !jQTouchHandler.currentTouch.deltaX)
                     {
                         type = 'mouseup';
+                        // TODO: Remove this selected!
                         $(this).attr('selected', true).trigger('tap');
                     }
                     // $(this).unbind('touchmove touchend');
@@ -65,7 +61,7 @@
 
     $.fn.addTouchHandlers = function()
     {
-        return this.each(function(i, el){        
+        return this.each(function(i, el){
             $(el).bind('touchstart', jQTouchHandler.handleStart);  
         });
     }

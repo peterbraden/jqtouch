@@ -18,8 +18,10 @@
         
         // Some sample Javascript functions:
         $(function(){
-            $('#home a').bind('swipe', function(){
-                alert('home link swiped');
+            
+            // Show a swipe event on swipe test
+            $('#swipeme').addTouchHandlers().bind('swipe', function(evt, data){
+                alert('Swiped '+ data.direction +' on #' + $(evt.currentTarget).attr('id') + '.');
             });
             $('a[target="_blank"]').click(function(){
                 if(confirm('This link opens in a new window.'))
@@ -40,16 +42,17 @@
     </script>
 </head>
 <body>
-    <div id="home" selected="true">
+    <div id="home">
         <div class="toolbar">
             <h1>jQTouch</h1>
             <a class="button slideup" id="infoButton" href="#about">About</a>
         </div>
-        <h4>Demos</h4>
+        <h1>Demos</h1>
         <ul>
             <li><a class="flip" href="#flipdemo">Flip Demo</a></li>
             <li><a href="#ui">User Interface Samples</a></li>
             <li><a href="#ajax">AJAX</a></li>
+            <li id="swipeme">Swipe me!</li>
         </ul>
         <h4>External Links</h4>
         <ul>
@@ -57,18 +60,19 @@
             <li><a href="http://www.twitter.com/jqtouch" target="_blank">Twitter</a></li>
             <li><a href="http://code.google.com/p/jqtouch/w/list" target="_blank">Google Code</a></li>
         </ul>
-        <div class="info">
-            Add this page to your home screen to view the custom icon, startup screen, and full screen mode.
-        </div>
+
         
         <ul class="individual">
         	<li><a href="#">Email</a></li>
         	<li><a href="#">Donate</a></li>
         </ul>
         
+        <div class="info">
+            Add this page to your home screen to view the custom icon, startup screen, and full screen mode.
+        </div>
     </div>
     
-    <div id="about" class="panel" style="text-shadow: rgba(255, 255, 255, 0.3) 0px -1px 0; font-size: 14px;">        
+    <div id="about" style="text-shadow: rgba(255, 255, 255, 0.3) 0px -1px 0; font-size: 14px;">        
         <div class="pad" style="padding-top: 20px;">
             <p>jQTouch was created by <a href="http://www.davidkaneda.com">David Kaneda</a> as a means of easily creating iPhone-styled websites. It is released open source, under the MIT license. It is still in its early stages of development and is currently lacking in documentation. For more information about jQTouch, please contact <a href="http://twitter.com/davidkaneda/">David on Twitter, @davidkaneda.</a></p>
             <!-- <h2>Features</h2>
@@ -102,7 +106,7 @@
         </ul>
     </div>
     
-    <div id="flipdemo" class="panel">
+    <div id="flipdemo">
         <div class="pad">
             <div style="font-size: 1.5em; text-align: center; margin: 160px 0 160px; font-family: Marker felt;">
                 Pretty smooth, eh?            
@@ -111,7 +115,7 @@
         </div>
     </div>
 
-    <form id="ajax_post" title="Movie Search" class="panel" action="search.php" method="POST">
+    <form id="ajax_post" title="Movie Search" action="search.php" method="POST">
         <div class="toolbar">
             <h1>Demos</h1>
             <a class="back button" href="#">Home</a>

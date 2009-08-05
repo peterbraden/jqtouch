@@ -26,6 +26,8 @@
     $.jQTouch = function(options) {
 
         var $body, $head=$('head'),
+
+        // This technically isn't really used...
         var browser= {
             type: navigator.userAgent,
             safari: (/AppleWebKit\/([^\s]+)/.exec(navigator.userAgent) || [,false])[1],
@@ -145,13 +147,19 @@
                 // TODO: Find best way to customize and make event live...
                 $body = $('body');
                 $body.bind('orientationchange', updateOrientation).trigger('orientationchange');
-                if (jQTSettings.fullScreenClass && window.navigator.standalone == true) $body.addClass(jQTSettings.fullScreenClass);
+                if (jQTSettings.fullScreenClass && window.navigator.standalone == true)
+                {
+                    $body.addClass(jQTSettings.fullScreenClass + ' ' + jQTSettings.statusBar);
+                    
+                } 
                 if (jQTSettings.initializeTouch) $(jQTSettings.initializeTouch).addTouchHandlers();
                 $(jQTSettings.formSelector).submit(submitForm);
 
-                setTimeout(function(){window.scrollTo(0, 1);}, 100);
+                window.scrollTo(0, 0);
 
-                var page = $('body > *[selected="true"]:first') || $('body > *:first');
+                // var page = $('body > .current:first') || $('body > *:first').addClass('current');
+                var page = $('body > *:first').addClass('current');
+                
                 if (page) {
                     addPageToHistory(page);
                 } else {
@@ -182,7 +190,7 @@
 
             // Define callback to run after animation completes
             var callback = function(event){
-                fromPage.attr('selected', 'false');
+                fromPage.removeClass('current');
                 toPage.trigger('pageTransitionEnd', { direction: 'in' });
     	        fromPage.trigger('pageTransitionEnd', { direction: 'out' });
             }
@@ -193,7 +201,7 @@
                 fromPage.flip({backwards: backwards, callback: callback});
             } else if (transition == 'slideUp') {
                 if (backwards) {
-                    toPage.attr('selected', true);
+                    toPage.addClass('current');
                     fromPage.slideUpDown({backwards: backwards, callback: callback});
                 } else {
                     toPage.slideUpDown({backwards: backwards, callback: callback});
@@ -235,7 +243,7 @@
                     $(this).attr('id', (++newPageCount));
                 }
                 $(this).appendTo($body);
-                if ($(this).attr('selected') == 'true' || (!targetPage && !$(this).hasClass('btn'))) {
+                if ($(this).hasClass('current') || !targetPage ) {
                     targetPage = $(this);
                 }
             });
@@ -316,9 +324,9 @@
 
             var settings = $.extend({}, defaults, options);
 
-            var dir = ((settings.direction == 'toggle' && $(this).attr('selected') == 'true') || settings.direction == 'out') ? 1 : -1;
+            var dir = ((settings.direction == 'toggle' && $(this).hasClass('current')) || settings.direction == 'out') ? 1 : -1;
             
-            if (dir == -1) $(this).attr('selected', 'true');
+            if (dir == -1) $(this).addClass('current');
             
             $(this).parent().css({webkitPerspective: '1000', webkitTransformStyle: 'preserve-3d'});
             
@@ -336,9 +344,9 @@
         };
         var settings = $.extend({}, defaults, options);
         return this.each(function(){
-            var dir = ((settings.direction == 'toggle' && $(this).attr('selected') == 'true') || settings.direction == 'out') ? 1 : -1;                
+            var dir = ((settings.direction == 'toggle' && $(this).hasClass('current')) || settings.direction == 'out') ? 1 : -1;                
             if (dir == -1){
-                $(this).attr('selected', 'true')
+                $(this).addClass('current')
                     .find('h1, .button')
                         .css('opacity', 0)
                         .transition({'opacity': 1})
@@ -366,10 +374,10 @@
         
         return this.each(function(){
 
-            var dir = ((settings.direction == 'toggle' && $(this).attr('selected') == 'true') || settings.direction == 'out') ? 1 : -1;                
+            var dir = ((settings.direction == 'toggle' && $(this).hasClass('current')) || settings.direction == 'out') ? 1 : -1;                
 
             if (dir == -1){
-                $(this).attr('selected', 'true')
+                $(this).addClass('current')
                     .css({'-webkit-transform': 'translateY(' + (settings.backwards ? -1 : 1) * window.innerHeight + 'px)'})
                     .transition({'-webkit-transform': 'translateY(0px)'}, {callback: settings.callback})
                         .find('h1, .button')
