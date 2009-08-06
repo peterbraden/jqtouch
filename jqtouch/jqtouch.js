@@ -21,7 +21,7 @@
 
 (function($) {
     $.jQTouch = function(options) {
-        var $body, $head=$('head'), hist=[], newPageCount=0, jQTSettings={};
+        var $body, $head=$('head'), hist=[], newPageCount=0, jQTSettings={}, dumbLoop, currentPage;
         init(options);
         function init(options) {
             var defaults = {
@@ -101,6 +101,7 @@
                     
                     // User clicked a back button
                     if ($el.is(jQTSettings.backSelector)) {
+                        $.fn.unselect($el);
                         goBack();
                         return false;
                     }
@@ -135,16 +136,18 @@
 
                 // Make sure exactly one child of body has "current" class
                 if ($('body > .current').length == 0) {
-                    var page = $('body > *:first');
+                    currentPage = $('body > *:first');
                 } else {
-                    var page = $('body > .current:first');
+                    currentPage = $('body > .current:first');
                     $('body > .current').removeClass('current');
                 }
                 
                 // Go to the top of the "current" page
-                $(page).addClass('current');
-                addPageToHistory(page);
+                $(currentPage).addClass('current');
+                location.hash = $(currentPage).attr('id');
+                addPageToHistory(currentPage);
                 window.scrollTo(0, 0);
+                dumbLoopStart();
                 
             });
         }
@@ -167,6 +170,7 @@
 
             // Error check for target page
             if(toPage.length == 0){
+                $.fn.unselect();
                 alert('Target element is missing.');
                 return false;
             }
@@ -176,9 +180,13 @@
             
             // Define callback to run after animation completes
             var callback = function(event){
+                currentPage = toPage;
                 fromPage.removeClass('current');
                 toPage.trigger('pageTransitionEnd', { direction: 'in' });
     	        fromPage.trigger('pageTransitionEnd', { direction: 'out' });
+                location.hash = $(currentPage).attr('id');
+                $.fn.unselect();
+    	        dumbLoopStart();
             }
 
             // Branch on type transition
@@ -197,6 +205,29 @@
                 toPage.slideInOut({backwards: backwards, callback: callback});
                 fromPage.slideInOut({backwards: backwards});
             }
+        }
+        function dumbLoopStart() {
+            dumbLoop = setInterval(function(){
+                if (location.hash == '') {
+                    location.hash = $(currentPage).attr('id');
+                }
+                if(location.hash != '#' + $(currentPage).attr('id')) {
+                    try {
+                        for (var i=1; i < hist.length; i++) {
+                            if(location.hash == '#' + hist[i].id) {
+                                foundBack = true;
+                                dumbLoopStop();
+                                goBack(i);
+                            }
+                        }
+                    } catch(e) {
+                        
+                    }
+                }
+            }, 250);
+        }
+        function dumbLoopStop() {
+            clearInterval(dumbLoop);
         }
         function goBack(numberOfPages) {
 
@@ -241,7 +272,7 @@
             $.ajax({
                 url: href,
                 data: data,
-                type: method || "GET",
+                type: method || 'GET',
                 success: function (data, textStatus) {
                     if (replace) {
                         $(replace).replaceWith(data);
@@ -377,7 +408,10 @@
         }
     }
     $.fn.unselect = function(obj) {
-        obj = obj || $(this);
-        obj.removeClass('active');
+        if (obj) {
+            obj.removeClass('active');
+        } else {
+            $('.active').removeClass('active');
+        }
     }
 })(jQuery);
