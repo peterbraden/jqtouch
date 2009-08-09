@@ -26,7 +26,7 @@
         function init(options) {
             var defaults = {
                 addGlossToIcon: true,
-                backSelector: '.back',
+                backSelector: '.back, .cancel',
                 fixedViewport: true,
                 flipSelector: '.flip',
                 formSelector: 'form',
@@ -171,7 +171,7 @@
             // Error check for target page
             if(toPage.length == 0){
                 $.fn.unselect();
-                alert('Target element is missing.');
+                console.log('Target element is missing.');
                 return false;
             }
 

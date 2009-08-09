@@ -35,7 +35,7 @@ body {
 	background: url(img/second.png);
 }
 
-.clocks > div {
+#clocks > div {
 	  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#dadadc), to(#b4b3b8));
 	  border-bottom: 1px solid #9a9fa5;
 	  border-top: 1px solid #dbdbdd;
