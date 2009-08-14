@@ -21,6 +21,10 @@
             background-color: #e8a322;
         }
         
+        .complete span {
+            text-decoration: line-through;
+        }
+        
     </style>
     <script src="../../jqtouch/jquery.1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="../../jqtouch/jqtouch.events.js" type="application/x-javascript" charset="utf-8"></script>
@@ -34,37 +38,69 @@
         // Some sample Javascript functions:
         $(function(){
             $('#add form').submit(function(){
-                var data = $(this).serialize();
-                
-                if (data.name.length > 1)
+                $el = $(this);
+
+                if ($('#todo', $el).val().length > 1)
                 {
                     var itemid = $('#home ul li').length + 1;
-                    $('#home ul').append($('<li><input type="checkbox" /> ' + data.name + '</li>'));
+                    $('#home .incomplete').append($('<li><input type="checkbox" /> <span>' + $('#todo', $el).val() + '</span></li>'));
                 }
+                $('input').blur();
+                $('#add .cancel').click();
 
-                $(this).reset();
+                this.reset();
+                return false;
             });
+            
+            
+            $('input[type="checkbox"]').live('change', function(){
+                var $el = $(this);
+                if ($el.attr('checked'))
+                {
+                    console.log('completing');
+                    
+                    $el.parent().prependTo('.complete');
+                }
+                else
+                {
+                    $el.parent().appendTo('.incomplete');
+                }
+            });
+            
         });
+
     </script>
 </head>
 <body>
-    <div id="home" selected="true" class="edgetoedge">
+    <div id="home" selected="true" class="edgetoedge form">
         <div class="toolbar">
             <h1>Todos</h1>
-            <a href="#add" class="button add slideup">Add</a>
+            <a href="#add" class="button add slideup">+</a>
         </div>
-        <ul>
-            <li><input type="checkbox" /> Do something</li>
-            <li><input type="checkbox" /> Do something else</li>
-            <li><input type="checkbox" /> Finish these damn demos</li>
+        <form>
+        <ul class="incomplete">
+            <li><input type="checkbox" /> <span>Do something</span></li>
+            <li><input type="checkbox" /> <span>Finish demo</span></li>
+            <li><input type="checkbox" /> <span>Finish these damn demos</span></li>
         </ul>
+        <h4>Completed</h4>
+        <ul class="complete">
+            <li><input type="checkbox" checked /> <span>Do something</span></li>
+            <li><input type="checkbox" checked /> <span>Finish demo</span></li>
+            <li><input type="checkbox" checked /> <span>Finish these damn demos</span></li>
+        </ul>
+        </form>
     </div>
     <div id="add" class="edit">
+        <div class="toolbar">
+            <h1>New</h1>
+            <a href="#" class="cancel">Cancel</a>
+        </div>
         <form>
             <h1>Enter your to-do:</h1>
             <ul>
-                <li><input type="text" name="todo" placeholder="Todo" /></li>
-                <li><textarea name="description" placeholder="Descripton"></textarea></li>
+                <li><input type="text" id="todo" placeholder="Todo" /></li>
+                <li><textarea id="description" placeholder="Descripton"></textarea></li>
             </ul>
             <input type="submit" />
         </form>

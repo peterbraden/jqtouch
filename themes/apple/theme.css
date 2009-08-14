@@ -6,15 +6,6 @@ body > * {
 	background: rgb(197,204,211) url(img/pinstripes.png);
 }
 
-
-/*ul a[selected=true], ul a:active {
-	background-color: #194fdb !important;
-	background-image: url(img/selection.png) !important;
-	background-repeat: repeat-x;
-	background-position: left top;
-	color: #FFFFFF !important;
-}*/
-
 a[selected="progress"] {
 	background-image: url(loading.gif), url(img/selection.png) !important;
 }
@@ -80,12 +71,7 @@ ul.form li:hover {
 ul li input[type="text"], ul li input[type="password"], ul li textarea, ul li select {
 	color: #777;
 	background: #fff url(../.png);
-	/*
-
-th
-
-is is a hack due the default input shadow that iphones uses on textfields */
-				border: 0;
+	border: 0;
 	font: normal 17px Helvetica;
 	padding: 0;
 	display: inline-block;
@@ -223,13 +209,13 @@ ul li {
 
 /* when you have a first LI item on any list */
 
-li:first-child {
+li:first-child, li:first-child a {
 	border-top: 0;
 	-webkit-border-top-left-radius: 8px;
 	-webkit-border-top-right-radius: 8px;
 }
 
-li:last-child {
+li:last-child, li:last-child a {
 	-webkit-border-bottom-left-radius: 8px;
 	-webkit-border-bottom-right-radius: 8px;
 }
@@ -260,6 +246,11 @@ ul li a, li.img a + a {
 	padding: 12px 10px 12px 10px;
 	margin: -10px;
 	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+ul li a.active {
+	background-color: #36c;
+	color: #fff;
 }
 
 ul li.img a + a {

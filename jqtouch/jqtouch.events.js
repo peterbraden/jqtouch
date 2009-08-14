@@ -15,7 +15,7 @@
                 deltaT : 0
             };
 
-            $(this).bind('touchmove touchend', jQTouchHandler.handle);
+            $(this).addClass('active').bind('touchmove touchend', jQTouchHandler.handle);
             return true;
         },
         
@@ -44,10 +44,13 @@
                     {
                         type = 'mouseup';
                         // TODO: Remove this selected!
-                        $(this).attr('selected', true).trigger('tap');
+                        $(this).trigger('tap');
                     }
-                    // $(this).unbind('touchmove touchend');
-                    setTimeout(jQTouchHandler.ready, jQTouchHandler.timeDelay);
+                    else
+                    {
+                        $(this).removeClass('active');
+                    }
+                    $(this).unbind('touchmove touchend');
                     delete currentTouch;
                 break;
             }

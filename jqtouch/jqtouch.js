@@ -26,14 +26,14 @@
         function init(options) {
             var defaults = {
                 addGlossToIcon: true,
-                backSelector: '.back, .cancel',
+                backSelector: '.back, .cancel, .goback',
                 fixedViewport: true,
                 flipSelector: '.flip',
                 formSelector: 'form',
                 fullScreen: true,
                 fullScreenClass: 'fullscreen',
                 icon: null,
-                initializeTouch: 'a', 
+                initializeTouch: 'a, .touch', 
                 slideInSelector: 'ul li a',
                 slideUpSelector: '.slideup',
                 startupScreen: null,
@@ -274,11 +274,8 @@
                 data: data,
                 type: method || 'GET',
                 success: function (data, textStatus) {
-                    if (replace) {
-                        $(replace).replaceWith(data);
-                    } else {
-                        insertPages($(data), transition);
-                    }
+                    insertPages($(data), transition);
+
                     if (cb) {
                         cb(true);
                     }
@@ -391,19 +388,27 @@
             $el.css(css);
             window.setTimeout(callback, 0);
         } else {
-            var s = [];
-            for(var i in css) {
-                s.push(i);
+            if ($.browser.safari)
+            {
+                var s = [];
+                for(var i in css) {
+                    s.push(i);
+                }
+                $el.css({
+                    webkitTransitionProperty: s.join(", "), 
+                    webkitTransitionDuration: settings.speed, 
+                    webkitTransitionTimingFunction: settings.ease
+                });
+                if (settings.callback) {
+                    $el.one('webkitTransitionEnd', settings.callback);
+                }
+                setTimeout(function(el){ el.css(css) }, 0, $el);
+
             }
-            $el.css({
-                webkitTransitionProperty: s.join(", "), 
-                webkitTransitionDuration: settings.speed, 
-                webkitTransitionTimingFunction: settings.ease
-            });
-            if (settings.callback) {
-                $el.one('webkitTransitionEnd', settings.callback);
+            else
+            {
+                $el.animate(css, settings.speed, settings.callback);
             }
-            setTimeout(function(el){ el.css(css) }, 0, $el);
             return this;
         }
     }
