@@ -13,9 +13,13 @@
             font-family: "Marker Felt";
             color: #000;
         }
-        input {
+        ul li input[type="checkbox"] {
             background-color: #e8a322;
             border: 2px solid #e8a322;
+        }
+        
+        ul li input[type="text"], ul li textarea {
+            background-color: #ffeab1;
         }
         textarea {
             background-color: #e8a322;
@@ -25,14 +29,25 @@
             text-decoration: line-through;
         }
         
+        li small {
+            opacity: 0;
+            overflow: hidden;
+            width: 0 !important;
+            -webkit-transition: 250ms all ease-in-out;
+        }
+
+        li.editingmode small {
+            opacity: 1;
+            width: 50% !important;
+        }
+        
     </style>
     <script src="../../jqtouch/jquery.1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="../../jqtouch/jqtouch.events.js" type="application/x-javascript" charset="utf-8"></script>
     <script src="../../jqtouch/jqtouch.js" type="application/x-javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
         $.jQTouch({
-            icon: 'jqtouch.png',
-            statusBar: 'black-translucent'
+            icon: 'jqtouch.png'
         });
         
         // Some sample Javascript functions:
@@ -48,10 +63,14 @@
                 $('input').blur();
                 $('#add .cancel').click();
 
+
                 this.reset();
                 return false;
             });
             
+            $('.complete li, .incomplete li').addTouchHandlers().bind('swipe', function(){
+               $(this).toggleClass('editingmode');
+            });    
             
             $('input[type="checkbox"]').live('change', function(){
                 var $el = $(this);
@@ -79,7 +98,7 @@
         </div>
         <form>
         <ul class="incomplete">
-            <li><input type="checkbox" /> <span>Do something</span></li>
+            <li><input type="checkbox" /> <span>Do something</span> <small><a href="#">Blah</a></small></li>
             <li><input type="checkbox" /> <span>Finish demo</span></li>
             <li><input type="checkbox" /> <span>Finish these damn demos</span></li>
         </ul>
