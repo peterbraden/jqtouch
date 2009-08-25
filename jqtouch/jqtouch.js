@@ -113,6 +113,7 @@
 
                     // Branch on internal or external href
                     var hash = $el.attr('hash');
+                    
                     if (hash) {
                         showPage($(hash), transition);
                     } else if ($el.attr('target') != '_blank') {
@@ -188,6 +189,9 @@
                 $.fn.unselect();
     	        dumbLoopStart();
             }
+            
+            fromPage.trigger('pageTransitionStart', { direction: 'out' });
+            toPage.trigger('pageTransitionStart', { direction: 'in' });
 
             // Branch on type transition
             if (transition == 'flip'){
@@ -205,6 +209,8 @@
                 toPage.slideInOut({backwards: backwards, callback: callback});
                 fromPage.slideInOut({backwards: backwards});
             }
+            
+            return true;
         }
         function dumbLoopStart() {
             dumbLoop = setInterval(function(){
@@ -265,27 +271,36 @@
         }
         function showPage(toPage, transition) {
             var fromPage = hist[0].page;
-            addPageToHistory(toPage, transition);
-            animatePages(fromPage, toPage, transition);
+            
+            if (animatePages(fromPage, toPage, transition)) addPageToHistory(toPage, transition);
         }
         function showPageByHref(href, data, method, replace, transition, cb) {
-            $.ajax({
-                url: href,
-                data: data,
-                type: method || 'GET',
-                success: function (data, textStatus) {
-                    insertPages($(data), transition);
+            if (href != '#')
+            {
+                $.ajax({
+                    url: href,
+                    data: data,
+                    type: method || 'GET',
+                    success: function (data, textStatus) {
+                        insertPages($(data), transition);
 
-                    if (cb) {
-                        cb(true);
+                        if (cb) {
+                            cb(true);
+                        }
+                    },
+                    error: function (data) {
+                        $.fn.unselect();
+                        
+                        if (cb) {
+                            cb(false);
+                        }
                     }
-                },
-                error: function (data) {
-                    if (cb) {
-                        cb(false);
-                    }
-                }
-            });
+                });
+            }
+            else
+            {
+                $.fn.unselect();
+            }
         }
         function submitForm() {
             showPageByHref($(this).attr('action') || "POST", $(this).serialize(), $(this).attr('method'));

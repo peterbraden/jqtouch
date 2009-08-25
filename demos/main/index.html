@@ -32,16 +32,29 @@
                 }
                 else
                 {
-                    $(this).removeAttr('selected');
+                    $(this).removeClass('active');
                     return false;
                 }
             });
-            if ($('body').hasClass('fullscreen'))
-            {
-                $('#home .info').css('display', 'none');
-            }
+            
+            // Page transition callback events
+            $('#pageevents').
+                bind('pageTransitionEnd', function(e, info){
+                    $(this).find('.info').append('<p>Finished transitioning ' + info.direction + '</p>');
+                }).
+                bind('pageTransitionStart', function(e, info){
+                    $(this).find('.info').append('<p>Started transitioning ' + info.direction + '</p>');
+                });
+                
         });
+        
+
     </script>
+    <style type="text/css" media="screen">
+        body.fullscreen #home .info {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div id="home">
@@ -77,43 +90,39 @@
     <div id="callbacks">
         <div class="toolbar">
             <h1>Events</h1>
-            <a class="back button" href="#home">Docs</a>
+            <a class="back button" href="#home">Home</a>
         </div>
         <ul>
-            <li><a href="#pageevents">Page transitions</a></li>
+            <li><a href="#pageevents">Page events</a></li>
             <li id="swipeme">Swipe me!</li>
         </ul>
     </div>
     
     <div id="pageevents">
-        
+        <div class="toolbar">
+            <h1>Page Events</h1>
+            <a class="back button" href="#home">Events</a>
+        </div>
+        <div class="info">
+            This pane has not loaded.
+        </div>
     </div>
     
     <div id="about" style="text-shadow: rgba(255, 255, 255, 0.3) 0px -1px 0; font-size: 14px;">        
         <div style="padding: 20px; font-size: 15px;">
             <p>jQTouch was created by <a href="http://www.davidkaneda.com">David Kaneda</a> as a means of easily creating iPhone-styled websites. It is released open source, under the MIT license. It is still in its early stages of development and is currently lacking in documentation. For more information about jQTouch, please contact <a href="http://twitter.com/davidkaneda/">David on Twitter, @davidkaneda.</a></p>
-            <!-- <h2>Features</h2>
-            <ul>
-                <li>One-line setup, with options for selectors, viewport settings, icon path and glossiness, and status bar style</li>
-                <li>Pages can be built in a single HTML file, or loaded dynamically via GET or POST</li>
-                <li>Native, hardware-accelerated, page animations, including slide in/out, slide up/down, and 3D flip. All with history support.</li>
-                <li>Image preloading functions</li>
-                <li>Easy to theme</li>
-            </ul> -->
             <a href="#" class="grayButton goback">Close</a>
         </div>
     </div>
 
     <div id="ajax">
         <div class="toolbar">
-            <h1>Using AJAX</h1>
-            <a class="back button" href="#home">Docs</a>
+            <h1>AJAX</h1>
+            <a class="back button" href="#home">Home</a>
         </div>
         <ul>
-            <li><a href="#ajax_links">Links</a></li>
             <li><a href="#ajax_post">POST Form Example</a></li>
             <li><a href="settings.html">GET Example</a></li>
-            <li><a href="#ajax_inserts">Inserts</a></li>
         </ul>
     </div>
     
@@ -126,22 +135,17 @@
         </div>
     </div>
 
-    <form id="ajax_post" title="Movie Search" action="search.php" method="POST">
+    <form id="ajax_post" title="Movie Search" action="search.php" method="POST" class="form">
         <div class="toolbar">
-            <h1>Demos</h1>
-            <a class="back button" href="#">Home</a>
+            <h1>Post Demo</h1>
+            <a class="back button" href="#">Ajax</a>
         </div>
         <div class="pad">
-            <fieldset>
-                <div class="row">
-                    <label>Movie</label>
-                    <input type="text" name="movie" value=""/>
-                </div>
-                <div class="row">
-                    <label>Zip</label>
-                    <input type="text" name="zip" value=""/>
-                </div>
-            </fieldset>
+            <ul>
+                <li>
+                    <input type="text" name="zip" value="" placeholder="Zip Code" />
+                </li>
+            </ul>
             <input type="submit" />
         </div>
     </form>
@@ -166,38 +170,38 @@
 
     <div id="edge" class="edgetoedge">
     	<div class="toolbar">
-    		<h1>Contact lists</h1>
+    		<h1>Edge to Edge</h1>
     		<a href="#" class="back button">Back</a>
     	</div>
 
         <h4>E</h4>
 
         <ul>
-        	<li><a href="index.html">Elea <em>Peliche</em></a></li>
-        	<li><a href="index.html">Elizabeth <em>Nogales</em></a></li>
-        	<li><small>Es mi hermano</small> <a href="index.html">Emiliano <em>Martín Lafuente</em></a></li>
-        	<li><a href="index.html">Enrique <em>Dans</em></a></li>
-        	<li><a href="index.html">Ernesto <em>González Aro…</em></a></li>
+        	<li><a href="#">Elea <em>Peliche</em></a></li>
+        	<li>Elizabeth <em>Nogales</em></li>
+        	<li><small>Es mi hermano</small> <a href="#">Emiliano <em>Martín Lafuente</em></a></li>
+        	<li><a href="#">Enrique <em>Dans</em></a></li>
+        	<li><a href="#">Ernesto <em>González Aro…</em></a></li>
         </ul>
 
         <h4>F</h4>
 
         <ul>
-        	<li><a href="index.html">Fernández <em>Cols Aleix</em></a></li>
-        	<li><a href="index.html">Fernández <em>Dominguez Alex</em></a></li>
-        	<li><a href="index.html">Flavia <em>Olmedo</em></a></li>
-        	<li><a href="index.html">Francesc <em>Esplugas</em></a></li>
-        	<li><a href="index.html">Francisco <em>Perez Garzón</em></a></li>
+        	<li><a href="#">Fernández <em>Cols Aleix</em></a></li>
+        	<li><a href="#">Fernández <em>Dominguez Alex</em></a></li>
+        	<li><a href="#">Flavia <em>Olmedo</em></a></li>
+        	<li><a href="#">Francesc <em>Esplugas</em></a></li>
+        	<li><a href="#">Francisco <em>Perez Garzón</em></a></li>
         </ul>
 
         <h4>Optional List</h4>
 
         <ul>	
-        	<li><small>It's free</small> <a href="index.html" class="arrow">Label + minilabel</a></li>
-        	<li><a href="index.html" class="arrow">Only arrow</a></li>
+        	<li><small>It's free</small> <a href="#" class="arrow">Label + minilabel</a></li>
+        	<li><a href="#" class="arrow">Only arrow</a></li>
         	<li><small>✔</small> Only labels</li>
-        	<li><small>☆</small> <a href="index.html">Only labels</a></li>
-        	<li><small>★</small> <a href="index.html">Only labels</a></li>
+        	<li><small>☆</small> <a href="#">Only labels</a></li>
+        	<li><small>★</small> <a href="#">Only labels</a></li>
         </ul>
         
     </div>
@@ -208,10 +212,10 @@
     		<a href="#" class="back button">Back</a>
     	</div>
     	<ul>
-    		<li class="arrow"><small>2,99€</small> <a href="normal-simple.html">Simple list</a></li>
-    		<li class="arrow"><small>Free</small> <a href="normal-contact.html">Contact list</a></li>
-    		<li class="arrow"><small>Open Source</small> <a href="normal-content.html">Content List</a></li>
-    		<li class="arrow"><small>35€</small> <a href="normal-metal.html">Metal list</a></li>
+    		<li class="arrow"><small>2,99€</small> <a href="#">Simple list</a></li>
+    		<li class="arrow"><small>Free</small> <a href="#">Contact list</a></li>
+    		<li class="arrow"><small>Open Source</small> <a href="#">Content List</a></li>
+    		<li class="arrow"><small>35€</small> <a href="#">Metal list</a></li>
     		<li class="arrow"><a href="normal-metal.html">Metal list</a></li>
     		<li class="arrow"><a href="normal-content.html">Content List</a></li>
     		<li><a href="/flash/player_net9_20080425.swf?link=594&amp;cate=2">Download</a></li>
@@ -226,11 +230,11 @@
     		<a href="#" class="back button">Back</a>
     	</div>
     	<ul>	
-        	<li class="arrow"><a href="index.html"><small>AM</small> 9:40 <em>Buenos Aires</em></a></li>
-        	<li class="arrow"><a href="index.html"><small>PM</small> 19:40 <em>Singapur</em></a></li>
-        	<li><a href="index.html"><small>PM</small> 22:40 <em>Japan</em></a></li>
-        	<li class="arrow"><a href="index.html">11:40 <em>New York</em></a></li>
-        	<li class="arrow"><a href="index.html">9:40 <em>Ontario</em></a></li>
+        	<li class="arrow"><a href="#"><small>AM</small> 9:40 <em>Buenos Aires</em></a></li>
+        	<li class="arrow"><a href="#"><small>PM</small> 19:40 <em>Singapur</em></a></li>
+        	<li><a href="#"><small>PM</small> 22:40 <em>Japan</em></a></li>
+        	<li class="arrow"><a href="#">11:40 <em>New York</em></a></li>
+        	<li class="arrow"><a href="#">9:40 <em>Ontario</em></a></li>
         </ul>
     </div>
     

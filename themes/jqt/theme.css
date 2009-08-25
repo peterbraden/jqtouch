@@ -1,10 +1,10 @@
 body {
     background: #000;
-    color: #aaa;
+    color: #ddd;
 }
-
 body > * {
-	background: #303134;
+	background: #;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#303134), to(#3a3a3c));
 }
 
 a[selected="progress"] {
@@ -47,68 +47,6 @@ body.landscape .toolbar > h1 {
 	margin-left: -125px;
 	width: 250px;
 }
-
-/* @end */
-
-/* @group Forms */
-
-ul.form li {
-	padding: 7px 10px;
-}
-
-ul.form li.error {
-	border: 2px solid red;
-}
-
-ul.form li.error + li.error {
-	border-top: 0;
-}
-
-ul.form li:hover {
-	background: #fff;
-}
-
-ul li input[type="text"], ul li input[type="password"], ul li textarea, ul li select {
-	color: #777;
-	background: #fff url(../.png);
-	border: 0;
-	font: normal 17px Helvetica;
-	padding: 0;
-	display: inline-block;
-	margin-left: 0px;
-	width: 100%;
-	-webkit-appearance: textarea;
-}
-
-ul li textarea {
-	height: 120px;
-	padding: 0;
-	text-indent: -2px;
-}
-
-ul li select {
-	text-indent: 0px;
-	background: transparent url(../images/chevron.png) no-repeat 103% 3px;
-	-webkit-appearance: textfield;
-	margin-left: -6px;
-	width: 104%;
-}
-
-ul li input[type="checkbox"], ul li input[type="radio"] {
-	margin: 0;
-	color: rgb(50,79,133);
-	padding: 10px 10px;
-}
-
-ul li input[type="checkbox"]:after, ul li input[type="radio"]:after {
-	content: attr(title);
-	font: 17px Helvetica;
-	display: block;
-	width: 246px;
-	margin: -12px 0 0 17px;
-}
-
-/* @end */
 
 .button, .back, .cancel, .add {
 	position: absolute;
@@ -180,6 +118,8 @@ ul li input[type="checkbox"]:after, ul li input[type="radio"]:after {
 	color: #FFFFFF;
 }
 
+/* @end */
+
 ul + p, ul.data + p + p, ul.form + p + p {
 	color: rgb(76,86,108);
 	font: 14px Helvetica;
@@ -202,7 +142,8 @@ ul {
 
 ul li {
 	color: #666;
-	border-top: 1px solid #555858;
+	border-top: 1px solid #202123;
+	border-bottom: #555858;
 	list-style-type: none;
 	padding: 10px 10px 10px 10px;
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142));
@@ -316,16 +257,61 @@ ul li a + a + a, ul li.img a + a + a + a, ul li.img a + small + a + a + a {
 /*
  @end */
 
-a[target="_replace"] {
-	box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	padding-top: 25px;
-	padding-bottom: 25px;
-	font-size: 18px;
-	color: cornflowerblue;
-	background-color: #FFFFFF;
-	background-image: none;
+/* @group Forms */
+
+ul.form li {
+	padding: 7px 10px;
 }
+
+ul.form li.error {
+	border: 2px solid red;
+}
+
+ul.form li.error + li.error {
+	border-top: 0;
+}
+
+
+ul li input[type="text"], ul li input[type="password"], ul li textarea, ul li select {
+	color: #777;
+	background: transparent url(../.png);
+	border: 0;
+	font: normal 17px Helvetica;
+	padding: 0;
+	display: inline-block;
+	margin-left: 0px;
+	width: 100%;
+	-webkit-appearance: textarea;
+}
+
+ul li textarea {
+	height: 120px;
+	padding: 0;
+	text-indent: -2px;
+}
+
+ul li select {
+	text-indent: 0px;
+	background: transparent url(../images/chevron.png) no-repeat 103% 3px;
+	-webkit-appearance: textfield;
+	margin-left: -6px;
+	width: 104%;
+}
+
+ul li input[type="checkbox"], ul li input[type="radio"] {
+	margin: 0;
+	padding: 10px 10px;
+}
+
+ul li input[type="checkbox"]:after, ul li input[type="radio"]:after {
+	content: attr(title);
+	font: 17px Helvetica;
+	display: block;
+	width: 246px;
+	margin: -12px 0 0 17px;
+}
+
+/* @end */
 
 /* @group Edge to edge */
 
@@ -360,6 +346,9 @@ a[target="_replace"] {
 
 .edgetoedge ul li {
 	font-size: 20px;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#1e1f21), to(#272729));
+	border-top: 1px solid #4a4b4d;
+	border-bottom: 1px solid #000;
 }
 
 .edgetoedge ul li small {
@@ -376,6 +365,10 @@ a[target="_replace"] {
 	font-style: normal;
 }
 
+.edgetoedge li:first-child a, .edgetoedge li:last-child a {
+	-webkit-border-radius: 0;
+}
+
 .edgetoedge h4 + ul {
 	border-top: 1px solid #111113;
 	border-bottom: 1px solid #111113;
@@ -386,7 +379,7 @@ a[target="_replace"] {
 /* @group Mini Label */
 
 ul li small {
-	color: #369;
+	color: #64c114;
 	font: 17px Helvetica;
 	text-align: right;
 	text-overflow: ellipsis;
@@ -451,12 +444,8 @@ ul li.arrow small.counter {
 	padding: 13px 0;
 }
 
-.metal ul li a:hover {
+.metal ul li a.active {
 	color: rgb(0,0,0);
-}
-
-.metal ul li:hover small {
-	color: inherit;
 }
 
 .metal ul li a em {
@@ -645,7 +634,7 @@ ul.individual li a {
 	-webkit-border-radius: 8px;
 }
 
-ul.individual li a:hover {
+ul.individual li a.active {
 	color: #fff;
 	background: #36c;
 }
