@@ -334,15 +334,15 @@
                         .css('opacity', 0)
                         .transition({'opacity': 1})
                         .end()
-                    .css({'-webkit-transform': 'translateX(' + (settings.backwards ? -1 : 1) * window.innerWidth + 'px)'})
-                    .transition({'-webkit-transform': 'translateX(0px)'}, {callback: settings.callback})
+                    .css({'-webkit-transform': 'translate3d(' + (settings.backwards ? -1 : 1) * window.innerWidth + 'px, 0, 0)'})
+                    .transition({'-webkit-transform': 'translate3d(0, 0, 0)'}, {callback: settings.callback})
             } else {
                 $(this)
                     .find('h1, .button')
                         .transition( {'opacity': 0} )
                         .end()
                     .transition(
-                        {'-webkit-transform': 'translateX(' + ((settings.backwards ? 1 : -1) * dir * window.innerWidth) + 'px)'}, { callback: settings.callback});
+                        {'-webkit-transform': 'translate3d(' + ((settings.backwards ? 1 : -1) * dir * window.innerWidth) + 'px, 0, 0)'}, { callback: settings.callback});
             }
         })
     }
@@ -361,15 +361,15 @@
 
             if (dir == -1){
                 $(this).addClass('current')
-                    .css({'-webkit-transform': 'translateY(' + (settings.backwards ? -1 : 1) * window.innerHeight + 'px)'})
-                    .transition({'-webkit-transform': 'translateY(0px)'}, {callback: settings.callback})
+                    .css({'-webkit-transform': 'translate3d(0, ' + (settings.backwards ? -1 : 1) * window.innerHeight + 'px, 0)'})
+                    .transition({'-webkit-transform': 'translate3d(0, 0, 0)'}, {callback: settings.callback})
                         .find('h1, .button')
                         .css('opacity', 0)
                         .transition({'opacity': 1});
             } else {
                 $(this)
                     .transition(
-                        {'-webkit-transform': 'translateY(' + window.innerHeight + 'px)'}, {callback: settings.callback})
+                        {'-webkit-transform': 'translate3d(0, ' + window.innerHeight + 'px, 0)'}, {callback: settings.callback})
                     .find('h1, .button')
                         .transition( {'opacity': 0});
             }

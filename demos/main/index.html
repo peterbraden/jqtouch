@@ -6,13 +6,16 @@
     <title>jQTouch &beta;</title>
 
     <style type="text/css" media="screen">@import "../../jqtouch/jqtouch.css";</style>
-    <style type="text/css" media="screen">@import "../../themes/apple/theme.css";</style>
+    <style type="text/css" media="screen">@import "../../themes/jqt/theme.css";</style>
     <script src="../../jqtouch/jquery.1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="../../jqtouch/jqtouch.events.js" type="application/x-javascript" charset="utf-8"></script>
     <script src="../../jqtouch/jqtouch.js" type="application/x-javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
         $.jQTouch({
-            icon: 'jqtouch.png'
+            icon: 'jqtouch.png',
+            addGlossToIcon: false,
+            startupScreen: 'jqt_startup.png',
+            statusBar: 'black'
         });
         
         // Some sample Javascript functions:
@@ -51,7 +54,7 @@
             <li><a class="flip" href="#flipdemo">Flip Demo</a></li>
             <li><a href="#ui">User Interface Samples</a></li>
             <li><a href="#ajax">AJAX</a></li>
-            <li id="swipeme">Swipe me!</li>
+            <li><a href="#callbacks">Callback Events</a>
         </ul>
         <h4>External Links</h4>
         <ul>
@@ -62,17 +65,32 @@
 
         
         <ul class="individual">
-        	<li><a href="#">Email</a></li>
-        	<li><a href="#">Donate</a></li>
+        	<li><a href="&#109;&#097;&#105;&#108;&#116;&#111;:&#100;&#107;&#064;&#109;&#111;&#114;&#102;&#117;&#110;&#107;&#046;&#099;&#111;&#109;">Email</a></li>
+        	<li><a href="http://tinyurl.com/support-jqt">Donate</a></li>
         </ul>
         
         <div class="info">
-            Add this page to your home screen to view the custom icon, startup screen, and full screen mode.
+            <p>Add this page to your home screen to view the custom icon, startup screen, and full screen mode.</p>
         </div>
     </div>
     
+    <div id="callbacks">
+        <div class="toolbar">
+            <h1>Events</h1>
+            <a class="back button" href="#home">Docs</a>
+        </div>
+        <ul>
+            <li><a href="#pageevents">Page transitions</a></li>
+            <li id="swipeme">Swipe me!</li>
+        </ul>
+    </div>
+    
+    <div id="pageevents">
+        
+    </div>
+    
     <div id="about" style="text-shadow: rgba(255, 255, 255, 0.3) 0px -1px 0; font-size: 14px;">        
-        <div class="pad" style="padding-top: 20px;">
+        <div style="padding: 20px; font-size: 15px;">
             <p>jQTouch was created by <a href="http://www.davidkaneda.com">David Kaneda</a> as a means of easily creating iPhone-styled websites. It is released open source, under the MIT license. It is still in its early stages of development and is currently lacking in documentation. For more information about jQTouch, please contact <a href="http://twitter.com/davidkaneda/">David on Twitter, @davidkaneda.</a></p>
             <!-- <h2>Features</h2>
             <ul>
@@ -83,12 +101,6 @@
                 <li>Easy to theme</li>
             </ul> -->
             <a href="#" class="grayButton goback">Close</a>
-            <!-- <fieldset>
-                <div class="row">
-                    <label>jQTouch Custom Theme</label>
-                    <div class="toggle"><span class="thumb"></span><span class="toggleOn">ON</span><span class="toggleOff">OFF</span></div>
-                </div>
-            </fieldset> -->
         </div>
     </div>
 
@@ -205,7 +217,7 @@
     		<li><a href="/flash/player_net9_20080425.swf?link=594&amp;cate=2">Download</a></li>
     	</ul>
 
-        <p><strong>Best enjoyed on a real iPhone</strong><br />This iPhone UI Framework kit is licenced under GNU Affero General Public License (<a href="http://www.gnu.org/licenses/agpl.html">GNU AGPL 3</a>)</p>
+        <p><strong>Best enjoyed on a real iPhone</strong></p>
     </div>
     
     <div id="metal" class="metal">
@@ -229,11 +241,11 @@
     	</div>
         <form>
             <ul class="edit">
-            	<li class="error"><input type="text" name="name" value="Text" id="some_name" /></li>
-            	<li class="error"><input type="text" name="search" value="Search" id="some_name" /></li>
-            	<li><input type="text" name="phone" value="Phone" id="some_name"  /></li>
-            	<li><input type="text" name="zip" value="Numbers" id="some_name" /></li>		 	
-            	<li><textarea>Dirección</textarea></li>
+            	<li><input type="text" name="name" placeholder="Text" id="some_name" /></li>
+            	<li><input type="text" name="search" placeholder="Search" id="some_name" /></li>
+            	<li><input type="text" name="phone" placeholder="Phone" id="some_name"  /></li>
+            	<li><input type="text" name="zip" placeholder="Numbers" id="some_name" /></li>		 	
+            	<li><textarea>Instructions</textarea></li>
             	<li><select id="lol"><optgroup label="Swedish Cars">
             	<option value ="volvo">Volvo</option>
             	<option value ="saab">Saab</option>
@@ -243,7 +255,6 @@
             	<option value ="audi">Audi</option>
             	</optgroup></select></li>
             	<li><input type="password" name="some_name" value="iphonedelcopon" id="some_name" /></li>
-            	<li><input type="file" name="some_name" value="iphonedelcopon" id="some_name" /></li>
             	<li><input type="checkbox" name="some_name" value="Hello" id="some_name" title="V8 Engine Type" /></li>
             	<li><input type="checkbox" name="some_name" value="Hello" checked="checked" id="some_name" title="V12 Engine Type" /></li>
             	<li><input type="radio" name="some_name" value="Hello" id="some_name" title="Only cars" /></li>

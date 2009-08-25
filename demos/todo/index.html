@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
 
-    <title>jQTouch &beta;</title>
+    <title>jQTodo &beta;</title>
 
     <style type="text/css" media="screen">@import "../../jqtouch/jqtouch.css";</style>
     <style type="text/css" media="screen">@import "../../themes/apple/theme.css";</style>
@@ -41,6 +41,32 @@
             width: 50% !important;
         }
         
+        .toolbar {
+            background: url(data:image/gif;base64,R0lGODlhHQAsAMQAAFU9NUk0LYxkV2NGPX1ZTXJSRphtXoNeUWVIPk04MFxCOVE6MmpMQlpAOHVUSJ1wYmhLQG1ORFlAN1c/NnhXS2xOQkczLF5EO29QRWBEPE44MEo1LlI7M1A6Mkw3L2FFPCH5BAAAAAAALAAAAAAdACwAAAX/oPGMhkiaZXqiqSCU7vEabm3X8n3s/C70QBnwxyNQCAeCcqlMNp9GJPLoqC6thGrScaQ4pthuofCljKtVMuFsPFO8jnEBw3Vg7tw53nsn28d8GBERGGOCg4WDBYp6VYhch4h3GAwMhJQVBZURcYOMDJmglRWVlZSllRCFDBCmGBCtgqytqbC2graWsxG7r7awCBAREMGws7+wERXEwMXNwgjRzLbRCMvEwQzRAwMIrNze1d3a4K0I3aTd59Ln4+3B1e+s8dwDlfXg7fj69fz4HwAHEAP4IVrADwIHEESIAOGHCxcUOrzwAcLDiRgX1ssAMQNHbh25efzIMUO0DAoi/15QoMAjSwUNWX5g6XGlyZkZANZs0CDiAJ4KBlxoEHSAgp5Hgw5NuZLlUKIceRKFeJRoVYpJjzYl2kCCBAUzvTLtahVoVZZSvaolqlZCz7Ruj8YN63UCgLpuJQCYMKGr3a8K/kqY4NbvXr58AewdfBixXcR+EQ9OnPhwA7uKETe2jFlzZsx7FV9WDGA06dOiSTdQzIEogA6qVa+WDYADB9a3bXOQoHtBbt13e7fW3cG2htsdinNYkLx2cee6o79Obls5dQ7HOSjXrjt7dw0aaoPXDn78AvC+y2tYoPi4+vILzpdP4D4B/eXqbd/vYN+DhuQaeNCffxok4B92Av6XnIsHDHrQwXkMFhdghB00+J+BDNInYIUZNthgfxgOaCGEDW5g4gYPenCigxqY6J+LGG7g4AYBrnhiByfm+KKOJwaQo4wb+Ljjj/8FGcCQFrxowZE4LpljAD7+aAGNCQSw5JIqPonlBhZMGaSNWHoQpZVdmtilil1u2eWRKlopJJZpypgmg3GiWaaJY4YAADs=) top left repeat-x;
+            border: 0;
+            border-bottom: 1px solid #000;
+        }
+        
+        body > .edgetoedge, body > * {
+            background: #ffeab1 none;
+        }
+        
+        .add2 {
+            -webkit-border-radius: 5px;
+            display: block;
+            background-color: rgba(40, 29, 25, .4);
+            padding: 6px;
+            border: 1px solid #372823;
+            float: left;
+            color: #fff;
+            -webkit-box-shadow: rgba(255,255,255, .4) 0 1px 0;
+            text-decoration: none;
+            position: absolute;
+            top: 5px;
+            font-size: 13px;
+            text-shadow: #000 0 -1px 0;
+        }
+        
     </style>
     <script src="../../jqtouch/jquery.1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="../../jqtouch/jqtouch.events.js" type="application/x-javascript" charset="utf-8"></script>
@@ -63,7 +89,6 @@
                 $('input').blur();
                 $('#add .cancel').click();
 
-
                 this.reset();
                 return false;
             });
@@ -75,9 +100,7 @@
             $('input[type="checkbox"]').live('change', function(){
                 var $el = $(this);
                 if ($el.attr('checked'))
-                {
-                    console.log('completing');
-                    
+                {                    
                     $el.parent().prependTo('.complete');
                 }
                 else
@@ -94,7 +117,7 @@
     <div id="home" selected="true" class="edgetoedge form">
         <div class="toolbar">
             <h1>Todos</h1>
-            <a href="#add" class="button add slideup">+</a>
+            <a href="#add" class="add2 slideup">Add</a>
         </div>
         <form>
         <ul class="incomplete">
@@ -116,7 +139,6 @@
             <a href="#" class="cancel">Cancel</a>
         </div>
         <form>
-            <h1>Enter your to-do:</h1>
             <ul>
                 <li><input type="text" id="todo" placeholder="Todo" /></li>
                 <li><textarea id="description" placeholder="Descripton"></textarea></li>
