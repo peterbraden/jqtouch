@@ -16,13 +16,14 @@
             startupScreen: 'jqt_startup.png',
             statusBar: 'black',
             preloadImages: [
-                'themes/jqt/img/chevron_white.png',
-                'themes/jqt/img/bg_row_select.gif',
-                'themes/jqt/img/back_button.png',
-                'themes/jqt/img/back_button_clicked.png',
-                'themes/jqt/img/button_clicked.png',
-                'themes/jqt/img/grayButton.png',
-                'themes/jqt/img/whiteButton.png'
+                '../../themes/jqt/img/chevron_white.png',
+                '../../themes/jqt/img/bg_row_select.gif',
+                '../../themes/jqt/img/back_button.png',
+                '../../themes/jqt/img/back_button_clicked.png',
+                '../../themes/jqt/img/button_clicked.png',
+                '../../themes/jqt/img/grayButton.png',
+                '../../themes/jqt/img/whiteButton.png',
+                '../../themes/jqt/img/loading.gif'
                 ]
         });
         
@@ -33,6 +34,7 @@
             $('#swipeme').addTouchHandlers().bind('swipe', function(evt, data){
                 alert('Swiped '+ data.direction +' on #' + $(evt.currentTarget).attr('id') + '.');
             });
+
             $('a[target="_blank"]').click(function(){
                 if(confirm('This link opens in a new window.'))
                 {
@@ -47,20 +49,45 @@
             
             // Page transition callback events
             $('#pageevents').
-                bind('pageTransitionEnd', function(e, info){
-                    $(this).find('.info').append('<p>Finished transitioning ' + info.direction + '</p>');
-                }).
                 bind('pageTransitionStart', function(e, info){
-                    $(this).find('.info').append('<p>Started transitioning ' + info.direction + '</p>');
+                    $(this).find('.info').append('Started transitioning ' + info.direction + '&hellip; ');
+                }).
+                bind('pageTransitionEnd', function(e, info){
+                    $(this).find('.info').append(' finished transitioning ' + info.direction + '.<br /><br />');
                 });
-                
-        });
-        
+            
+            // AJAX with callback event
+            $('#callback').
+                bind('pageTransitionEnd', function(e, info){
+                    if (info.direction == 'in' && $(this).data('loaded') != 'true')
+                    {
+                        $(this).
+                            append($('<div>Loading&hellip;</div>').
+                            load('ajax.html .info', function(){
+                                $(this).parent().data('loaded', 'true');
+                            }));
+                    }
+                });
 
+            // Orientation callback event
+            $('body').bind('turn', function(e, data){
+                $('#orient').html('Orientation: ' + data.orientation);
+            })
+        });
     </script>
     <style type="text/css" media="screen">
         body.fullscreen #home .info {
             display: none;
+        }
+        #about {
+            padding: 10px;
+            text-shadow: rgba(255, 255, 255, 0.3) 0px -1px 0;
+            font-size: 13px;
+            text-align: center;
+            background: #161618;
+        }
+        #about p {
+            border-bottom: 0px;
         }
     </style>
 </head>
@@ -71,16 +98,17 @@
             <a class="button slideup" id="infoButton" href="#about">About</a>
         </div>
         <ul>
-            <li><a class="flip" href="#flipdemo">Flip Demo</a></li>
-            <li class="arrow"><a href="#ui">User Interface Samples</a> <small class="counter">3</small></li>
-            <li class="arrow"><a href="#ajax">AJAX</a></li>
-            <li class="arrow"><a href="#callbacks">Callback Events</a>
+            <li class="arrow"><a href="#ui">User Interface</a> <small class="counter">5</small></li>
+            <li class="arrow"><a href="#ajax">AJAX</a> <small class="counter">3</small></li>
+            <li class="arrow"><a href="#callbacks">Callback Events</a> <small class="counter">2</small></li>
+            <li class="arrow"><a href="#demos">Demos</a> <small class="counter">2</small></li>
+
         </ul>
-        <h4>External Links</h4>
+        <h2>External Links</h2>
         <ul>
-            <li><a href="http://www.jqtouch.com/" target="_blank">Homepage</a></li>
-            <li><a href="http://www.twitter.com/jqtouch" target="_blank">Twitter</a></li>
-            <li><a href="http://code.google.com/p/jqtouch/w/list" target="_blank">Google Code</a></li>
+            <li class="forward"><a href="http://www.jqtouch.com/" target="_blank">Homepage</a></li>
+            <li class="forward"><a href="http://www.twitter.com/jqtouch" target="_blank">Twitter</a></li>
+            <li class="forward"><a href="http://code.google.com/p/jqtouch/w/list" target="_blank">Google Code</a></li>
         </ul>
 
         
@@ -97,80 +125,105 @@
     <div id="callbacks">
         <div class="toolbar">
             <h1>Events</h1>
-            <a class="back button" href="#home">Home</a>
+            <a class="back" href="#home">Home</a>
         </div>
         <ul>
             <li><a href="#pageevents">Page events</a></li>
             <li id="swipeme">Swipe me!</li>
+            <li id="orient">Orientation: <strong>profile</strong></li>
         </ul>
+    </div>
+    
+    <div id="demos">
+        <div class="toolbar">
+            <h1>Demos</h1>
+            <a class="back" href="#home">Home</a>
+        </div>
+        <ul>
+            <li class="forward"><a href="../todo/">To do app</a></li>
+            <li class="forward"><a href="../clock/">Clock app</a></li>
+        </ul>
+        <div class="info">
+            These apps open in a new window. Don't forget to save them to your home screen to enable full-screen mode.
+        </div>
     </div>
     
     <div id="pageevents">
         <div class="toolbar">
             <h1>Page Events</h1>
-            <a class="back button" href="#home">Events</a>
+            <a class="back" href="#home">Events</a>
         </div>
-        <div class="info">
-            This pane has not loaded.
+        <div class="info" style="font-weight: normal;">
+            
         </div>
     </div>
     
-    <div id="about" style="text-shadow: rgba(255, 255, 255, 0.3) 0px -1px 0; font-size: 14px;">        
-        <div style="padding: 20px; font-size: 15px;">
+    <div id="about">        
+            <img src="jqtouch.png" />
+            <p><strong>jQTouch</strong></p>
+            <p>Version 1.0 beta</p>
             <p>jQTouch was created by <a href="http://www.davidkaneda.com">David Kaneda</a> as a means of easily creating iPhone-styled websites. It is released open source, under the MIT license. It is still in its early stages of development and is currently lacking in documentation. For more information about jQTouch, please contact <a href="http://twitter.com/davidkaneda/">David on Twitter, @davidkaneda.</a></p>
             <a href="#" class="grayButton goback">Close</a>
-        </div>
     </div>
 
     <div id="ajax">
         <div class="toolbar">
             <h1>AJAX</h1>
-            <a class="back button" href="#home">Home</a>
+            <a class="back" href="#home">Home</a>
         </div>
         <ul>
-            <li><a href="#ajax_post">POST Form Example</a></li>
-            <li><a href="settings.html">GET Example</a></li>
+            <li class="arrow"><a href="#ajax_post">POST Form Example</a></li>
+            <li class="arrow"><a href="ajax.html">GET Example</a></li>
+            <li class="arrow"><a href="#callback">With Callback</a></li>
         </ul>
     </div>
     
     <div id="flipdemo">
-        <div class="pad">
             <div style="font-size: 1.5em; text-align: center; margin: 160px 0 160px; font-family: Marker felt;">
                 Pretty smooth, eh?            
             </div>
             <a style="margin:0 10px;color:rgba(0,0,0,.9)" href="#" class="whiteButton goback">Go back</a>
-        </div>
     </div>
 
-    <form id="ajax_post" title="Movie Search" action="search.php" method="POST" class="form">
+    <form id="ajax_post" action="ajax_post.php" method="POST" class="form">
         <div class="toolbar">
             <h1>Post Demo</h1>
-            <a class="back button" href="#">Ajax</a>
+            <a class="back" href="#">Ajax</a>
         </div>
-        <div class="pad">
             <ul>
                 <li>
                     <input type="text" name="zip" value="" placeholder="Zip Code" />
                 </li>
             </ul>
-            <input type="submit" />
-        </div>
+            <a style="margin:0 10px;color:rgba(0,0,0,.9)" href="#" class="whiteButton">Submit</a>
     </form>
+    
+    <div id="callback">
+        <div class="toolbar">
+            <h1>AJAX w/Callback</h1>
+            <a class="back" href="#">Ajax</a>
+        </div>
+    </div>
     
     <div id="ui">
         <div class="toolbar">
             <h1>UI Demos</h1>
-            <a class="back button" href="#">Home</a>
+            <a class="back" href="#">Home</a>
         </div>
-        <h4>Lists</h4>
+        
+        <h2>Animation</h2>
         <ul>
-            <li><a href="#edge">Edge to Edge</a></li>
-            <li><a href="#plastic">Plastic</a></li>
-            <li><a href="#metal">Metal</a></li>
+            <li><a class="flip" href="#flipdemo">Page Flip</a></li>
         </ul>
-        <h4>Forms</h4>
+        <h2>Lists</h2>
         <ul>
-            <li><a href="#forms">Edit Forms</a></li>
+            <li class="arrow"><a href="#edge">Edge to Edge</a></li>
+            <li class="arrow"><a href="#plastic">Plastic</a></li>
+            <li class="arrow"><a href="#metal">Metal</a></li>
+        </ul>
+        <h2>Forms</h2>
+        <ul>
+            <li class="arrow"><a href="#forms">Forms</a></li>
         </ul>
         
     </div>
@@ -178,7 +231,7 @@
     <div id="edge" class="edgetoedge">
     	<div class="toolbar">
     		<h1>Edge to Edge</h1>
-    		<a href="#" class="back button">Back</a>
+    		<a href="#" class="back">Back</a>
     	</div>
 
         <h4>E</h4>
@@ -216,7 +269,7 @@
     <div id="plastic" class="plastic">
         <div class="toolbar">
     		<h1>Plastic Lists</h1>
-    		<a href="#" class="back button">Back</a>
+    		<a href="#" class="back">Back</a>
     	</div>
     	<ul>
     		<li class="arrow"><small>2,99€</small> <a href="#">Simple list</a></li>
@@ -235,7 +288,7 @@
     <div id="metal" class="metal">
         <div class="toolbar">
     		<h1>Metal Lists</h1>
-    		<a href="#" class="back button">Back</a>
+    		<a href="#" class="back">Back</a>
     	</div>
     	<ul>	
         	<li class="arrow"><a href="#"><small>AM</small> 9:40 <em>Buenos Aires</em></a></li>
@@ -248,8 +301,8 @@
     
     <div id="forms">
         <div class="toolbar">
-    		<h1>Form</h1>
-    		<a href="#" class="back button">Back</a>
+    		<h1>Forms</h1>
+    		<a href="#" class="back">Back</a>
     	</div>
         <form>
             <ul class="edit">
@@ -257,7 +310,8 @@
             	<li><input type="text" name="search" placeholder="Search" id="some_name" /></li>
             	<li><input type="text" name="phone" placeholder="Phone" id="some_name"  /></li>
             	<li><input type="text" name="zip" placeholder="Numbers" id="some_name" /></li>		 	
-            	<li><textarea>Instructions</textarea></li>
+            	<li><textarea>Textarea</textarea></li>
+                <li>Sample Toggle <span class="toggle"><input type="checkbox" /></span></li>
             	<li><select id="lol"><optgroup label="Swedish Cars">
             	<option value ="volvo">Volvo</option>
             	<option value ="saab">Saab</option>

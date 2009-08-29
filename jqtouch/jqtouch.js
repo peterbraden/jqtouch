@@ -114,10 +114,11 @@
                     // Branch on internal or external href
                     var hash = $el.attr('hash');
                     
-                    if (hash) {
+                    if (hash && hash!='#') {
                         showPage($(hash), transition);
                     } else if ($el.attr('target') != '_blank') {
-                        showPageByHref($(this).attr('href'), null, null, null, transition, function(){ setTimeout($.fn.unselect, 250, $el) });
+                        $el.addClass('loading');
+                        showPageByHref($el.attr('href'), null, null, null, transition, function(){ $el.removeClass('loading'); setTimeout($.fn.unselect, 250, $el) });
                     }
                     return false;
                     
@@ -290,6 +291,7 @@
                     },
                     error: function (data) {
                         $.fn.unselect();
+                        console.log('AJAX error');
                         
                         if (cb) {
                             cb(false);
@@ -308,7 +310,7 @@
         }
         function updateOrientation() {
             var newOrientation = window.innerWidth < window.innerHeight ? 'profile' : 'landscape';
-            $body.removeClass('profile landscape').addClass(newOrientation);
+            $body.removeClass('profile landscape').addClass(newOrientation).trigger('turn', {orientation: newOrientation});
             scrollTo(0, 0);
         }
     }
@@ -326,10 +328,7 @@
             
             if (dir == -1) $(this).addClass('current');
             
-            $(this).parent().css({webkitPerspective: '1000', webkitTransformStyle: 'preserve-3d'});
-            
             $(this).css({
-                '-webkit-backface-visibility': 'hidden',
                 '-webkit-transform': 'scale(' + ((dir==1)? '1' : '.8' ) + ') rotateY(' + ((dir == 1) ? '0' : (!settings.backwards ? '-' : '') + '180') + 'deg)'
             }).transition({'-webkit-transform': 'scale(' + ((dir == 1) ? '.8' : '1' ) + ') rotateY(' + ((dir == 1) ? (settings.backwards ? '-' : '') + '180' : '0') + 'deg)'}, {callback: settings.callback, speed: '800ms'});
         })
