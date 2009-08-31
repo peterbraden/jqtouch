@@ -31,8 +31,9 @@
         $(function(){
             
             // Show a swipe event on swipe test
-            $('#swipeme').addTouchHandlers().bind('swipe', function(evt, data){
-                alert('Swiped '+ data.direction +' on #' + $(evt.currentTarget).attr('id') + '.');
+            $('#swipeme').addTouchHandlers().bind('swipe', function(evt, data){                
+                $(this).html('You swiped <strong>' + data.direction + '</strong>!');
+                // alert('Swiped '+ data.direction +' on #' + $(evt.currentTarget).attr('id') + '.');
             });
 
             $('a[target="_blank"]').click(function(){
@@ -100,7 +101,7 @@
         <ul>
             <li class="arrow"><a href="#ui">User Interface</a> <small class="counter">5</small></li>
             <li class="arrow"><a href="#ajax">AJAX</a> <small class="counter">3</small></li>
-            <li class="arrow"><a href="#callbacks">Callback Events</a> <small class="counter">2</small></li>
+            <li class="arrow"><a href="#callbacks">Callback Events</a> <small class="counter">3</small></li>
             <li class="arrow"><a href="#demos">Demos</a> <small class="counter">2</small></li>
 
         </ul>
@@ -113,8 +114,8 @@
 
         
         <ul class="individual">
-        	<li><a href="&#109;&#097;&#105;&#108;&#116;&#111;:&#100;&#107;&#064;&#109;&#111;&#114;&#102;&#117;&#110;&#107;&#046;&#099;&#111;&#109;">Email</a></li>
-        	<li><a href="http://tinyurl.com/support-jqt">Donate</a></li>
+        	<li><a href="&#109;&#097;&#105;&#108;&#116;&#111;:&#100;&#107;&#064;&#109;&#111;&#114;&#102;&#117;&#110;&#107;&#046;&#099;&#111;&#109;" target="_blank">Email</a></li>
+        	<li><a href="http://tinyurl.com/support-jqt" target="_blank">Donate</a></li>
         </ul>
         
         <div class="info">
@@ -140,11 +141,11 @@
             <a class="back" href="#home">Home</a>
         </div>
         <ul>
-            <li class="forward"><a href="../todo/">To do app</a></li>
-            <li class="forward"><a href="../clock/">Clock app</a></li>
+            <li class="forward"><a target="_blank" href="../todo/">To do app</a></li>
+            <li class="forward"><a target="_blank" href="../clock/">Clock app</a></li>
         </ul>
         <div class="info">
-            These apps open in a new window. Don't forget to save them to your home screen to enable full-screen mode.
+            These apps open in a new window. Don&#8217;t forget to save them to your home screen to enable full-screen mode.
         </div>
     </div>
     
