@@ -52,10 +52,11 @@
             background: #ffeab1 none;
         }
         
-        .btn2 {
+        body .toolbar .btn2 {
             -webkit-border-radius: 5px;
+            -webkit-border-image: none;
             display: block;
-            background-color: rgba(40, 29, 25, .4);
+            background: rgba(40, 29, 25, .4) none !important;
             padding: 6px;
             border: 1px solid #372823;
             float: left;
@@ -64,14 +65,22 @@
             text-decoration: none;
             position: absolute;
             top: 5px;
+            right: 10px;
             font-size: 13px;
             text-shadow: #000 0 -1px 0;
+            display: inline;
+        }
+        
+        .btn2.active {
+            background-color: rgba(0,0,0,.5);
         }
         
         .edgetoedge h4 {
             border: 0;
-            background-color: #49342d;
+            background: url(data:image/gif;base64,R0lGODlhHQAsAMQAAFU9NUk0LYxkV2NGPX1ZTXJSRphtXoNeUWVIPk04MFxCOVE6MmpMQlpAOHVUSJ1wYmhLQG1ORFlAN1c/NnhXS2xOQkczLF5EO29QRWBEPE44MEo1LlI7M1A6Mkw3L2FFPCH5BAAAAAAALAAAAAAdACwAAAX/oPGMhkiaZXqiqSCU7vEabm3X8n3s/C70QBnwxyNQCAeCcqlMNp9GJPLoqC6thGrScaQ4pthuofCljKtVMuFsPFO8jnEBw3Vg7tw53nsn28d8GBERGGOCg4WDBYp6VYhch4h3GAwMhJQVBZURcYOMDJmglRWVlZSllRCFDBCmGBCtgqytqbC2graWsxG7r7awCBAREMGws7+wERXEwMXNwgjRzLbRCMvEwQzRAwMIrNze1d3a4K0I3aTd59Ln4+3B1e+s8dwDlfXg7fj69fz4HwAHEAP4IVrADwIHEESIAOGHCxcUOrzwAcLDiRgX1ssAMQNHbh25efzIMUO0DAoi/15QoMAjSwUNWX5g6XGlyZkZANZs0CDiAJ4KBlxoEHSAgp5Hgw5NuZLlUKIceRKFeJRoVYpJjzYl2kCCBAUzvTLtahVoVZZSvaolqlZCz7Ruj8YN63UCgLpuJQCYMKGr3a8K/kqY4NbvXr58AewdfBixXcR+EQ9OnPhwA7uKETe2jFlzZsx7FV9WDGA06dOiSTdQzIEogA6qVa+WDYADB9a3bXOQoHtBbt13e7fW3cG2htsdinNYkLx2cee6o79Obls5dQ7HOSjXrjt7dw0aaoPXDn78AvC+y2tYoPi4+vILzpdP4D4B/eXqbd/vYN+DhuQaeNCffxok4B92Av6XnIsHDHrQwXkMFhdghB00+J+BDNInYIUZNthgfxgOaCGEDW5g4gYPenCigxqY6J+LGG7g4AYBrnhiByfm+KKOJwaQo4wb+Ljjj/8FGcCQFrxowZE4LpljAD7+aAGNCQSw5JIqPonlBhZMGaSNWHoQpZVdmtilil1u2eWRKlopJJZpypgmg3GiWaaJY4YAADs=) top left repeat-x;
             color: #ffeab1;
+            border-bottom: 1px solid #9d7062;
+            border-top: 1px solid #9d7062;
         }
         
     </style>
@@ -85,8 +94,8 @@
         
         // Some sample Javascript functions:
         $(function(){
-            $('#add form').submit(function(){
-                $el = $(this);
+            function submitForm(){
+                $el = $('#add form');
 
                 if ($('#todo', $el).val().length > 1)
                 {
@@ -94,11 +103,14 @@
                     $('#home .incomplete').append($('<li><input type="checkbox" /> <span>' + $('#todo', $el).val() + '</span></li>'));
                 }
                 $('input').blur();
-                $('#add .cancel').click();
+                $('#add .goback').click();
 
                 this.reset();
                 return false;
-            });
+            }
+            
+            $('#add form').submit(submitForm);
+            $('#add .whiteButton').click(submitForm);
             
             $('.complete li, .incomplete li').addTouchHandlers().bind('swipe', function(){
                $(this).toggleClass('editingmode');
@@ -124,7 +136,7 @@
     <div id="home" selected="true" class="edgetoedge form">
         <div class="toolbar">
             <h1>Todos</h1>
-            <a href="#add" class="add2 slideup">Add</a>
+            <a href="#add" class="btn2 slideup">Add</a>
         </div>
         <form>
         <ul class="incomplete">
@@ -140,16 +152,16 @@
         </form>
     </div>
     <div id="add" class="edit">
-        <div class="toolbar">
-            <h1>New</h1>
-            <a href="#" class="cancel">Cancel</a>
-        </div>
         <form>
+            <div class="toolbar">
+                <h1>New Todo</h1>
+                <a href="#" class="btn2 goback">Cancel</a>
+            </div>
             <ul>
-                <li><input type="text" id="todo" placeholder="Todo" /></li>
-                <li><textarea id="description" placeholder="Descripton"></textarea></li>
+                <li><input type="text" id="todo" placeholder="Enter your todo..." /></li>
+                <!-- <li><textarea id="description" placeholder="Descripton"></textarea></li> -->
             </ul>
-            <input type="submit" />
+            <a href="#" class="whiteButton" style="margin: 10px">Add</a>
         </form>
     </div>
 </body>

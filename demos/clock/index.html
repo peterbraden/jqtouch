@@ -60,6 +60,17 @@
                     var second = time.getSeconds();
 
                     var $el = $(this);
+                    var ampm = 'AM';
+
+                    if (hour > 12 )
+                    {
+                        nicehour = hour - 12;
+                        ampm = 'PM';
+                    }
+                    else if ( hour == 0 )
+                    {
+                        nicehour = 12;
+                    }
                     
                     $('.hour', $el).css('-webkit-transform', 
                         'rotate(' + ( hour * 30 + (minute/2) ) + 'deg)');
@@ -67,6 +78,8 @@
                         'rotate(' + ( minute * 6 ) + 'deg)');
                     $('.sec', $el).css('-webkit-transform',
                         'rotate(' + ( second * 6 ) + 'deg)');
+                        
+                    $('.time', this).html(nicehour + ':' + minute + ':' + second + ' ' + ampm);
                 });
             }
             
@@ -137,8 +150,8 @@
                       <option value="11.0">(GMT +11:00) Solomon Islands</option>
                       <option value="12.0">(GMT +12:00) Fiji</option>
                 </select></li>
-                <li><input type="submit" /></li>
             </ul>
+            <a href="#" style="margin: 10px;" class="whiteButton submit">Add Clock</a>
         </form>
     </div>
     <div id="info">
@@ -146,7 +159,9 @@
             <h1>About</h1>
             <a href="#add" class="cancel">Cancel</a>
         </div>
-        Testing...?
+        <div class="info">
+            This is a demo for jQTouch.
+        </div>
     </div>
 </body>
 </html>

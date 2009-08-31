@@ -56,6 +56,7 @@
                 bind('pageTransitionEnd', function(e, info){
                     $(this).find('.info').append(' finished transitioning ' + info.direction + '.<br /><br />');
                 });
+                
             
             // AJAX with callback event
             $('#callback').
@@ -81,14 +82,19 @@
             display: none;
         }
         #about {
-            padding: 10px;
+            padding: 100px 10px 40px;
             text-shadow: rgba(255, 255, 255, 0.3) 0px -1px 0;
             font-size: 13px;
             text-align: center;
             background: #161618;
         }
         #about p {
-            border-bottom: 0px;
+            margin-bottom: 8px;
+        }
+        #about a {
+            color: #fff;
+            font-weight: bold;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -140,13 +146,14 @@
             <h1>Demos</h1>
             <a class="back" href="#home">Home</a>
         </div>
+        <div class="info">
+            These apps open in a new window. Don&#8217;t forget to save them to your home screen to enable full-screen mode.
+        </div>
         <ul>
             <li class="forward"><a target="_blank" href="../todo/">To do app</a></li>
             <li class="forward"><a target="_blank" href="../clock/">Clock app</a></li>
         </ul>
-        <div class="info">
-            These apps open in a new window. Don&#8217;t forget to save them to your home screen to enable full-screen mode.
-        </div>
+
     </div>
     
     <div id="pageevents">
@@ -160,11 +167,15 @@
     </div>
     
     <div id="about">        
-            <img src="jqtouch.png" />
-            <p><strong>jQTouch</strong></p>
-            <p>Version 1.0 beta</p>
-            <p>jQTouch was created by <a href="http://www.davidkaneda.com">David Kaneda</a> as a means of easily creating iPhone-styled websites. It is released open source, under the MIT license. It is still in its early stages of development and is currently lacking in documentation. For more information about jQTouch, please contact <a href="http://twitter.com/davidkaneda/">David on Twitter, @davidkaneda.</a></p>
-            <a href="#" class="grayButton goback">Close</a>
+            <p><img src="jqtouch.png" /></p>
+            <p><strong>jQTouch</strong><br />Version 1.0 beta<br />
+                <a href="http://www.davidkaneda.com">By David Kaneda</a></p>
+            <p><em>Create powerful mobile apps with<br /> just HTML, CSS, and jQuery.</em></p>
+
+            <p>
+                <a href="#">@jQTouch on Twitter</a>
+            </p>
+            <p><br /><br /><a href="#" class="grayButton goback">Close</a></p>
     </div>
 
     <div id="ajax">
@@ -196,7 +207,7 @@
                     <input type="text" name="zip" value="" placeholder="Zip Code" />
                 </li>
             </ul>
-            <a style="margin:0 10px;color:rgba(0,0,0,.9)" href="#" class="whiteButton">Submit</a>
+            <a style="margin:0 10px;color:rgba(0,0,0,.9)" href="#" class="submit whiteButton">Submit</a>
     </form>
     
     <div id="callback">

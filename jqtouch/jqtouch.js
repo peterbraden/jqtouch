@@ -37,7 +37,8 @@
                 slideInSelector: 'ul li a',
                 slideUpSelector: '.slideup',
                 startupScreen: null,
-                statusBar: 'default' // other options: black-translucent, black
+                statusBar: 'default', // other options: black-translucent, black
+                submitSelector: '.submit'
             };
 
             jQTSettings = $.extend({}, defaults, options)
@@ -135,9 +136,13 @@
                 $body.bind('orientationchange', updateOrientation).trigger('orientationchange');
                 if (jQTSettings.fullScreenClass && window.navigator.standalone == true) {
                     $body.addClass(jQTSettings.fullScreenClass + ' ' + jQTSettings.statusBar);
-                } 
+                }
+                
                 if (jQTSettings.initializeTouch) $(jQTSettings.initializeTouch).addTouchHandlers();
                 $(jQTSettings.formSelector).submit(submitForm);
+                
+                if (jQTSettings.submitSelector)
+                    $(jQTSettings.submitSelector).click(submitParentForm);
 
                 // Make sure exactly one child of body has "current" class
                 if ($('body > .current').length == 0) {
@@ -304,6 +309,9 @@
             {
                 $.fn.unselect();
             }
+        }
+        function submitParentForm(){
+            $(this).parent('form').submit();
         }
         function submitForm() {
             showPageByHref($(this).attr('action') || "POST", $(this).serialize(), $(this).attr('method'));
