@@ -14,3 +14,6 @@ and pinch/zoom <http://www.pinchzoom.com/>
 
 (c) 2009 by jQTouch project members.
 See LICENSE.txt for license.
+
+If you use jQTouch, please consider supporting its development:
+http://bit.ly/support-jqt

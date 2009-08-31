@@ -2,16 +2,16 @@ body {
     background: #000;
     color: #ddd;
 }
+
 body > * {
-	background: #;
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#303134), to(#3a3a3c));
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#333), to(#5e5e65));
 }
 
 h1, h2 {
 	font: bold 18px Helvetica;
 	text-shadow: rgba(255,255,255,.2) 0 1px 1px;
 	color: #000;
-	margin: 10px 20px 6px;
+	margin: 10px 20px 5px;
 }
 
 /* @group Toolbar */
@@ -188,13 +188,10 @@ ul .forward a.active {
 ul li a.active.loading {
 	background-image: url(img/loading.gif);
 	background-position: 95% center;
-
 }
 
-
-
-#plastic ul li.arrow, #metal ul li.arrow {
-	background-image: url(img/chevron_dg.png);
+.plastic ul li.arrow {
+	background-image: url(img/chevron.png);
 	background-position: right center;
 	background-repeat: no-repeat;
 }
@@ -359,7 +356,6 @@ ul li input[type="checkbox"]:after, ul li input[type="radio"]:after {
 .metal ul {
 	border-top: 0;
 	border-bottom: 0;
-	background: rgb(180,180,180);
 }
 
 .edgetoedge ul li {
@@ -406,7 +402,7 @@ ul li small {
 	display: block;
 	width: 23%;
 	float: right;
-	padding: 3px 0px;
+	padding: 0;
 }
 
 ul li.arrow small {
@@ -435,12 +431,12 @@ ul li.arrow small.counter {
 
 /* @group Plastic & Metal */
 
-#plastic ul li, #metal ul li {
+.plastic ul li, .metal ul li {
 	background-image: none;
 }
 
 
-#plastic ul li.arrow, #metal ul li.arrow {
+.plastic ul li.arrow, .metal ul li.arrow {
 	background-image: url(img/chevron.png);
 	background-position: right center;
 	background-repeat: no-repeat;
@@ -455,16 +451,16 @@ ul li.arrow small.counter {
 }
 
 .metal ul li {
-	border-top: 1px solid rgb(238,238,238);
-	border-bottom: 1px solid rgb(156,158,165);
-	background: url(img/bgMetal.png) top left repeat-x;
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #666;
 	font-size: 26px;
-	text-shadow: #fff 0 1px 0;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(238,238,238,1)), to(rgba(156,158,160,1)));
 }
 
 .metal ul li a {
 	line-height: 26px;
 	margin: 0;
+	text-shadow: #fff 0 1px 0;
 	padding: 13px 0;
 }
 
@@ -489,13 +485,14 @@ ul li.arrow small.counter {
 }
 
 .metal ul li.arrow a small {
-	padding-right: 0;
+	padding-right: 15px;
 	line-height: 17px;
 }
 
 .metal ul li.arrow {
-	background: url(img/bgMetal.png) top left repeat-x,
-    url(img/chevron_dg.png) right center no-repeat;
+	background-image: url(img/chevron.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(238,238,238,1)), to(rgba(156,158,160,1)));
+    background-repeat: no-repeat;
+    background-position: right center;
 }
 
 .plastic {
@@ -544,9 +541,9 @@ ul.individual {
 }
 
 ul.individual li {
-	color: rgb(183,190,205);
+	/*color: rgb(183,190,205);*/
 	background: #4c4d4e;
-	border: 1px solid #555858;
+	border: 1px solid #333;
 	font-size: 14px;
 	text-align: center;
 	-webkit-border-radius: 8px;
@@ -555,7 +552,8 @@ ul.individual li {
 	float: left;
 	display: block;
 	padding: 11px 10px 14px 10px;
-	-webkit-box-shadow: rgba(0,0,0,.5) 1px 1px 3px;
+	-webkit-box-shadow: rgba(0,0,0,.2) 1px 1px 3px;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142));
 }
 
 ul.individual li + li {
@@ -568,11 +566,6 @@ ul.individual li a {
 	margin: -11px -10px -14px -10px;
 	padding: 11px 10px 14px 10px;
 	-webkit-border-radius: 8px;
-}
-
-ul.individual li a.active {
-	color: #fff;
-	background: #36c;
 }
 
 /* @end */

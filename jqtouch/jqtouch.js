@@ -37,8 +37,7 @@
                 slideInSelector: 'ul li a',
                 slideUpSelector: '.slideup',
                 startupScreen: null,
-                statusBar: 'default', // other options: black-translucent, black
-                titleSelector: '.toolbar h1'
+                statusBar: 'default' // other options: black-translucent, black
             };
 
             jQTSettings = $.extend({}, defaults, options)
@@ -120,6 +119,10 @@
                         $el.addClass('loading');
                         showPageByHref($el.attr('href'), null, null, null, transition, function(){ $el.removeClass('loading'); setTimeout($.fn.unselect, 250, $el) });
                     }
+                    else
+                    {
+                        $el.unselect();
+                    }
                     return false;
                     
                 });
@@ -157,14 +160,12 @@
 
             // Grab some info
             var pageId = page.attr('id');
-            var title = page.find(jQTSettings.titleSelector).html();
 
             // Prepend info to page history
             hist.unshift({
                 page: page, 
                 transition: transition, 
-                id: pageId, 
-                title: title
+                id: pageId
             });
 
         }
@@ -245,7 +246,7 @@
             var transition = hist[0].transition;
             var fromPage = hist[0].page;
 
-            // Remove all pages in front of the target page 
+            // Remove all pages in front of the target page
             hist.splice(0, numberOfPages);
 
             // Grab the target page
@@ -474,7 +475,7 @@
                     
                     if (Math.abs(jQTouchHandler.currentTouch.deltaX) > Math.abs(jQTouchHandler.currentTouch.deltaY) && (jQTouchHandler.currentTouch.deltaX > 35 || jQTouchHandler.currentTouch.deltaX < -35) && jQTouchHandler.currentTouch.deltaT < 1000)
                     {
-                        $(this).trigger('swipe', {direction: (jQTouchHandler.currentTouch.deltaX < 0) ? 'left' : 'right'});
+                        $(this).trigger('swipe', {direction: (jQTouchHandler.currentTouch.deltaX < 0) ? 'left' : 'right'}).unbind('touchmove touchend');
                     }
                     
                     type = 'mousemove';
