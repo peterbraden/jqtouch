@@ -43,7 +43,7 @@
 
             jQTSettings = $.extend({}, defaults, options)
 
-            var hairextensions;
+            var hairextensions = '';
 
             // Preload images
             if (jQTSettings.preloadImages) {
@@ -75,7 +75,7 @@
                     hairextensions += '<meta name="apple-mobile-web-app-status-bar-style" content="' + jQTSettings.statusBar + '" />';
                 }
             }
-
+            
             if (hairextensions) $head.append(hairextensions);
 
             // Create an array of the "next page" selectors
@@ -158,7 +158,6 @@
                 addPageToHistory(currentPage);
                 window.scrollTo(0, 0);
                 dumbLoopStart();
-                
             });
         }
         function addPageToHistory(page, transition) {
@@ -404,7 +403,7 @@
         var defaults = {
             speed : '300ms',
             callback: null,
-            ease: 'ease-in-out',
+            ease: 'ease-in-out'
         };
         var settings = $.extend({}, defaults, options);
         if(settings.speed === 0) { // differentiate 0 from null
@@ -426,7 +425,6 @@
                     $el.one('webkitTransitionEnd', settings.callback);
                 }
                 setTimeout(function(el){ el.css(css) }, 0, $el);
-
             }
             else
             {

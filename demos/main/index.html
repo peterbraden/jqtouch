@@ -10,14 +10,12 @@
     <script src="../../jqtouch/jquery.1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="../../jqtouch/jqtouch.js" type="application/x-javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
-        $.jQTouch({
+        var jQT = new $.jQTouch({
             icon: 'jqtouch.png',
             addGlossToIcon: false,
             startupScreen: 'jqt_startup.png',
             statusBar: 'black',
             preloadImages: [
-                '../../themes/jqt/img/chevron_white.png',
-                '../../themes/jqt/img/bg_row_select.gif',
                 '../../themes/jqt/img/back_button.png',
                 '../../themes/jqt/img/back_button_clicked.png',
                 '../../themes/jqt/img/button_clicked.png',
@@ -29,7 +27,6 @@
         
         // Some sample Javascript functions:
         $(function(){
-            
             // Show a swipe event on swipe test
             $('#swipeme').addTouchHandlers().bind('swipe', function(evt, data){                
                 $(this).html('You swiped <strong>' + data.direction + '</strong>!');
