@@ -28,18 +28,15 @@
         // Some sample Javascript functions:
         $(function(){
             // Show a swipe event on swipe test
-            $('#swipeme').addTouchHandlers().bind('swipe', function(evt, data){                
+            $('#swipeme').addTouchHandlers().bind('swipe', function(evt, data) {                
                 $(this).html('You swiped <strong>' + data.direction + '</strong>!');
                 // alert('Swiped '+ data.direction +' on #' + $(evt.currentTarget).attr('id') + '.');
             });
 
-            $('a[target="_blank"]').click(function(){
-                if(confirm('This link opens in a new window.'))
-                {
+            $('a[target="_blank"]').click(function() {
+                if (confirm('This link opens in a new window.')) {
                     return true;
-                }
-                else
-                {
+                } else {
                     $(this).removeClass('active');
                     return false;
                 }
@@ -47,7 +44,7 @@
             
             // Page transition callback events
             $('#pageevents').
-                bind('pageTransitionStart', function(e, info){
+                bind('pageTransitionStart', function(e, info){ 
                     $(this).find('.info').append('Started transitioning ' + info.direction + '&hellip; ');
                 }).
                 bind('pageTransitionEnd', function(e, info){
@@ -55,23 +52,42 @@
                 });
                 
             
-            // AJAX with callback event
-            $('#callback').
-                bind('pageTransitionEnd', function(e, info){
-                    if (info.direction == 'in' && $(this).data('loaded') != 'true')
-                    {
-                        $(this).
-                            append($('<div>Loading&hellip;</div>').
-                            load('ajax.html .info', function(){
-                                $(this).parent().data('loaded', 'true');
-                            }));
-                    }
-                });
+            // Page transition end with AJAX callback event, example 1 (load remote HTML only first time)
+            $('#callback').bind('pageTransitionEnd', function(e, info){
+                if (!$(this).data('loaded')) {                      // Make sure the data hasn't already been loaded (we'll set 'loaded' to true a couple lines further down)
+                    $(this).append($('<div>Loading</div>').         // Append a placeholder in case the remote HTML takes its sweet time making it back
+                        load('ajax.html .info', function() {        // Overwrite the "Loading" placeholder text with the remote HTML
+                            $(this).parent().data('loaded', true);  // Set the 'loaded' var to true so we know not to re-load the HTML next time the #callback div transition ends
+                        }));
+                }
+            });
+            
+            /*
+            // Page transition end with AJAX callback event, example 2 (load remote HTML every time panel transitions in)
+            $('#callback').bind('pageTransitionEnd', function(e, info){
+                if (info.direction == 'in') { 
+                    
+                    // This block gets called after the page has finished moving into view
+                    
+                    // Append the Loading placeholder and then replace its contents with the remote HTML
+                    $(this).append($('<div>Loading</div>').load('ajax.html .info'));
+
+                } else { 
+                    
+                    // This block gets called after the page has finished moving out of sight
+
+                    // Reset the contents of the #callback div to just the toolbar
+                    $(this).html($(this).find('.toolbar'));
+                    
+                }
+            });
+            */
+            
 
             // Orientation callback event
             $('body').bind('turn', function(e, data){
                 $('#orient').html('Orientation: ' + data.orientation);
-            })
+            });
         });
     </script>
     <style type="text/css" media="screen">
