@@ -22,7 +22,7 @@
 (function($) {
     $.jQTouch = function(options) {
         var $body, $head=$('head'), hist=[], newPageCount=0, jQTSettings={}, dumbLoop, currentPage;
-        init(options);
+        return init(options);
         function init(options) {
             var defaults = {
                 addGlossToIcon: true,
@@ -137,12 +137,12 @@
                 if (jQTSettings.fullScreenClass && window.navigator.standalone == true) {
                     $body.addClass(jQTSettings.fullScreenClass + ' ' + jQTSettings.statusBar);
                 }
-                
+
                 if (jQTSettings.initializeTouch) $(jQTSettings.initializeTouch).addTouchHandlers();
                 $(jQTSettings.formSelector).submit(submitForm);
                 
                 if (jQTSettings.submitSelector)
-                    $(jQTSettings.submitSelector).click(submitParentForm);
+                    $(jQTSettings.submitSelector).live('click', submitParentForm);
 
                 // Make sure exactly one child of body has "current" class
                 if ($('body > .current').length == 0) {
@@ -159,6 +159,8 @@
                 window.scrollTo(0, 0);
                 dumbLoopStart();
             });
+            
+            return this;
         }
         function addPageToHistory(page, transition) {
 
@@ -451,6 +453,7 @@
     var jQTouchHandler = {
         
         currentTouch : {},
+        hoverTimeout : null,
 
         handleStart : function(e){
             
@@ -463,8 +466,14 @@
                 deltaT : 0
             };
 
-            $(this).addClass('active').bind('touchmove touchend', jQTouchHandler.handle);
+            $(this).bind('touchmove touchend', jQTouchHandler.handle);
+            
+            jQTouchHandler.hoverTimeout = setTimeout(jQTouchHandler.makeActive, 100, $(this));
             return true;
+        },
+        
+        makeActive : function($el){
+            $el.addClass('active');
         },
         
         handle : function(e){
@@ -479,19 +488,26 @@
                     jQTouchHandler.currentTouch.deltaY = first.pageY - jQTouchHandler.currentTouch.startY;
                     jQTouchHandler.currentTouch.deltaT = (new Date).getTime() - jQTouchHandler.currentTouch.startTime;
                     
+                    // Check for Swipe
                     if (Math.abs(jQTouchHandler.currentTouch.deltaX) > Math.abs(jQTouchHandler.currentTouch.deltaY) && (jQTouchHandler.currentTouch.deltaX > 35 || jQTouchHandler.currentTouch.deltaX < -35) && jQTouchHandler.currentTouch.deltaT < 1000)
                     {
                         $(this).trigger('swipe', {direction: (jQTouchHandler.currentTouch.deltaX < 0) ? 'left' : 'right'}).unbind('touchmove touchend');
                     }
                     
+                    if (Math.abs(jQTouchHandler.currentTouch.deltaY) > 1)
+                    {
+                        $(this).removeClass('active');
+                    }
+                    
                     type = 'mousemove';
+                    
+                    clearTimeout(jQTouchHandler.hoverTimeout);
                 break;
 
                 case 'touchend':
                     if (!jQTouchHandler.currentTouch.deltaY && !jQTouchHandler.currentTouch.deltaX)
                     {
                         type = 'mouseup';
-                        // TODO: Remove this selected!
                         $(this).trigger('tap');
                     }
                     else
