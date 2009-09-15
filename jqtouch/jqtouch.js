@@ -22,7 +22,7 @@
 (function($) {
     $.jQTouch = function(options) {
         
-        var $body, $head=$('head'), hist=[], newPageCount=0, jQTSettings={}, dumbLoop, currentPage;
+        var $body, $head=$('head'), hist=[], newPageCount=0, jQTSettings={}, dumbLoop, currentPage, orientation;
 
         init(options);
 
@@ -106,7 +106,7 @@
                     // User clicked a back button
                     if ($el.is(jQTSettings.backSelector)) {
                         $.fn.unselect($el);
-                        publicjQT.goBack();
+                        goBack();
                         return false;
                     }
                     
@@ -119,7 +119,7 @@
                     var hash = $el.attr('hash');
                     
                     if (hash && hash!='#') {
-                        publicjQT.goToPage($(hash), transition);
+                        goToPage($(hash), transition);
                     } else if ($el.attr('target') != '_blank') {
                         $el.addClass('loading');
                         showPageByHref($el.attr('href'), null, null, null, transition, function(){ $el.removeClass('loading'); setTimeout($.fn.unselect, 250, $el) });
@@ -134,7 +134,6 @@
             }
             // Initialize on document load:
             $(document).ready(function(){
-
                 $body = $('body');
                 $body.bind('orientationchange', updateOrientation).trigger('orientationchange');
                 if (jQTSettings.fullScreenClass && window.navigator.standalone == true) {
@@ -163,8 +162,36 @@
                 dumbLoopStart();
             });
         }
-        function addPageToHistory(page, transition) {
+        
+        // PUBLIC FUNCTIONS
+        function goBack(numberOfPages) {
 
+            // Init the param
+            var numberOfPages = numberOfPages || 1;
+
+            // Grab the current page for the "from" info
+            var transition = hist[0].transition;
+            var fromPage = hist[0].page;
+
+            // Remove all pages in front of the target page
+            hist.splice(0, numberOfPages);
+
+            // Grab the target page
+            var toPage = hist[0].page;
+
+            // Make the transition
+            animatePages(fromPage, toPage, transition, true);
+        }
+        function goToPage(toPage, transition) {
+            var fromPage = hist[0].page;
+            if (animatePages(fromPage, toPage, transition)) addPageToHistory(toPage, transition);
+        }
+        function getOrientation() {
+            return orientation;
+        }
+
+        // PRIVATE FUNCTIONS
+        function addPageToHistory(page, transition) {
             // Grab some info
             var pageId = page.attr('id');
 
@@ -174,7 +201,6 @@
                 transition: transition, 
                 id: pageId
             });
-
         }
         function animatePages(fromPage, toPage, transition, backwards) {
 
@@ -232,7 +258,7 @@
                             if(location.hash == '#' + hist[i].id) {
                                 foundBack = true;
                                 dumbLoopStop();
-                                publicjQT.goBack(i);
+                                goBack(i);
                             }
                         }
                     } catch(e) {
@@ -245,7 +271,6 @@
             clearInterval(dumbLoop);
         }
         function insertPages(nodes, transition) {
-
             var targetPage;
             nodes.each(function(index, node){
                 if (!$(this).attr('id')) {
@@ -257,7 +282,7 @@
                 }
             });
             if (targetPage) {
-                publicjQT.goToPage(targetPage, transition);
+                goToPage(targetPage, transition);
             }
         }
         function showPageByHref(href, data, method, replace, transition, cb) {
@@ -291,44 +316,23 @@
         }
         function submitParentForm(){
             $(this).parent('form').submit();
+            return false;
         }
         function submitForm() {
             showPageByHref($(this).attr('action') || "POST", $(this).serialize(), $(this).attr('method'));
             return false;
         }
         function updateOrientation() {
-            publicjQT.orientation = window.innerWidth < window.innerHeight ? 'profile' : 'landscape';
-            $body.removeClass('profile landscape').addClass(publicjQT.orientation).trigger('turn', {orientation: publicjQT.orientation});
+            orientation = window.innerWidth < window.innerHeight ? 'profile' : 'landscape';
+            $body.removeClass('profile landscape').addClass(orientation).trigger('turn', {orientation: orientation});
             scrollTo(0, 0);
         }
-        // The returned public object
-        var publicjQT = {
-            orientation : 'portrait',
-            goBack : function(numberOfPages) {
 
-                // Init the param
-                var numberOfPages = numberOfPages || 1;
-
-                // Grab the current page for the "from" info
-                var transition = hist[0].transition;
-                var fromPage = hist[0].page;
-
-                // Remove all pages in front of the target page
-                hist.splice(0, numberOfPages);
-
-                // Grab the target page
-                var toPage = hist[0].page;
-
-                // Make the transition
-                animatePages(fromPage, toPage, transition, true);
-            },
-            goToPage : function(toPage, transition) {
-                var fromPage = hist[0].page;
-
-                if (animatePages(fromPage, toPage, transition)) addPageToHistory(toPage, transition);
-            }
+        return {
+            getOrientation : getOrientation,
+            goBack : goBack,
+            goToPage : goToPage
         }
-        return publicjQT;        
     }
     $.fn.flip = function(options) {
         return this.each(function(){
