@@ -72,6 +72,14 @@
                 $('body').bind('turn', function(e, data){
                     $('#orient').html('Orientation: ' + data.orientation);
                 });
+                // Swipe to navigate callback
+                // Shows public jQTouch object usage and new swipe shortcut
+                $('#swipetonav').swipe(function(e, data){
+                    if (data.direction === 'left')
+                    {
+                        jQT.goBack();
+                    }
+                });
             });
         </script>
         <style type="text/css" media="screen">
@@ -143,8 +151,8 @@
                 These apps open in a new window. Don&#8217;t forget to save them to your home screen to enable full-screen mode.
             </div>
             <ul class="rounded">
-                <li class="forward"><a target="_blank" href="../todo/">To-Do app</a></li>
-                <li class="forward"><a target="_blank" href="../clock/">Clock app</a></li>
+                <li class="forward"><a target="_webapp" href="../todo/">To-Do app</a></li>
+                <li class="forward"><a target="_webapp" href="../clock/">Clock app</a></li>
             </ul>
         </div>
         <div id="edge">
