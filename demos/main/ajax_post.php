@@ -26,22 +26,11 @@ if ($_POST["zip"]) {
         }
     ?>
     </ul>
-</div>
-<div id="theater" title="Theater">
-    <div class="toolbar">
-        <h1>Theater Info</h1>
-        <a href="#" class="button back">Back</a>
-    </div>
-    <div class="pad">
-        <p>Lorem ipsum dolar...</p>
-    </div>
-</div>
-<div id="movie" title="Movie">
-    <div class="toolbar">
-        <h1>Movie Info</h1>
-        <a href="#" class="button back">Back</a>
-    </div>
-    <div class="pad">
-    <p>Lorem ipsum dolar...</p>
-    </div>
+    <form action="ajax_post.php" method="POST">
+    <ul class="rounded">
+        <li><input type="text" name="zip" value="" placeholder="Live post event test" /></li>
+    </ul>
+    <a style="margin:0 10px;color:rgba(0,0,0,.9)" href="#" class="submit whiteButton">Submit</a>
+    
+    </form>
 </div>

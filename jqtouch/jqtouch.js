@@ -144,7 +144,17 @@
                 }
 
                 if (jQTSettings.initializeTouch) $(jQTSettings.initializeTouch).addTouchHandlers();
-                $(jQTSettings.formSelector).submit(submitForm);
+
+                $body.submit(function(e){
+                    var $form = $(e.target);
+
+                    if ($form.is(jQTSettings.formSelector)) {
+                        $('input:focus').blur();
+                        showPageByHref($form.attr('action') || "POST", $form.serialize(), $form.attr('method'));
+                        return false;
+                    }
+                    return true;
+                });
                 
                 if (jQTSettings.submitSelector)
                     $(jQTSettings.submitSelector).live('click', submitParentForm);
@@ -323,14 +333,16 @@
                 $.fn.unselect();
             }
         }
-        function submitParentForm(){
-            $(this).parent('form').submit();
-            return false;
-        }
-        function submitForm() {
-            $form = $(this);
-            showPageByHref($form.attr('action') || "POST", $form.serialize(), $form.attr('method'));
-            return false;
+        function submitParentForm(e){
+            var $form = $(this).closest('form');
+            if ($form)
+            {
+                evt = jQuery.Event("submit");
+                evt.preventDefault();
+                $form.trigger(evt);
+                return false;
+            }
+            return true;
         }
         function updateOrientation() {
             orientation = window.innerWidth < window.innerHeight ? 'profile' : 'landscape';
