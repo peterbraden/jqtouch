@@ -35,7 +35,7 @@ else
     </ul>
 </div>
 
-    <div id="theater" title="Theater" class="panel">
+    <div id="theater" title="Theater">
         <div class="toolbar">
             <h1>Theater Info</h1>
             <a href="#" class="button back">Back</a>
@@ -45,7 +45,7 @@ else
         </div>
     </div>
 
-    <div id="movie" title="Movie" class="panel">
+    <div id="movie" title="Movie">
         <div class="toolbar">
             <h1>Movie Info</h1>
             <a href="#" class="button back">Back</a>
