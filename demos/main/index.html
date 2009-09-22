@@ -25,9 +25,8 @@
             // Some sample Javascript functions:
             $(function(){
                 // Show a swipe event on swipe test
-                $('#swipeme').addTouchHandlers().bind('swipe', function(evt, data) {                
+                $('#swipeme').swipe(function(evt, data) {                
                     $(this).html('You swiped <strong>' + data.direction + '</strong>!');
-                    // alert('Swiped '+ data.direction +' on #' + $(evt.currentTarget).attr('id') + '.');
                 });
                 $('a[target="_blank"]').click(function() {
                     if (confirm('This link opens in a new window.')) {
@@ -54,31 +53,9 @@
                             }));
                     }
                 });
-                /*
-                // Page transition end with AJAX callback event, example 2 (load remote HTML every time panel transitions in)
-                $('#callback').bind('pageTransitionEnd', function(e, info){
-                    if (info.direction == 'in') { 
-                        // This block gets called after the page has finished moving into view
-                        // Append the Loading placeholder and then replace its contents with the remote HTML
-                        $(this).append($('<div>Loading</div>').load('ajax.html .info'));
-                    } else { 
-                        // This block gets called after the page has finished moving out of sight
-                        // Reset the contents of the #callback div to just the toolbar
-                        $(this).html($(this).find('.toolbar'));
-                    }
-                });
-                */
                 // Orientation callback event
                 $('body').bind('turn', function(e, data){
                     $('#orient').html('Orientation: ' + data.orientation);
-                });
-                // Swipe to navigate callback
-                // Shows public jQTouch object usage and new swipe shortcut
-                $('#swipetonav').swipe(function(e, data){
-                    if (data.direction === 'left')
-                    {
-                        jQT.goBack();
-                    }
                 });
             });
         </script>
@@ -110,7 +87,7 @@
                     <a href="http://www.davidkaneda.com">By David Kaneda</a></p>
                 <p><em>Create powerful mobile apps with<br /> just HTML, CSS, and jQuery.</em></p>
                 <p>
-                    <a href="#">@jQTouch on Twitter</a>
+                    <a href="http://twitter.com/jqtouch" target="_blank">@jQTouch on Twitter</a>
                 </p>
                 <p><br /><br /><a href="#" class="grayButton goback">Close</a></p>
         </div>
