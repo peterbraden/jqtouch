@@ -44,7 +44,12 @@
                 transitions: [ // Order matters.
                     { name: 'slide', selector: 'body > * > ul li a' },
                     { name: 'flip', selector: '.flip' },
-                    { name: 'slideup', selector: '.slideup' }
+                    { name: 'slideup', selector: '.slideup' },
+                    { name: 'swap', selector: '.swap' },
+                    { name: 'cube', selector: '.cube' },
+                    { name: 'pop', selector: '.pop' },
+                    { name: 'dissolve', selector: '.dissolve' },
+                    { name: 'fade', selector: '.fade' }
                 ]
             };
             jQTSettings = $.extend({}, defaults, options);
@@ -93,53 +98,7 @@
             }
             if (jQTSettings.backSelector) liveSelectors.push(jQTSettings.backSelector);
             if (liveSelectors.length > 0) {
-                $(liveSelectors.join(', ')).live('click',function liveClick(e){
-                    console.log(tapReady);
-
-                    if (tapReady == false) {
-                        return false;
-                    }
-
-                    // Grab the clicked element
-                    var $el = $(this), target = $el.attr('target'), hash = $el.attr('hash'), transition;
-
-                    for (var i in jQTSettings.transitions) {
-                        if ($el.is(jQTSettings.transitions[i].selector)) {
-                            transition = jQTSettings.transitions[i];
-                        }
-                    }
-
-                    // User clicked an external link
-                    if (target == '_blank') {
-                        return true;
-                    }
-                    // User clicked an internal link, fullscreen mode
-                    else if (target == '_webapp') {
-                        window.location = $el.attr('href');
-                        return false;
-                    }
-                    // User clicked a back button
-                    else if ($el.is(jQTSettings.backSelector)) {
-                        goBack();
-                        return false;
-                    }
-                    // Branch on internal or external href
-                    else if (hash && hash!='#') {
-                        $el.addClass('active');
-                        goToPage($(hash).data('referrer', $el), transition);
-                    } else if (target != '_blank') {
-                        $el.addClass('loading active');
-
-                        showPageByHref($el.attr('href'), {
-                            transition: transition,
-                            callback: function(){ 
-                                $el.removeClass('loading'); setTimeout($.fn.unselect, 250, $el);
-                            },
-                            $referrer: $el
-                        });
-                    }
-                    return false;
-                });
+                $(liveSelectors.join(', ')).live('click',liveClick);
             }
 
             // Initialize on document load:
@@ -152,20 +111,7 @@
 
                 if (jQTSettings.initializeTouch) $(jQTSettings.initializeTouch).addTouchHandlers();
 
-                $body.submit(function(e){
-                    var $form = $(e.target);
-
-                    if ($form.is(jQTSettings.formSelector)) {
-                        $('input:focus').blur();
-                        showPageByHref($form.attr('action'), {
-                            data: $form.serialize(),
-                            method: $form.attr('method') || "POST",
-                            transition: jQTSettings.transitions[0] || null
-                        });
-                        return false;
-                    }
-                    return true;
-                });
+                $body.submit(submitForm);
                 
                 if (jQTSettings.submitSelector)
                     $(jQTSettings.submitSelector).live('click', submitParentForm);
@@ -189,7 +135,6 @@
         
         // PUBLIC FUNCTIONS
         function goBack(to) {
-
             // Init the param
             var numberOfPages = Math.min(parseInt(to || 1, 10), hist.length-1);
 
@@ -230,6 +175,52 @@
         }
 
         // PRIVATE FUNCTIONS
+        function liveClick(e){
+
+            if (tapReady == false) {
+                return false;
+            }
+
+            // Grab the clicked element
+            var $el = $(this), target = $el.attr('target'), hash = $el.attr('hash'), transition;
+
+            for (var i in jQTSettings.transitions) {
+                if ($el.is(jQTSettings.transitions[i].selector)) {
+                    transition = jQTSettings.transitions[i];
+                }
+            }
+
+            // User clicked an external link
+            if (target == '_blank') {
+                return true;
+            }
+            // User clicked an internal link, fullscreen mode
+            else if (target == '_webapp') {
+                window.location = $el.attr('href');
+                return false;
+            }
+            // User clicked a back button
+            else if ($el.is(jQTSettings.backSelector)) {
+                goBack();
+                return false;
+            }
+            // Branch on internal or external href
+            else if (hash && hash!='#') {
+                $el.addClass('active');
+                goToPage($(hash).data('referrer', $el), transition);
+            } else if (target != '_blank') {
+                $el.addClass('loading active');
+
+                showPageByHref($el.attr('href'), {
+                    transition: transition,
+                    callback: function(){ 
+                        $el.removeClass('loading'); setTimeout($.fn.unselect, 250, $el);
+                    },
+                    $referrer: $el
+                });
+            }
+            return false;
+        }
         function addPageToHistory(page, transition) {
             // Grab some info
             var pageId = page.attr('id');
@@ -358,7 +349,7 @@
                     },
                     error: function (data) {
                         if (settings.$referrer) settings.$referrer.unselect();
-                        console.log('Ajax error.');
+
                         if (settings.callback) {
                             settings.callback(false);
                         }
@@ -369,6 +360,20 @@
             {
                 $referrer.unselect();
             }
+        }
+        function submitForm(e){
+            var $form = $(e.target);
+
+            if ($form.is(jQTSettings.formSelector)) {
+                $('input:focus').blur();
+                showPageByHref($form.attr('action'), {
+                    data: $form.serialize(),
+                    method: $form.attr('method') || "POST",
+                    transition: jQTSettings.transitions[0] || null
+                });
+                return false;
+            }
+            return true;
         }
         function submitParentForm(e){
             var $form = $(this).closest('form');
@@ -381,49 +386,19 @@
             }
             return true;
         }
+        function addTransition(transition) {
+            jQTSettings.transitions.append(transition);
+            if (transition.selector)
+            {
+                $(transition.selector).live(liveClick);
+            }
+        }
         function updateOrientation() {
             orientation = window.innerWidth < window.innerHeight ? 'profile' : 'landscape';
             $body.removeClass('profile landscape').addClass(orientation).trigger('turn', {orientation: orientation});
             scrollTo(0, 0);
         }
 
-        // Deprecated, but could still be useful.
-        // Move to extension?
-        $.fn.transition = function(css, options) {
-            var $el = $(this);
-            var defaults = {
-                speed : '300ms',
-                callback: null,
-                ease: 'ease-in-out'
-            };
-            var settings = $.extend({}, defaults, options);
-            if(settings.speed === 0 || jQTSettings.useTransitions !== true) {
-                $el.css(css);
-                window.setTimeout(settings.callback, 0);
-            } else {
-                if ($.browser.safari)
-                {
-                    var s = [];
-                    for(var i in css) {
-                        s.push(i);
-                    }
-                    $el.css({
-                        webkitTransitionProperty: s.join(", "), 
-                        webkitTransitionDuration: settings.speed, 
-                        webkitTransitionTimingFunction: settings.ease
-                    });
-                    if (settings.callback) {
-                        $el.one('webkitTransitionEnd', settings.callback);
-                    }
-                    setTimeout(function(el){ el.css(css) }, 0, $el);
-                }
-                else
-                {
-                    $el.animate(css, settings.speed, settings.callback);
-                }
-            }
-            return this;
-        }
         $.fn.unselect = function(obj) {
             if (obj) {
                 obj.removeClass('active');
@@ -435,7 +410,8 @@
         return {
             getOrientation : getOrientation,
             goBack : goBack,
-            goToPage : goToPage
+            goToPage : goToPage,
+            addTransition: addTransition
         }
     }
 
