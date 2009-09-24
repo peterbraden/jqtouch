@@ -31,6 +31,7 @@
             var defaults = {
                 addGlossToIcon: true,
                 backSelector: '.back, .cancel, .goback',
+                cacheGetRequests: true,
                 fixedViewport: true,
                 formSelector: 'form',
                 fullScreen: true,
@@ -135,22 +136,22 @@
         
         // PUBLIC FUNCTIONS
         function goBack(to) {
-            // Init the param
+            // Init the param            
             var numberOfPages = Math.min(parseInt(to || 1, 10), hist.length-1);
 
-            if( isNaN(numberOfPages) && typeof(howFar) === "string" ) {
-              var i = 1;
-              for( ; i < hist.length; i++ ) {
-                if( hist[i].id === howFar ) {
-                  numberOfPages = i;
-                  break;
+            // Search through the history for an ID
+            if( isNaN(numberOfPages) && typeof(to) === "string" && to != '#' ) {
+                for( var i=1, length=hist.length; i < length; i++ ) {
+                    if( '#' + hist[i].id === to ) {
+                        numberOfPages = i;
+                        break;
+                    }
                 }
-              }
             }
             
+            // If still nothing, assume one
             if( isNaN(numberOfPages) || numberOfPages < 1 ) {
-                console.log('No back page found');
-                return false;
+                numberOfPages = 1;
             };
             
             // Grab the current page for the "from" info
@@ -191,7 +192,7 @@
             }
 
             // User clicked an external link
-            if (target == '_blank') {
+            if (target == '_blank' || $el.attr('rel') == 'external') {
                 return true;
             }
             // User clicked an internal link, fullscreen mode
@@ -201,7 +202,7 @@
             }
             // User clicked a back button
             else if ($el.is(jQTSettings.backSelector)) {
-                goBack();
+                goBack(hash);
                 return false;
             }
             // Branch on internal or external href
@@ -313,7 +314,7 @@
             $(nodes).each(function(index, node){
                 $node = $(this);
                 if (!$node.attr('id')) {
-                    $node.attr('id', (++newPageCount));
+                    $node.attr('id', 'page-' + (++newPageCount));
                 }
                 $node.appendTo($body);
                 if ($node.hasClass('current') || !targetPage ) {
@@ -322,6 +323,11 @@
             });
             if (targetPage !== null) {
                 goToPage(targetPage, transition);
+                return targetPage;
+            }
+            else
+            {
+                return false;
             }
         }
         function showPageByHref(href, options) {
@@ -342,9 +348,16 @@
                     data: settings.data,
                     type: settings.method,
                     success: function (data, textStatus) {
-                        insertPages(data, settings.transition);
-                        if (settings.callback) {
-                            settings.callback(true);
+                        var firstPage = insertPages(data, settings.transition);
+                        if (firstPage)
+                        {
+                            if (settings.method == 'GET' && jQTSettings.cacheGetRequests && settings.$referrer)
+                            {
+                                settings.$referrer.attr('href', '#' + firstPage.attr('id'));
+                            }
+                            if (settings.callback) {
+                                settings.callback(true);
+                            }
                         }
                     },
                     error: function (data) {
@@ -377,7 +390,7 @@
         }
         function submitParentForm(e){
             var $form = $(this).closest('form');
-            if ($form)
+            if ($form.length)
             {
                 evt = jQuery.Event("submit");
                 evt.preventDefault();
@@ -484,7 +497,7 @@
                     if (jQTouchHandler.currentTouch.deltaY === 0 && jQTouchHandler.currentTouch.deltaX === 0)
                     {
                         jQTouchHandler.makeActive(jQTouchHandler.currentTouch.el);
-                        console.log(jQTouchHandler.currentTouch.deltaT);
+                        // console.log(jQTouchHandler.currentTouch.deltaT);
                     }
                     else
                     {

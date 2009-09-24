@@ -168,6 +168,19 @@ body > .current {
 	-webkit-animation-name: dontmove;
 }
 
+
+@-webkit-keyframes slideup {
+    from { -webkit-transform: translateY(100%); }
+    to { -webkit-transform: translateY(0); }
+}
+
+@-webkit-keyframes slidedown {
+    from { -webkit-transform: translateY(0); }
+    to { -webkit-transform: translateY(100%); }
+}
+
+
+
 /* Hackish, but reliable. */
 
 @-webkit-keyframes dontmove {
@@ -274,33 +287,41 @@ body > .current {
 @-webkit-keyframes cubeinfromleft {
 	from {
         -webkit-transform: rotateY(-90deg) translateZ(320px);
+        opacity: .5;
 	}
     to {
         -webkit-transform: rotateY(0deg) translateZ(0);
+        opacity: 1;
     }
 }
 @-webkit-keyframes cubeouttoright {
     from {
         -webkit-transform: rotateY(0deg) translateX(0);
+        opacity: 1;
     }
     to {
         -webkit-transform: rotateY(90deg) translateZ(320px);
+        opacity: .5;
     }
 }
 @-webkit-keyframes cubeinfromright {
     from {
         -webkit-transform: rotateY(90deg) translateZ(320px);
+        opacity: .5;
     }
     to {
         -webkit-transform: rotateY(0deg) translateZ(0);
+        opacity: 1;
     }
 }
 @-webkit-keyframes cubeouttoleft {
     from {
         -webkit-transform: rotateY(0deg) translateZ(0);
+        opacity: 1;
     }
     to {
         -webkit-transform: rotateY(-90deg) translateZ(320px);
+        opacity: .5;
     }
 }
 
