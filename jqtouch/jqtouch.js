@@ -22,7 +22,7 @@
 (function($) {
     $.jQTouch = function(options) {
         
-        var $body, $head=$('head'), hist=[], newPageCount=0, jQTSettings={}, dumbLoop, currentPage, orientation, isMobile = RegExp(" Mobile/").test(navigator.userAgent), tapReady=true;
+        var $body, $head=$('head'), hist=[], newPageCount=0, jQTSettings={}, dumbLoop, currentPage, orientation, isMobileWebKit = RegExp(" Mobile/").test(navigator.userAgent), tapReady=true,publicObj={}, extensions=$.jQTouch.prototype.extensions, defaultAnimations=['slide','flip','slideup','swap','cube','pop','dissolve','fade','back'], animations=[], hairextensions='';
 
         init(options);
 
@@ -32,30 +32,26 @@
                 addGlossToIcon: true,
                 backSelector: '.back, .cancel, .goback',
                 cacheGetRequests: true,
+                cubeSelector: '.cube',
+                dissolveSelector: '.dissolve',
+                fadeSelector: '.fade',
                 fixedViewport: true,
+                flipSelector: '.flip',
                 formSelector: 'form',
                 fullScreen: true,
                 fullScreenClass: 'fullscreen',
                 icon: null,
-                initializeTouch: 'a, .touch', 
+                initializeTouch: 'a, .touch',
+                popSelector: '.pop',
+                slideSelector: 'body > * > ul li a',
+                slideupSelector: '.slideup',
                 startupScreen: null,
                 statusBar: 'default', // other options: black-translucent, black
                 submitSelector: '.submit',
-                useTransitions: true,
-                transitions: [ // Order matters.
-                    { name: 'slide', selector: 'body > * > ul li a' },
-                    { name: 'flip', selector: '.flip' },
-                    { name: 'slideup', selector: '.slideup' },
-                    { name: 'swap', selector: '.swap' },
-                    { name: 'cube', selector: '.cube' },
-                    { name: 'pop', selector: '.pop' },
-                    { name: 'dissolve', selector: '.dissolve' },
-                    { name: 'fade', selector: '.fade' }
-                ]
+                swapSelector: '.swap',
+                useAnimations: true
             };
             jQTSettings = $.extend({}, defaults, options);
-
-            var hairextensions = '';
 
             // Preload images
             if (jQTSettings.preloadImages) {
@@ -63,23 +59,19 @@
                     (new Image()).src = jQTSettings.preloadImages[i];
                 };
             }
-
             // Set icon
             if (jQTSettings.icon) {
                 var precomposed = (jQTSettings.addGlossToIcon) ? '' : '-precomposed';
                 hairextensions += '<link rel="apple-touch-icon' + precomposed + '" href="' + jQTSettings.icon + '" />';
             }
-
             // Set startup screen
             if (jQTSettings.startupScreen) {
                 hairextensions += '<link rel="apple-touch-startup-image" href="' + jQTSettings.startupScreen + '" />';
             }
-
             // Set viewport
             if (jQTSettings.fixedViewport) {
                 hairextensions += '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>';
             }
-
             // Set full-screen
             if (jQTSettings.fullScreen) {
                 hairextensions += '<meta name="apple-mobile-web-app-capable" content="yes" />';
@@ -87,24 +79,32 @@
                     hairextensions += '<meta name="apple-mobile-web-app-status-bar-style" content="' + jQTSettings.statusBar + '" />';
                 }
             }
-            
             if (hairextensions) $head.append(hairextensions);
 
-            // Create an array of the "next page" selectors
-            var liveSelectors = [];
-            for (var i in jQTSettings.transitions) {
-                if (typeof(jQTSettings.transitions[i].selector) == 'string') {
-                    liveSelectors.push(jQTSettings.transitions[i].selector);
+
+            for (var i in defaultAnimations)
+            {
+                var name = defaultAnimations[i];
+                var selector = jQTSettings[name + 'Selector'];
+                if (typeof(selector) == 'string') {
+                    addAnimation({name:name, selector:selector});
                 }
-            }
-            if (jQTSettings.backSelector) liveSelectors.push(jQTSettings.backSelector);
-            if (liveSelectors.length > 0) {
-                $(liveSelectors.join(', ')).live('click',liveClick);
             }
 
             // Initialize on document load:
             $(document).ready(function(){
-                $body = $('body');
+                
+                // Add extensions
+                for (var i in extensions)
+                {
+                    var fn = extensions[i];
+                    if ($.isFunction(fn))
+                    {
+                        $.extend(publicObj, fn());
+                    }
+                }
+                
+                $body = $('body').data('jQTouch', publicObj);
                 $body.bind('orientationchange', updateOrientation).trigger('orientationchange');
                 if (jQTSettings.fullScreenClass && window.navigator.standalone == true) {
                     $body.addClass(jQTSettings.fullScreenClass + ' ' + jQTSettings.statusBar);
@@ -155,7 +155,7 @@
             };
             
             // Grab the current page for the "from" info
-            var transition = hist[0].transition;
+            var animation = hist[0].animation;
             var fromPage = hist[0].page;
 
             // Remove all pages in front of the target page
@@ -164,12 +164,12 @@
             // Grab the target page
             var toPage = hist[0].page;
             
-            // Make the transition
-            animatePages(fromPage, toPage, transition, true);
+            // Make the animation
+            animatePages(fromPage, toPage, animation, true);
         }
-        function goToPage(toPage, transition) {
+        function goTo(toPage, animation) {
             var fromPage = hist[0].page;
-            if (animatePages(fromPage, toPage, transition)) addPageToHistory(toPage, transition);
+            if (animatePages(fromPage, toPage, animation)) addPageToHistory(toPage, animation);
         }
         function getOrientation() {
             return orientation;
@@ -183,11 +183,11 @@
             }
 
             // Grab the clicked element
-            var $el = $(this), target = $el.attr('target'), hash = $el.attr('hash'), transition;
+            var $el = $(this), target = $el.attr('target'), hash = $el.attr('hash'), animation;
 
-            for (var i in jQTSettings.transitions) {
-                if ($el.is(jQTSettings.transitions[i].selector)) {
-                    transition = jQTSettings.transitions[i];
+            for (var i in animations) {
+                if ($el.is(animations[i].selector)) {
+                    animation = animations[i];
                 }
             }
 
@@ -208,12 +208,12 @@
             // Branch on internal or external href
             else if (hash && hash!='#') {
                 $el.addClass('active');
-                goToPage($(hash).data('referrer', $el), transition);
+                goTo($(hash).data('referrer', $el), animation);
             } else if (target != '_blank') {
                 $el.addClass('loading active');
 
                 showPageByHref($el.attr('href'), {
-                    transition: transition,
+                    animation: animation,
                     callback: function(){ 
                         $el.removeClass('loading'); setTimeout($.fn.unselect, 250, $el);
                     },
@@ -222,18 +222,18 @@
             }
             return false;
         }
-        function addPageToHistory(page, transition) {
+        function addPageToHistory(page, animation) {
             // Grab some info
             var pageId = page.attr('id');
 
             // Prepend info to page history
             hist.unshift({
                 page: page, 
-                transition: transition, 
+                animation: animation, 
                 id: pageId
             });
         }
-        function animatePages(fromPage, toPage, transition, backwards) {
+        function animatePages(fromPage, toPage, animation, backwards) {
 
             // Error check for target page
             if(toPage.length == 0){
@@ -249,18 +249,18 @@
             var callback = function(event){
                 currentPage = toPage;
 
-                if (transition)
+                if (animation)
                 {
-                    fromPage.removeClass('current out reverse ' + transition.name);
-                    toPage.removeClass('in reverse ' + transition.name);
+                    fromPage.removeClass('current out reverse ' + animation.name);
+                    toPage.removeClass('in reverse ' + animation.name);
                 }
                 else
                 {
                     fromPage.removeClass('current');
                 }
 
-                toPage.trigger('pageTransitionEnd', { direction: 'in' });
-    	        fromPage.trigger('pageTransitionEnd', { direction: 'out' });
+                toPage.trigger('pageAnimationEnd', { direction: 'in' });
+    	        fromPage.trigger('pageAnimationEnd', { direction: 'out' });
                 location.hash = currentPage.attr('id');
                 var $originallink = toPage.data('referrer');
                 if ($originallink) {
@@ -270,13 +270,13 @@
     	        dumbLoopStart();
             }
 
-            fromPage.trigger('pageTransitionStart', { direction: 'out' });
-            toPage.trigger('pageTransitionStart', { direction: 'in' });
+            fromPage.trigger('pageAnimationStart', { direction: 'out' });
+            toPage.trigger('pageAnimationStart', { direction: 'in' });
 
-            if (transition && jQTSettings.useTransitions) {
+            if (animation && jQTSettings.useAnimations) {
                 toPage.one('webkitAnimationEnd', callback);
-                toPage.addClass(transition.name + ' in current ' + (backwards ? ' reverse' : ''));
-                fromPage.addClass(transition.name + ' out' + (backwards ? ' reverse' : ''));
+                toPage.addClass(animation.name + ' in current ' + (backwards ? ' reverse' : ''));
+                fromPage.addClass(animation.name + ' out' + (backwards ? ' reverse' : ''));
                 tapReady = false;
             } else {
                 toPage.addClass('current');
@@ -309,7 +309,7 @@
         function enableTaps() {
             tapReady = true;
         }
-        function insertPages(nodes, transition) {
+        function insertPages(nodes, animation) {
             var targetPage = null;
             $(nodes).each(function(index, node){
                 $node = $(this);
@@ -322,7 +322,7 @@
                 }
             });
             if (targetPage !== null) {
-                goToPage(targetPage, transition);
+                goTo(targetPage, animation);
                 return targetPage;
             }
             else
@@ -334,7 +334,7 @@
             var defaults = {
                 data: null,
                 method: 'GET',
-                transition: null,
+                animation: null,
                 callback: null,
                 $referrer: null
             };
@@ -348,7 +348,7 @@
                     data: settings.data,
                     type: settings.method,
                     success: function (data, textStatus) {
-                        var firstPage = insertPages(data, settings.transition);
+                        var firstPage = insertPages(data, settings.animation);
                         if (firstPage)
                         {
                             if (settings.method == 'GET' && jQTSettings.cacheGetRequests && settings.$referrer)
@@ -382,7 +382,7 @@
                 showPageByHref($form.attr('action'), {
                     data: $form.serialize(),
                     method: $form.attr('method') || "POST",
-                    transition: jQTSettings.transitions[0] || null
+                    animation: animations[0] || null
                 });
                 return false;
             }
@@ -399,11 +399,10 @@
             }
             return true;
         }
-        function addTransition(transition) {
-            jQTSettings.transitions.append(transition);
-            if (transition.selector)
-            {
-                $(transition.selector).live(liveClick);
+        function addAnimation(animation) {
+            if (typeof(animation.selector) == 'string' && typeof(animation.name) == 'string') {
+                animations.push(animation);
+                $(animation.selector).live('click', liveClick);
             }
         }
         function updateOrientation() {
@@ -419,18 +418,24 @@
                 $('.active').removeClass('active');
             }
         }
-
-        return {
-            getOrientation : getOrientation,
-            goBack : goBack,
-            goToPage : goToPage,
-            addTransition: addTransition
+        
+        publicObj = {
+            getOrientation: getOrientation,
+            goBack: goBack,
+            goTo: goTo,
+            addAnimation: addAnimation
         }
+
+        return publicObj;
+    }
+    
+    $.jQTouch.prototype.extensions = [];
+    
+    $.jQTouch.addExtension = function(extension){
+        $.jQTouch.prototype.extensions.push(extension);
     }
 
 })(jQuery);
-
-
 
 // jQTouch Events handler
 
@@ -520,10 +525,10 @@
     }
 
     $.fn.addTouchHandlers = function() {
-        return this.each(function(i, el){
-            if (!$(el).data('touchEnabled'))
+        return this.each(function(){
+            if (!$(this).data('touchEnabled'))
             {
-                $(el).bind('touchstart', jQTouchHandler.handleStart).data('touchEnabled', true);
+                $(this).bind('touchstart', jQTouchHandler.handleStart).data('touchEnabled', true);
             }
         });
     }

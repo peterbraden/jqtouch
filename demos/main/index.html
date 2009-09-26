@@ -36,20 +36,20 @@
                         return false;
                     }
                 });
-                // Page transition callback events
+                // Page animation callback events
                 $('#pageevents').
-                    bind('pageTransitionStart', function(e, info){ 
-                        $(this).find('.info').append('Started transitioning ' + info.direction + '&hellip; ');
+                    bind('pageAnimationStart', function(e, info){ 
+                        $(this).find('.info').append('Started animating ' + info.direction + '&hellip; ');
                     }).
-                    bind('pageTransitionEnd', function(e, info){
-                        $(this).find('.info').append(' finished transitioning ' + info.direction + '.<br /><br />');
+                    bind('pageAnimationEnd', function(e, info){
+                        $(this).find('.info').append(' finished animating ' + info.direction + '.<br /><br />');
                     });
-                // Page transition end with AJAX callback event, example 1 (load remote HTML only first time)
-                $('#callback').bind('pageTransitionEnd', function(e, info){
+                // Page animations end with AJAX callback event, example 1 (load remote HTML only first time)
+                $('#callback').bind('pageAnimationEnd', function(e, info){
                     if (!$(this).data('loaded')) {                      // Make sure the data hasn't already been loaded (we'll set 'loaded' to true a couple lines further down)
                         $(this).append($('<div>Loading</div>').         // Append a placeholder in case the remote HTML takes its sweet time making it back
                             load('ajax.html .info', function() {        // Overwrite the "Loading" placeholder text with the remote HTML
-                                $(this).parent().data('loaded', true);  // Set the 'loaded' var to true so we know not to re-load the HTML next time the #callback div transition ends
+                                $(this).parent().data('loaded', true);  // Set the 'loaded' var to true so we know not to re-load the HTML next time the #callback div animation ends
                             }));
                     }
                 });
@@ -108,14 +108,14 @@
                 <a class="back" href="#">Home</a>
             </div>
             <ul class="rounded">
-                <li><a href="#flipdemo">Slide</a></li>
-                <li><a class="slideup" href="#flipdemo">Slide Up</a></li>
-                <li><a class="dissolve" href="#flipdemo">Dissolve</a></li>
-                <li><a class="fade" href="#flipdemo">Fade</a></li>
-                <li><a class="flip" href="#flipdemo">Flip</a></li>
-                <li><a class="pop" href="#flipdemo">Pop</a></li>
-                <li><a class="swap" href="#flipdemo">Swap</a></li>
-                <li><a class="cube" href="#flipdemo">Cube</a></li>
+                <li><a href="#animdemo">Slide</a></li>
+                <li><a class="slideup" href="#animdemo">Slide Up</a></li>
+                <li><a class="dissolve" href="#animdemo">Dissolve</a></li>
+                <li><a class="fade" href="#animdemo">Fade</a></li>
+                <li><a class="flip" href="#animdemo">Flip</a></li>
+                <li><a class="pop" href="#animdemo">Pop</a></li>
+                <li><a class="swap" href="#animdemo">Swap</a></li>
+                <li><a class="cube" href="#animdemo">Cube</a></li>
             </ul>
         </div>
         <div id="callback">
@@ -169,7 +169,7 @@
                 <li><a href="#">Rubble, <em>Betty</em></a></li>
             </ul>
         </div>
-        <div id="flipdemo">
+        <div id="animdemo">
                 <div style="font-size: 1.5em; text-align: center; margin: 160px 0 160px; font-family: Marker felt;">
                     Pretty smooth, eh?            
                 </div>
@@ -216,7 +216,6 @@
             <ul class="rounded">
                 <li class="arrow"><a href="#ui">User Interface</a> <small class="counter">4</small></li>
                 <li class="arrow"><a href="#animations">Animations</a> <small class="counter">6</small></li>
-                
                 <li class="arrow"><a href="#ajax">AJAX</a> <small class="counter">3</small></li>
                 <li class="arrow"><a href="#callbacks">Callback Events</a> <small class="counter">3</small></li>
                 <li class="arrow"><a href="#demos">Demos</a> <small class="counter">2</small></li>
