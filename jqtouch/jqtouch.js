@@ -41,8 +41,9 @@
                 fullScreen: true,
                 fullScreenClass: 'fullscreen',
                 icon: null,
-                initializeTouch: 'a, .touch',
+                touchSelector: 'a, .touch',
                 popSelector: '.pop',
+                preloadImages: false,
                 slideSelector: 'body > * > ul li a',
                 slideupSelector: '.slideup',
                 startupScreen: null,
@@ -100,7 +101,7 @@
                     var fn = extensions[i];
                     if ($.isFunction(fn))
                     {
-                        $.extend(publicObj, fn());
+                        $.extend(publicObj, fn(publicObj));
                     }
                 }
                 
@@ -110,7 +111,7 @@
                     $body.addClass(jQTSettings.fullScreenClass + ' ' + jQTSettings.statusBar);
                 }
 
-                if (jQTSettings.initializeTouch) $(jQTSettings.initializeTouch).addTouchHandlers();
+                if (jQTSettings.touchSelector) $(jQTSettings.touchSelector).addTouchHandlers();
 
                 $body.submit(submitForm);
                 
