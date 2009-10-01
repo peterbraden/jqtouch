@@ -22,11 +22,18 @@
 (function($) {
     $.jQTouch = function(options) {
         
-        var $body, $head=$('head'), hist=[], newPageCount=0, jQTSettings={}, dumbLoop, currentPage, orientation, isMobileWebKit = RegExp(" Mobile/").test(navigator.userAgent), tapReady=true,publicObj={}, extensions=$.jQTouch.prototype.extensions, defaultAnimations=['slide','flip','slideup','swap','cube','pop','dissolve','fade','back'], animations=[], hairextensions='';
+        // Set support values
+        $.support.WebKitCSSMatrix = (typeof WebKitCSSMatrix == "object");
+        $.support.touch = (typeof Touch == "object");
+        $.support.WebKitAnimationEvent = (typeof WebKitTransitionEvent == "object");
+        
+        // Initialize variables
+        var $body, $head=$('head'), hist=[], newPageCount=0, jQTSettings={}, dumbLoop, currentPage, orientation, isMobileWebKit = RegExp(" Mobile/").test(navigator.userAgent), tapReady=true,publicObj={}, extensions=$.jQTouch.prototype.extensions, defaultAnimations=['slide','flip','slideup','swap','cube','pop','dissolve','fade','back'], animations=[], hairextensions='', tapEvent=($.support.touch ? 'tap' : 'click');
 
+        // Get the party started
         init(options);
 
-        function init(options) {   
+        function init(options) {
             
             var defaults = {
                 addGlossToIcon: true,
@@ -53,7 +60,7 @@
                 useAnimations: true
             };
             jQTSettings = $.extend({}, defaults, options);
-
+            
             // Preload images
             if (jQTSettings.preloadImages) {
                 for (var i = jQTSettings.preloadImages.length - 1; i >= 0; i--){
@@ -116,7 +123,7 @@
                 $body.submit(submitForm);
                 
                 if (jQTSettings.submitSelector)
-                    $(jQTSettings.submitSelector).live('click', submitParentForm);
+                    $(jQTSettings.submitSelector).live(tapEvent, submitParentForm);
 
                 // Make sure exactly one child of body has "current" class
                 if ($('body > .current').length == 0) {
@@ -297,7 +304,7 @@
             fromPage.trigger('pageAnimationStart', { direction: 'out' });
             toPage.trigger('pageAnimationStart', { direction: 'in' });
 
-            if (animation && jQTSettings.useAnimations) {
+            if ($.support.WebKitAnimationEvent && animation && jQTSettings.useAnimations) {
                 toPage.one('webkitAnimationEnd', callback);
                 toPage.addClass(animation.name + ' in current ' + (backwards ? ' reverse' : ''));
                 fromPage.addClass(animation.name + ' out' + (backwards ? ' reverse' : ''));
@@ -425,7 +432,7 @@
         function addAnimation(animation) {
             if (typeof(animation.selector) == 'string' && typeof(animation.name) == 'string') {
                 animations.push(animation);
-                $(animation.selector).live('click', liveClick);
+                $(animation.selector).live(tapEvent, liveClick);
             }
         }
         function updateOrientation() {
@@ -526,6 +533,7 @@
                     {
                         jQTouchHandler.makeActive(jQTouchHandler.currentTouch.el);
                         // console.log(jQTouchHandler.currentTouch.deltaT);
+                        jQTouchHandler.currentTouch.el.trigger('tap');
                     }
                     else
                     {
