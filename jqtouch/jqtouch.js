@@ -137,40 +137,64 @@
         
         // PUBLIC FUNCTIONS
         function goBack(to) {
-            // Init the param            
-            var numberOfPages = Math.min(parseInt(to || 1, 10), hist.length-1);
+            // Init the param
+            if (hist.length > 1) {
+                var numberOfPages = Math.min(parseInt(to || 1, 10), hist.length-1);
 
-            // Search through the history for an ID
-            if( isNaN(numberOfPages) && typeof(to) === "string" && to != '#' ) {
-                for( var i=1, length=hist.length; i < length; i++ ) {
-                    if( '#' + hist[i].id === to ) {
-                        numberOfPages = i;
+                // Search through the history for an ID
+                if( isNaN(numberOfPages) && typeof(to) === "string" && to != '#' ) {
+                    for( var i=1, length=hist.length; i < length; i++ ) {
+                        if( '#' + hist[i].id === to ) {
+                            numberOfPages = i;
+                            break;
+                        }
+                    }
+                }
+
+                // If still nothing, assume one
+                if( isNaN(numberOfPages) || numberOfPages < 1 ) {
+                    numberOfPages = 1;
+                };
+
+                // Grab the current page for the "from" info
+                var animation = hist[0].animation;
+                var fromPage = hist[0].page;
+
+                // Remove all pages in front of the target page
+                hist.splice(0, numberOfPages);
+
+                // Grab the target page
+                var toPage = hist[0].page;
+
+                // Make the animations
+                animatePages(fromPage, toPage, animation, true);
+                
+                return publicObj;
+            } else {
+                console.error('No pages in history.');
+                return false;
+            }
+        }
+        function goTo(toPage, animation) {
+            var fromPage = hist[0].page;
+            if (typeof(animation) === 'string') {
+                for (var i = animations.length - 1; i >= 0; i--){
+                    if (animations[i].name === animation)
+                    {
+                        animation = animations[i];
                         break;
                     }
                 }
             }
-            
-            // If still nothing, assume one
-            if( isNaN(numberOfPages) || numberOfPages < 1 ) {
-                numberOfPages = 1;
-            };
-            
-            // Grab the current page for the "from" info
-            var animation = hist[0].animation;
-            var fromPage = hist[0].page;
-
-            // Remove all pages in front of the target page
-            hist.splice(0, numberOfPages);
-
-            // Grab the target page
-            var toPage = hist[0].page;
-            
-            // Make the animation
-            animatePages(fromPage, toPage, animation, true);
-        }
-        function goTo(toPage, animation) {
-            var fromPage = hist[0].page;
-            if (animatePages(fromPage, toPage, animation)) addPageToHistory(toPage, animation);
+            if (animatePages(fromPage, toPage, animation)) {
+                addPageToHistory(toPage, animation);
+                return publicObj;
+            }
+            else
+            {
+                console.error('Could not animate pages.')
+                return false;
+            }
         }
         function getOrientation() {
             return orientation;
@@ -239,7 +263,7 @@
             // Error check for target page
             if(toPage.length == 0){
                 $.fn.unselect();
-                console.log('Target element is missing.');
+                console.error('Target element is missing.');
                 return false;
             }
 
@@ -249,7 +273,6 @@
             // Define callback to run after animation completes
             var callback = function(event){
                 currentPage = toPage;
-
                 if (animation)
                 {
                     fromPage.removeClass('current out reverse ' + animation.name);
@@ -283,7 +306,6 @@
                 toPage.addClass('current');
                 callback();
             }
-            
 
             return true;
         }
@@ -302,7 +324,7 @@
                             }
                         }
                     } catch(e) {
-                        console.log('Unknown hash change.');
+                        console.error('Unknown hash change.');
                     }
                 }
             }, 250);
