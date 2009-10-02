@@ -17,9 +17,9 @@
     (c) 2009 by jQTouch project members.
     See LICENSE.txt for license.
     
-    Revision: $Revision$
-    Date: $Date$
-    Last changed by: $LastChangedBy$
+    $Revision$
+    $Date$
+    $LastChangedBy$
 
 */
 
