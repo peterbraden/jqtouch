@@ -42,11 +42,12 @@
             orientation, 
             isMobileWebKit = RegExp(" Mobile/").test(navigator.userAgent), 
             tapReady=true,
+            touchSelectors=[],
             publicObj={},
             extensions=$.jQTouch.prototype.extensions,
             defaultAnimations=['slide','flip','slideup','swap','cube','pop','dissolve','fade','back'], 
             animations=[], 
-            hairextensions='', 
+            hairextensions='',
             tapEvent=($.support.touch ? 'tap' : 'click');
 
         // Get the party started
@@ -114,16 +115,6 @@
             // Initialize on document load:
             $(document).ready(function(){
                 
-                
-                // Add animations
-                for (var i in defaultAnimations)
-                {
-                    var name = defaultAnimations[i];
-                    var selector = jQTSettings[name + 'Selector'];
-                    if (typeof(selector) == 'string') {
-                        addAnimation({name:name, selector:selector});
-                    }
-                }
 
                 // Add extensions
                 for (var i in extensions)
@@ -135,6 +126,28 @@
                     }
                 }
                 
+                // Add animations
+                for (var i in defaultAnimations)
+                {
+                    var name = defaultAnimations[i];
+                    var selector = jQTSettings[name + 'Selector'];
+                    if (typeof(selector) == 'string') {
+                        addAnimation({name:name, selector:selector});
+                    }
+                }
+
+                touchSelectors.push('input');
+                touchSelectors.push(jQTSettings.touchSelector);
+                touchSelectors.push(jQTSettings.backSelector);
+                touchSelectors.push(jQTSettings.submitSelector);
+                $(jQTSettings.submitSelector).live(tapEvent, submitParentForm);
+
+                // We bind a "touchstart" event to the body below.
+                // From here on out, any of these selectors need a 
+                $(touchSelectors.join(', ')).live('click', function(){
+                    return false;
+                });
+
                 $body = $('body');
                 
                 if (jQTSettings.fullScreenClass && window.navigator.standalone == true) {
@@ -143,12 +156,10 @@
 
                 // Create custom live events
                 $body
+                    .bind('touchstart', handleTouch)
                     .bind('orientationchange', updateOrientation)
                     .trigger('orientationchange')
                     .submit(submitForm)
-                    .addTouchHandlers();
-
-                $(jQTSettings.submitSelector).live(tapEvent, submitParentForm);
 
                 // Make sure exactly one child of body has "current" class
                 if ($('body > .current').length == 0) {
@@ -370,7 +381,7 @@
                 if (!$node.attr('id')) {
                     $node.attr('id', 'page-' + (++newPageCount));
                 }
-                $node.addTouchHandlers().appendTo($body);
+                $node.appendTo($body);
                 if ($node.hasClass('current') || !targetPage ) {
                     targetPage = $node;
                 }
@@ -456,6 +467,7 @@
             if (typeof(animation.selector) == 'string' && typeof(animation.name) == 'string') {
                 animations.push(animation);
                 $(animation.selector).live(tapEvent, liveTap);
+                touchSelectors.push(animation.selector);
             }
         }
         function updateOrientation() {
@@ -464,8 +476,14 @@
             // scrollTo(0, 0);
         }
         function handleTouch(e) {
+            
+            // Only handle touchSelectors
+            if (!$(e.target).is(touchSelectors.join(', ')))
+            {
+                return;
+            }
             var hoverTimeout = null,
-                $el = $(this),
+                $el = $(e.target),
                 startX = event.changedTouches[0].clientX,
                 startY = event.changedTouches[0].clientY,
                 startTime = (new Date).getTime(),
@@ -473,6 +491,7 @@
                 deltaY = 0,
                 deltaT = 0;
 
+            // Let's bind these after the fact, so we can keep some internal values
             $el.bind('touchmove', touchmove).bind('touchend', touchend);
             
             hoverTimeout = setTimeout(function(){
@@ -480,7 +499,7 @@
             }, 100);
 
             // Private touch functions (TODO: insert dirty joke)
-            function touchmove() {
+            function touchmove(e) {
                 
                 updateChanges();
                 var absX = Math.abs(deltaX);
@@ -497,10 +516,13 @@
             }
             
             function touchend(){
-                deltaT = (new Date).getTime() - startTime;
+                // deltaT = (new Date).getTime() - startTime;
+                updateChanges();
             
                 if (deltaY === 0 && deltaX === 0) {
                     $el.makeActive();
+
+                    // if ($el.attr('hash'))
                     $el.trigger('tap');
                 } else {
                     $el.removeClass('active');
@@ -520,36 +542,6 @@
 
 
         // Public jQuery Fns
-        $.fn.addTouchHandlers = function(){
-            
-            return this.each(function(){
-                var selectors = [], $touchable;
-                selectors.push(jQTSettings.touchSelector);
-                selectors.push(jQTSettings.submitSelector);
-                for (var i = animations.length - 1; i >= 0; i--){
-                    selectors.push(animations[i].selector);
-                };
-
-                $touchable = $(selectors.join(', '), this).addTouchHandler();
-
-                if (tapEvent!=='click')
-                {
-                    $touchable.click(function(){
-                        return false;
-                    })
-                }
-            })
-
-        }
-        $.fn.addTouchHandler = function(){
-            return this.each(function(){
-                if ($(this).data('touchEnabled') !== true){
-                    $(this)
-                        .bind('touchstart', handleTouch)
-                        .data('touchEnabled', true);
-                }
-            });
-        }
         $.fn.unselect = function(obj) {
             if (obj) {
                 obj.removeClass('active');
