@@ -77,7 +77,7 @@
                 submitSelector: '.submit',
                 swapSelector: '.swap',
                 useAnimations: true,
-                useFastTouch: true
+                useFastTouch: true // Still auto-focusses inputs
             };
             jQTSettings = $.extend({}, defaults, options);
             
@@ -136,6 +136,7 @@
                 touchSelectors.push(jQTSettings.touchSelector);
                 touchSelectors.push(jQTSettings.backSelector);
                 touchSelectors.push(jQTSettings.submitSelector);
+                $(touchSelectors.join(', ')).css('-webkit-touch-callout', 'none');
                 $(jQTSettings.backSelector).tap(liveTap);
                 $(jQTSettings.submitSelector).tap(submitParentForm);
 
@@ -151,6 +152,19 @@
                     .bind('orientationchange', updateOrientation)
                     .trigger('orientationchange')
                     .submit(submitForm);
+                    
+                if (jQTSettings.useFastTouch && $.support.touch)
+                {
+                    $body.click(function(e){                        
+                        var $el = $(e.target);
+                        if ($el.attr('target') == '_blank' || $el.attr('rel') == 'external')
+                        {
+                            return true;
+                        } else {
+                            return false;                            
+                        }
+                    });
+                }
 
                 // Make sure exactly one child of body has "current" class
                 if ($('body > .current').length == 0) {
@@ -256,19 +270,13 @@
                 }
             };
 
-            // User clicked an external link
-            if (target == '_blank' || $el.attr('rel') == 'external') {
-                return true;
-            }
             // User clicked an internal link, fullscreen mode
-            else if (target == '_webapp') {
+            if (target == '_webapp') {
                 window.location = $el.attr('href');
-                return false;
             }
             // User clicked a back button
             else if ($el.is(jQTSettings.backSelector)) {
                 goBack(hash);
-                return false;
             }
             // Branch on internal or external href
             else if (hash && hash!='#') {
@@ -299,17 +307,28 @@
         }
         function animatePages(fromPage, toPage, animation, backwards) {
             // Error check for target page
-            if(toPage.length == 0){
+            if(toPage.length === 0){
                 $.fn.unselect();
                 console.error('Target element is missing.');
                 return false;
             }
+            
+            // Collapse the keyboard
+            $(':focus').blur();
 
             // Make sure we are scrolled up to hide location bar
-            // scrollTo(0, 0);
+            scrollTo(0, 0);
             
             // Define callback to run after animation completes
             var callback = function(event){
+                
+                // This is either brilliant or moronic,
+                // leaning towards the latter.
+                // We're relying on the delayed click to re-active the form
+                // $('body').one('click', function(){
+                //     console.log('blah');
+                    $('input', toPage).attr('disabled', false);
+                // })
                 
                 if (animation)
                 {
@@ -323,7 +342,7 @@
 
                 toPage.trigger('pageAnimationEnd', { direction: 'in' });
     	        fromPage.trigger('pageAnimationEnd', { direction: 'out' });
-
+                
                 clearInterval(dumbLoop);
                 currentPage = toPage;
                 location.hash = currentPage.attr('id');
@@ -335,6 +354,8 @@
                 }
                 tapReady = true;
             }
+
+            $('input', toPage).attr('disabled', true);
 
             fromPage.trigger('pageAnimationStart', { direction: 'out' });
             toPage.trigger('pageAnimationStart', { direction: 'in' });
@@ -433,7 +454,6 @@
             var $form = $(e.target);
 
             if ($form.is(jQTSettings.formSelector)) {
-                $('input:focus').blur();
                 showPageByHref($form.attr('action'), {
                     data: $form.serialize(),
                     method: $form.attr('method') || "POST",
@@ -467,7 +487,7 @@
             // scrollTo(0, 0);
         }
         function handleTouch(e) {
-            
+                        
             // Only handle touchSelectors
             if (!$(e.target).is(touchSelectors.join(', ')))
             {
@@ -495,7 +515,7 @@
                 updateChanges();
                 var absX = Math.abs(deltaX);
                 var absY = Math.abs(deltaY);
-                
+                                
                 // Check for swipe
                 if (absX > absY && (absX > 35) && deltaT < 1000) {
                     $el.trigger('swipe', {direction: (deltaX < 0) ? 'left' : 'right'}).unbind('touchmove touchend');
@@ -551,19 +571,8 @@
             }
         }
         $.fn.tap = function(fn){
-            return this.each(function(){
-                var tapEvent;
-                if (jQTSettings.useFastTouch && $.support.touch)
-                {
-                    tapEvent = 'tap';
-                    $(this).click(function(){ return false; });
-                }
-                else
-                {
-                    tapEvent = 'click';
-                }
-                $(this).bind(tapEvent, fn);
-            });
+            var tapEvent = (jQTSettings.useFastTouch && $.support.touch) ? 'tap' : 'click';
+            return $(this).live(tapEvent, fn);
         }
         
         publicObj = {

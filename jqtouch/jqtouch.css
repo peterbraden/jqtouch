@@ -5,14 +5,17 @@
 a {
     -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
+
 body {
     overflow-x: hidden;
     -webkit-user-select: none;
-    -webkit-touch-callout: none;
     -webkit-text-size-adjust: none;
     font-family: Helvetica;
     -webkit-perspective: 800;
     -webkit-transform-style: preserve-3d;
+}
+.selectable, input, textarea {
+    -webkit-user-select: auto;
 }
 body > * {
     -webkit-backface-visibility: hidden;
