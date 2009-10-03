@@ -155,13 +155,13 @@
                     
                 if (jQTSettings.useFastTouch && $.support.touch)
                 {
-                    $body.click(function(e){                        
+                    $body.click(function(e){
                         var $el = $(e.target);
                         if ($el.attr('target') == '_blank' || $el.attr('rel') == 'external')
                         {
                             return true;
                         } else {
-                            return false;                            
+                            return false;
                         }
                     });
                 }
@@ -225,6 +225,10 @@
         }
         function goTo(toPage, animation) {
             var fromPage = hist[0].page;
+            
+            if (typeof(toPage) === 'string') {
+                toPage = $(toPage);
+            }
             if (typeof(animation) === 'string') {
                 for (var i = animations.length - 1; i >= 0; i--){
                     if (animations[i].name === animation)
@@ -524,7 +528,7 @@
                 }
 
                 clearTimeout(hoverTimeout);
-            }
+            } 
             
             function touchend(){
                 // deltaT = (new Date).getTime() - startTime;
