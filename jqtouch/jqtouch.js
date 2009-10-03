@@ -47,8 +47,7 @@
             extensions=$.jQTouch.prototype.extensions,
             defaultAnimations=['slide','flip','slideup','swap','cube','pop','dissolve','fade','back'], 
             animations=[], 
-            hairextensions='',
-            tapEvent=($.support.touch ? 'tap' : 'click');
+            hairextensions='';
 
         // Get the party started
         init(options);
@@ -77,7 +76,8 @@
                 statusBar: 'default', // other options: black-translucent, black
                 submitSelector: '.submit',
                 swapSelector: '.swap',
-                useAnimations: true
+                useAnimations: true,
+                useFastTouch: true
             };
             jQTSettings = $.extend({}, defaults, options);
             
@@ -114,7 +114,6 @@
 
             // Initialize on document load:
             $(document).ready(function(){
-                
 
                 // Add extensions
                 for (var i in extensions)
@@ -140,13 +139,7 @@
                 touchSelectors.push(jQTSettings.touchSelector);
                 touchSelectors.push(jQTSettings.backSelector);
                 touchSelectors.push(jQTSettings.submitSelector);
-                $(jQTSettings.submitSelector).live(tapEvent, submitParentForm);
-
-                // We bind a "touchstart" event to the body below.
-                // From here on out, any of these selectors need a 
-                $(touchSelectors.join(', ')).live('click', function(){
-                    return false;
-                });
+                $(jQTSettings.submitSelector).tap(submitParentForm);
 
                 $body = $('body');
                 
@@ -159,7 +152,7 @@
                     .bind('touchstart', handleTouch)
                     .bind('orientationchange', updateOrientation)
                     .trigger('orientationchange')
-                    .submit(submitForm)
+                    .submit(submitForm);
 
                 // Make sure exactly one child of body has "current" class
                 if ($('body > .current').length == 0) {
@@ -466,7 +459,7 @@
         function addAnimation(animation) {
             if (typeof(animation.selector) == 'string' && typeof(animation.name) == 'string') {
                 animations.push(animation);
-                $(animation.selector).live(tapEvent, liveTap);
+                $(animation.selector).tap(liveTap);
                 touchSelectors.push(animation.selector);
             }
         }
@@ -540,7 +533,6 @@
 
         } // End touch handler
 
-
         // Public jQuery Fns
         $.fn.unselect = function(obj) {
             if (obj) {
@@ -559,6 +551,19 @@
                     $(el).bind('swipe', fn);  
                 });
             }
+        }
+        $.fn.tap = function(fn){
+            return this.each(function(){
+                if (jQTSettings.useFastTap !== true || !$.support.touch)
+                {
+                    tapEvent = 'click';
+                }
+                else
+                {
+                    $(this).click(function(){ return false; });
+                }
+                $(this).bind(tapEvent, fn);
+            });
         }
         
         publicObj = {
