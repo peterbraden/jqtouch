@@ -109,9 +109,6 @@
             }
             if (hairextensions) $head.append(hairextensions);
 
-
-
-
             // Initialize on document load:
             $(document).ready(function(){
 
@@ -139,6 +136,7 @@
                 touchSelectors.push(jQTSettings.touchSelector);
                 touchSelectors.push(jQTSettings.backSelector);
                 touchSelectors.push(jQTSettings.submitSelector);
+                $(jQTSettings.backSelector).tap(liveTap);
                 $(jQTSettings.submitSelector).tap(submitParentForm);
 
                 $body = $('body');
@@ -554,13 +552,15 @@
         }
         $.fn.tap = function(fn){
             return this.each(function(){
-                if (jQTSettings.useFastTap !== true || !$.support.touch)
+                var tapEvent;
+                if (jQTSettings.useFastTouch && $.support.touch)
                 {
-                    tapEvent = 'click';
+                    tapEvent = 'tap';
+                    $(this).click(function(){ return false; });
                 }
                 else
                 {
-                    $(this).click(function(){ return false; });
+                    tapEvent = 'click';
                 }
                 $(this).bind(tapEvent, fn);
             });
