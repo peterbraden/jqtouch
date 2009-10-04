@@ -454,14 +454,15 @@
                 $referrer.unselect();
             }
         }
-        function submitForm(e){
-            var $form = $(e.target);
+        function submitForm(e, callback){
+            var $form = (typeof(e)==='string') ? $(e) : $(e.target);
 
-            if ($form.is(jQTSettings.formSelector)) {
+            if ($form.length && $form.is(jQTSettings.formSelector)) {
                 showPageByHref($form.attr('action'), {
                     data: $form.serialize(),
                     method: $form.attr('method') || "POST",
-                    animation: animations[0] || null
+                    animation: animations[0] || null,
+                    callback: callback
                 });
                 return false;
             }
@@ -583,7 +584,8 @@
             getOrientation: getOrientation,
             goBack: goBack,
             goTo: goTo,
-            addAnimation: addAnimation
+            addAnimation: addAnimation,
+            submitForm: submitForm
         }
 
         return publicObj;
