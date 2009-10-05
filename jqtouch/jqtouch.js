@@ -77,7 +77,7 @@
                 submitSelector: '.submit',
                 swapSelector: '.swap',
                 useAnimations: true,
-                useFastTouch: true // Still auto-focusses inputs
+                useFastTouch: true // Experimental.
             };
             jQTSettings = $.extend({}, defaults, options);
             
@@ -164,6 +164,11 @@
                             return false;
                         }
                     });
+                    
+                    // This additionally gets rid of form focusses
+                    $body.mousedown(function(e){
+                        return false;
+                    })
                 }
 
                 // Make sure exactly one child of body has "current" class
@@ -256,12 +261,17 @@
         function liveTap(e){
             
             // Grab the clicked element
-            var $el = $(e.target), 
-                target = $el.attr('target'), 
-                hash = $el.attr('hash'), 
-                animation=null;
-                        
-            if (tapReady == false) {
+            var $el = $(e.target);
+
+            if ($el.attr('nodeName')!=='A'){
+                $el = $el.parent('a');
+            }
+            
+            var target = $el.attr('target'), 
+            hash = $el.attr('hash'), 
+            animation=null;
+            
+            if (tapReady == false || !$el.length) {
                 console.warn('Not able to tap element.')
                 return false;
             }
@@ -325,15 +335,7 @@
             
             // Define callback to run after animation completes
             var callback = function(event){
-                
-                // This is either brilliant or moronic,
-                // leaning towards the latter.
-                // We're relying on the delayed click to re-active the form
-                // $('body').one('click', function(){
-                //     console.log('blah');
-                    $('input', toPage).attr('disabled', false);
-                // })
-                
+
                 if (animation)
                 {
                     toPage.removeClass('in reverse ' + animation.name);
@@ -358,8 +360,6 @@
                 }
                 tapReady = true;
             }
-
-            $('input', toPage).attr('disabled', true);
 
             fromPage.trigger('pageAnimationStart', { direction: 'out' });
             toPage.trigger('pageAnimationStart', { direction: 'in' });
@@ -492,27 +492,38 @@
             // scrollTo(0, 0);
         }
         function handleTouch(e) {
-                        
+
+            var $el = $(e.target);
+
             // Only handle touchSelectors
             if (!$(e.target).is(touchSelectors.join(', ')))
             {
-                return;
+                var $link = $(e.target).closest('a');
+                
+                if ($link.length){
+                    $el = $link;
+                } else {
+                    return;
+                }
             }
-            var hoverTimeout = null,
-                $el = $(e.target),
-                startX = event.changedTouches[0].clientX,
-                startY = event.changedTouches[0].clientY,
-                startTime = (new Date).getTime(),
-                deltaX = 0,
-                deltaY = 0,
-                deltaT = 0;
+            if (event)
+            {
+                var hoverTimeout = null,
+                    startX = event.changedTouches[0].clientX,
+                    startY = event.changedTouches[0].clientY,
+                    startTime = (new Date).getTime(),
+                    deltaX = 0,
+                    deltaY = 0,
+                    deltaT = 0;
 
-            // Let's bind these after the fact, so we can keep some internal values
-            $el.bind('touchmove', touchmove).bind('touchend', touchend);
-            
-            hoverTimeout = setTimeout(function(){
-                $el.makeActive();
-            }, 100);
+                // Let's bind these after the fact, so we can keep some internal values
+                $el.bind('touchmove', touchmove).bind('touchend', touchend);
+
+                hoverTimeout = setTimeout(function(){
+                    $el.makeActive();
+                }, 100);
+                
+            }
 
             // Private touch functions (TODO: insert dirty joke)
             function touchmove(e) {
@@ -532,13 +543,21 @@
             } 
             
             function touchend(){
-                // deltaT = (new Date).getTime() - startTime;
                 updateChanges();
             
                 if (deltaY === 0 && deltaX === 0) {
                     $el.makeActive();
-
-                    // if ($el.attr('hash'))
+                    // New approach:
+                    // Fake the double click?
+                    // TODO: Try with all click events (no tap)
+                    if (deltaT < 40)
+                    {
+                        setTimeout(function(){
+                            console.log('faking click');
+                           $el.trigger('touchstart')
+                           	.trigger('touchend');
+                        }, 0);
+                    }
                     $el.trigger('tap');
                 } else {
                     $el.removeClass('active');
