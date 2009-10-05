@@ -42,6 +42,7 @@
             orientation, 
             isMobileWebKit = RegExp(" Mobile/").test(navigator.userAgent), 
             tapReady=true,
+            lastAnimationTime=0,
             touchSelectors=[],
             publicObj={},
             extensions=$.jQTouch.prototype.extensions,
@@ -167,8 +168,12 @@
                     
                     // This additionally gets rid of form focusses
                     $body.mousedown(function(e){
-                        return false;
-                    })
+                        var timeDiff = (new Date()).getTime() - lastAnimationTime;
+                        if (timeDiff < 200)
+                        {
+                            return false;
+                        }
+                    });
                 }
 
                 // Make sure exactly one child of body has "current" class
@@ -358,6 +363,7 @@
                 if ($originallink) {
                     $originallink.unselect();
                 }
+                lastAnimationTime = (new Date()).getTime();
                 tapReady = true;
             }
 
@@ -550,14 +556,13 @@
                     // New approach:
                     // Fake the double click?
                     // TODO: Try with all click events (no tap)
-                    if (deltaT < 40)
-                    {
-                        setTimeout(function(){
-                            console.log('faking click');
-                           $el.trigger('touchstart')
-                           	.trigger('touchend');
-                        }, 0);
-                    }
+                    // if (deltaT < 40)
+                    // {
+                    //     setTimeout(function(){
+                    //        $el.trigger('touchstart')
+                    //          .trigger('touchend');
+                    //     }, 0);
+                    // }
                     $el.trigger('tap');
                 } else {
                     $el.removeClass('active');
