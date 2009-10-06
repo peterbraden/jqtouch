@@ -158,7 +158,7 @@
                 {
                     $body.click(function(e){
                         var $el = $(e.target);
-                        if ($el.attr('target') == '_blank' || $el.attr('rel') == 'external')
+                        if ($el.attr('target') == '_blank' || $el.attr('rel') == 'external' || $el.is('input[type="checkbox"]'))
                         {
                             return true;
                         } else {
@@ -280,7 +280,12 @@
                 console.warn('Not able to tap element.')
                 return false;
             }
-
+            
+            if ($el.attr('target') == '_blank' || $el.attr('rel') == 'external')
+            {
+                return true;
+            }
+            
             // Figure out the animation to use
             for (var i = animations.length - 1; i >= 0; i--){
                 if ($el.is(animations[i].selector)) {
@@ -463,7 +468,7 @@
         function submitForm(e, callback){
             var $form = (typeof(e)==='string') ? $(e) : $(e.target);
 
-            if ($form.length && $form.is(jQTSettings.formSelector)) {
+            if ($form.length && $form.is(jQTSettings.formSelector) && $form.attr('action')) {
                 showPageByHref($form.attr('action'), {
                     data: $form.serialize(),
                     method: $form.attr('method') || "POST",
