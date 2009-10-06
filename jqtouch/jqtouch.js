@@ -605,8 +605,13 @@
             }
         }
         $.fn.tap = function(fn){
-            var tapEvent = (jQTSettings.useFastTouch && $.support.touch) ? 'tap' : 'click';
-            return $(this).live(tapEvent, fn);
+            if ($.isFunction(fn))
+            {
+                var tapEvent = (jQTSettings.useFastTouch && $.support.touch) ? 'tap' : 'click';
+                return $(this).live(tapEvent, fn);
+            } else {
+                $(this).trigger('tap');
+            }
         }
         
         publicObj = {
