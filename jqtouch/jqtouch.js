@@ -599,9 +599,9 @@
         $.fn.swipe = function(fn) {
             if ($.isFunction(fn))
             {
-                return this.each(function(i, el){
-                    $(el).bind('swipe', fn);  
-                });
+                return $(this).bind('swipe', fn);
+            } else {
+                return $(this).trigger('swipe');
             }
         }
         $.fn.tap = function(fn){
@@ -610,10 +610,10 @@
                 var tapEvent = (jQTSettings.useFastTouch && $.support.touch) ? 'tap' : 'click';
                 return $(this).live(tapEvent, fn);
             } else {
-                $(this).trigger('tap');
+                return $(this).trigger('tap');
             }
         }
-        
+
         publicObj = {
             getOrientation: getOrientation,
             goBack: goBack,
