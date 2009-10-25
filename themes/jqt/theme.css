@@ -92,7 +92,7 @@ body.landscape .toolbar > h1 {
     font-weight: bold;
 }
 .whiteButton,
-.grayButton {
+.grayButton, .redButton, .blueButton, .greenButton {
     display: block;
     border-width: 0 12px;
     padding: 10px;
@@ -102,6 +102,12 @@ body.landscape .toolbar > h1 {
     text-decoration: inherit;
     color: inherit;
 }
+
+.whiteButton.active,
+.grayButton.active, .redButton.active, .blueButton.active, .greenButton.active, .whiteButton:active,
+.grayButton:active, .redButton:active, .blueButton:active, .greenButton:active {
+    -webkit-border-image: url(img/activeButton.png) 0 12 0 12;
+}
 .whiteButton {
     -webkit-border-image: url(img/whiteButton.png) 0 12 0 12;
     text-shadow: rgba(255, 255, 255, 0.7) 0 1px 0;
@@ -110,6 +116,18 @@ body.landscape .toolbar > h1 {
     -webkit-border-image: url(img/grayButton.png) 0 12 0 12;
     color: #FFFFFF;
 }
+
+.redButton {
+    -webkit-border-image: url(img/redButton.png) 0 12 0 12;
+    color: #FFFFFF;
+}
+
+.greenButton {
+    -webkit-border-image: url(img/greenButton.png) 0 12 0 12;
+    color: #FFFFFF;
+}
+
+
 /* @end */
 /* @group Lists */
 h1 + ul, h2 + ul, h3 + ul, h4 + ul, h5 + ul, h6 + ul {
@@ -149,6 +167,11 @@ ul li.arrow {
     background-position: right center;
     background-repeat: no-repeat;
 }
+
+ul li.arrow a { 
+	padding: 12px 22px 12px 10px;
+}
+
 ul li.forward {
     background-image: url(img/chevron_circle.png), -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4c4d4e), to(#404142));
     background-position: right center;

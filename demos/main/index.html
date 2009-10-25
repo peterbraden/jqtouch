@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
+        
         <title>jQTouch &beta;</title>
         <style type="text/css" media="screen">@import "../../jqtouch/jqtouch.css";</style>
         <style type="text/css" media="screen">@import "../../themes/jqt/theme.css";</style>
@@ -116,6 +117,7 @@
                 <li><a class="pop" href="#animdemo">Pop</a></li>
                 <li><a class="swap" href="#animdemo">Swap</a></li>
                 <li><a class="cube" href="#animdemo">Cube</a></li>
+                <li><a class="slideup reverse" href="#animdemo">Slide Up (reversed)</a></li>
             </ul>
             <div class="info">
                 Custom animations are also <a href="http://code.google.com/p/jqtouch/wiki/Animations" target="_blank">easy to write</a>. <br />View the source in <code>demos/customanimation</code> to see how.
@@ -127,6 +129,24 @@
             </div>
             <a style="margin:0 10px;color:rgba(0,0,0,.9)" href="#" class="whiteButton goback">Go back</a>
         </div>
+        
+        <div id="buttons">
+            <div class="toolbar">
+                <h1>Buttons!</h1>
+                <a href="#" class="back">Home</a>
+            </div>
+            <div style="margin: 10px;">
+                <a href="#" class="whiteButton">White</a>
+                <br />
+                <a href="#" class="grayButton">Gray</a>
+                <br />
+                <a href="#" class="redButton">Red</a>
+                <br />
+                <a href="#" class="greenButton">Green</a>
+            </div>
+        </div>
+        
+        
         <div id="callback">
             <div class="toolbar">
                 <h1>AJAX w/Callback</h1>
@@ -219,10 +239,10 @@
                         </select>
                     </li>
                     <li><input type="password" name="some_name" value="iphonedelcopon" id="some_name" /></li>
-                    <li><input type="checkbox" name="some_name" value="Hello" id="some_name" title="V8 Engine Type" /></li>
-                    <li><input type="checkbox" name="some_name" value="Hello" checked="checked" id="some_name" title="V12 Engine Type" /></li>
-                    <li><input type="radio" name="some_name" value="Hello" id="some_name" title="Only cars" /></li>
-                    <li><input type="radio" name="some_name" value="Hello" id="some_name" title="Only motorbikes" /></li>
+                    <li><input type="checkbox" name="food" value="punch" title="Punch" /></li>
+                    <li><input type="checkbox" name="food" value="pie" checked="checked" title="Pie" /></li>
+                    <li><input type="radio" name="bag" value="paper" title="Paper" /></li>
+                    <li><input type="radio" name="bag" value="plastic" title="Plastic" /></li>
                 </ul>
             </form>
         </div>
@@ -300,6 +320,10 @@
                 <li class="arrow"><a href="#edge">Edge to Edge</a></li>
                 <li class="arrow"><a href="#plastic">Plastic</a></li>
                 <li class="arrow"><a href="#metal">Metal</a></li>
+            </ul>
+            <h2>Buttons</h2>
+            <ul class="rounded">
+                <li class="arrow"><a href="#buttons">Buttons</a></li>
             </ul>
             <h2>Forms</h2>
             <ul class="rounded">

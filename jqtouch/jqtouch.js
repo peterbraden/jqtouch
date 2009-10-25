@@ -108,7 +108,9 @@
                     hairextensions += '<meta name="apple-mobile-web-app-status-bar-style" content="' + jQTSettings.statusBar + '" />';
                 }
             }
-            if (hairextensions) $head.append(hairextensions);
+            if (hairextensions)  { 
+		$head.prepend(hairextensions);
+	    }
 
             // Initialize on document load:
             $(document).ready(function(){
@@ -197,8 +199,9 @@
         function goBack(to) {
             // Init the param
             if (hist.length > 1) {
-                var numberOfPages = Math.min(parseInt(to || 1, 10), hist.length-1);
-
+                var numberOfPages = Math.min(parseInt(to || 1, 10), hist.length-1),
+                    curPage = hist[0];
+                
                 // Search through the history for an ID
                 if( isNaN(numberOfPages) && typeof(to) === "string" && to != '#' ) {
                     for( var i=1, length=hist.length; i < length; i++ ) {
@@ -214,18 +217,11 @@
                     numberOfPages = 1;
                 };
 
-                // Grab the current page for the "from" info
-                var animation = hist[0].animation;
-                var fromPage = hist[0].page;
-
                 // Remove all pages in front of the target page
                 hist.splice(0, numberOfPages);
 
-                // Grab the target page
-                var toPage = hist[0].page;
-
                 // Make the animations
-                animatePages(fromPage, toPage, animation, true);
+                animatePages(curPage.page, hist[0].page, curPage.animation, curPage.reverse === false);
                 
                 return publicObj;
             } else {
@@ -233,7 +229,7 @@
                 return false;
             }
         }
-        function goTo(toPage, animation) {
+        function goTo(toPage, animation, reverse) {
             var fromPage = hist[0].page;
             
             if (typeof(toPage) === 'string') {
@@ -248,8 +244,8 @@
                     }
                 }
             }
-            if (animatePages(fromPage, toPage, animation)) {
-                addPageToHistory(toPage, animation);
+            if (animatePages(fromPage, toPage, animation, reverse)) {
+                addPageToHistory(toPage, animation, reverse);
                 return publicObj;
             }
             else
@@ -268,8 +264,8 @@
             // Grab the clicked element
             var $el = $(e.target);
 
-            if ($el.attr('nodeName')!=='A'){
-                $el = $el.parent('a');
+            if ($el.attr('nodeName')!=='A' && $el.attr('nodeName')!=='AREA'){
+                $el = $el.parent('a, area');
             }
             
             var target = $el.attr('target'), 
@@ -277,7 +273,7 @@
             animation=null;
             
             if (tapReady == false || !$el.length) {
-                console.warn('Not able to tap element.')
+                console.warn('Not able to tap element.');
                 return false;
             }
             
@@ -305,7 +301,7 @@
             // Branch on internal or external href
             else if (hash && hash!='#') {
                 $el.addClass('active');
-                goTo($(hash).data('referrer', $el), animation);
+                goTo($(hash).data('referrer', $el), animation, $(this).hasClass('reverse'));
             } else {
                 $el.addClass('loading active');
                 showPageByHref($el.attr('href'), {
@@ -318,14 +314,14 @@
             }
             return false;
         }
-        function addPageToHistory(page, animation) {
+        function addPageToHistory(page, animation, reverse) {
             // Grab some info
             var pageId = page.attr('id');
-
             // Prepend info to page history
             hist.unshift({
                 page: page, 
                 animation: animation, 
+                reverse: reverse || false,
                 id: pageId
             });
         }
@@ -348,8 +344,12 @@
 
                 if (animation)
                 {
-                    toPage.removeClass('in reverse ' + animation.name);
-                    fromPage.removeClass('current out reverse ' + animation.name);
+                    toPage.removeClass('in ' + animation.name);
+                    fromPage.removeClass('current out ' + animation.name);
+                    if (backwards) {                    
+                        toPage.toggleClass('reverse');
+                        fromPage.toggleClass('reverse');
+                    }
                 }
                 else
                 {
@@ -378,8 +378,13 @@
             if ($.support.WebKitAnimationEvent && animation && jQTSettings.useAnimations) {
                 toPage.one('webkitAnimationEnd', callback);
                 tapReady = false;
-                toPage.addClass(animation.name + ' in current ' + (backwards ? ' reverse' : ''));
-                fromPage.addClass(animation.name + ' out' + (backwards ? ' reverse' : ''));
+                if (backwards) {                    
+                    toPage.toggleClass('reverse');
+                    fromPage.toggleClass('reverse');
+                }
+                toPage.addClass(animation.name + ' in current ');
+                fromPage.addClass(animation.name + ' out');
+
             } else {
                 toPage.addClass('current');
                 callback();
@@ -453,7 +458,9 @@
                         }
                     },
                     error: function (data) {
-                        if (settings.$referrer) settings.$referrer.unselect();
+                        if (settings.$referrer) {
+            		    settings.$referrer.unselect();
+            		}
                         if (settings.callback) {
                             settings.callback(false);
                         }
@@ -558,16 +565,6 @@
             
                 if (deltaY === 0 && deltaX === 0) {
                     $el.makeActive();
-                    // New approach:
-                    // Fake the double click?
-                    // TODO: Try with all click events (no tap)
-                    // if (deltaT < 40)
-                    // {
-                    //     setTimeout(function(){
-                    //        $el.trigger('touchstart')
-                    //          .trigger('touchend');
-                    //     }, 0);
-                    // }
                     $el.trigger('tap');
                 } else {
                     $el.removeClass('active');
