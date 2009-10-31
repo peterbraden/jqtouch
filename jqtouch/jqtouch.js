@@ -37,7 +37,7 @@
             hist=[], 
             newPageCount=0, 
             jQTSettings={}, 
-	    hashCheckInterval,
+	        hashCheckInterval,
             currentPage, 
             orientation, 
             isMobileWebKit = RegExp(" Mobile/").test(navigator.userAgent), 
@@ -159,7 +159,7 @@
                 {
                     $body.click(function(e){
                         var $el = $(e.target);
-                        if ($el.attr('target') == '_blank' || $el.attr('rel') == 'external' || $el.is('input[type="checkbox"]'))
+                        if ($el.isExternalLink())
                         {
                             return true;
                         } else {
@@ -268,19 +268,20 @@
             }
             
             var target = $el.attr('target'), 
-            hash = $el.attr('hash'), 
-            animation=null;
+                hash = $el.attr('hash'), 
+                animation=null;
             
             if (tapReady == false || !$el.length) {
                 console.warn('Not able to tap element.');
                 return false;
             }
             
-            if ($el.attr('target') == '_blank' || $el.attr('rel') == 'external')
+            if ($el.isExternalLink())
             {
+                $el.removeClass('active');
                 return true;
             }
-            
+
             // Figure out the animation to use
             for (var i = animations.length - 1; i >= 0; i--){
                 if ($el.is(animations[i].selector)) {
@@ -507,14 +508,13 @@
             $body.removeClass('profile landscape').addClass(orientation).trigger('turn', {orientation: orientation});
             // scrollTo(0, 0);
         }
-        function handleTouch(e) {
-
+        function handleTouch(e) {            
             var $el = $(e.target);
 
             // Only handle touchSelectors
             if (!$(e.target).is(touchSelectors.join(', ')))
             {
-                var $link = $(e.target).closest('a');
+                var $link = $(e.target).closest('a, area').is(touchSelectors.join(', '));
                 
                 if ($link.length){
                     $el = $link;
@@ -522,7 +522,8 @@
                     return;
                 }
             }
-            if (event)
+
+            if (e)
             {
                 var hoverTimeout = null,
                     startX = event.changedTouches[0].clientX,
@@ -607,6 +608,10 @@
             } else {
                 return $(this).trigger('tap');
             }
+        }
+        $.fn.isExternalLink = function(){
+            var $el = $(this);
+            return ($el.attr('target') == '_blank' || $el.attr('rel') == 'external' || $el.is('input[type="checkbox"]') || $el.is('a[href^="http://maps.google.com:"], a[href^="mailto:"], a[href^="tel:"], a[href^="javascript:"], a[href*="youtube.com/v"], a[href*="youtube.com/watch"]'));
         }
 
         publicObj = {
