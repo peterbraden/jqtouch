@@ -37,7 +37,7 @@
             hist=[], 
             newPageCount=0, 
             jQTSettings={}, 
-            hashCheck, 
+	    hashCheckInterval,
             currentPage, 
             orientation, 
             isMobileWebKit = RegExp(" Mobile/").test(navigator.userAgent), 
@@ -49,7 +49,6 @@
             defaultAnimations=['slide','flip','slideup','swap','cube','pop','dissolve','fade','back'], 
             animations=[], 
             hairextensions='';
-
         // Get the party started
         init(options);
 
@@ -188,17 +187,16 @@
                 
                 // Go to the top of the "current" page
                 $(currentPage).addClass('current');
-                location.hash = $(currentPage).attr('id');
+                location.hash = '#' + $(currentPage).attr('id');
                 addPageToHistory(currentPage);
                 scrollTo(0, 0);
-                dumbLoopStart();
+                startHashCheck();
             });
         }
         
         // PUBLIC FUNCTIONS
         function goBack(to) {
             // Init the param
-            if (hist.length > 1) {
                 var numberOfPages = Math.min(parseInt(to || 1, 10), hist.length-1),
                     curPage = hist[0];
                 
@@ -217,17 +215,18 @@
                     numberOfPages = 1;
                 };
 
-                // Remove all pages in front of the target page
-                hist.splice(0, numberOfPages);
+                if (hist.length > 1)
+                {
+                    // Remove all pages in front of the target page
+                    hist.splice(0, numberOfPages);
+                    animatePages(curPage.page, hist[0].page, curPage.animation, curPage.reverse === false);
+                }
+                else
+                {
+                    location.hash = '#' + curPage.id;
+                }
 
-                // Make the animations
-                animatePages(curPage.page, hist[0].page, curPage.animation, curPage.reverse === false);
-                
                 return publicObj;
-            } else {
-                console.error('No pages in history.');
-                return false;
-            }
         }
         function goTo(toPage, animation, reverse) {
             var fromPage = hist[0].page;
@@ -340,8 +339,7 @@
             scrollTo(0, 0);
             
             // Define callback to run after animation completes
-            var callback = function(event){
-
+            var callback = function animationEnd(event){
                 if (animation)
                 {
                     toPage.removeClass('in ' + animation.name);
@@ -357,12 +355,12 @@
                 }
 
                 toPage.trigger('pageAnimationEnd', { direction: 'in' });
-    	        fromPage.trigger('pageAnimationEnd', { direction: 'out' });
-                
-                clearInterval(dumbLoop);
+                fromPage.trigger('pageAnimationEnd', { direction: 'out' });
+
+                clearInterval(hashCheckInterval);
                 currentPage = toPage;
-                location.hash = currentPage.attr('id');
-                dumbLoopStart();
+                location.hash = '#' + currentPage.attr('id');
+                startHashCheck();
 
                 var $originallink = toPage.data('referrer');
                 if ($originallink) {
@@ -392,19 +390,17 @@
 
             return true;
         }
-        function dumbLoopStart() {
-            dumbLoop = setInterval(function(){
-                var curid = currentPage.attr('id');
-                if (location.hash == '') {
-                    location.hash = '#' + curid;
-                } else if (location.hash != '#' + curid) {
-                    try {
-                        goBack(location.hash)
-                    } catch(e) {
-                        console.error('Unknown hash change.');
-                    }
-                }
-            }, 100);
+        function hashCheck() {
+            var curid = currentPage.attr('id');
+            if (location.hash == '') {
+                location.hash = '#' + curid;
+            } else if (location.hash != '#' + curid) {
+                clearInterval(hashCheckInterval);
+                goBack(location.hash);
+            }
+        }
+        function startHashCheck(){
+            hashCheckInterval = setInterval(hashCheck, 100);
         }
         function insertPages(nodes, animation) {
             var targetPage = null;
@@ -413,7 +409,9 @@
                 if (!$node.attr('id')) {
                     $node.attr('id', 'page-' + (++newPageCount));
                 }
-                $node.appendTo($body);
+                
+		        $body.trigger('pageInserted', {page: $node.appendTo($body)});
+
                 if ($node.hasClass('current') || !targetPage ) {
                     targetPage = $node;
                 }
