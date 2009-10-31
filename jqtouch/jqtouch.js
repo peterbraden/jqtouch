@@ -265,7 +265,7 @@
             var $el = $(e.target);
 
             if ($el.attr('nodeName')!=='A' && $el.attr('nodeName')!=='AREA'){
-                $el = $el.parent('a, area');
+                $el = $el.closest('a, area');
             }
             
             var target = $el.attr('target'), 
@@ -448,7 +448,7 @@
                         var firstPage = insertPages(data, settings.animation);
                         if (firstPage)
                         {
-                            if (settings.method == 'GET' && jQTSettings.cacheGetRequests && settings.$referrer)
+                            if (settings.method == 'GET' && jQTSettings.cacheGetRequests === true && settings.$referrer)
                             {
                                 settings.$referrer.attr('href', '#' + firstPage.attr('id'));
                             }
