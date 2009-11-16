@@ -472,7 +472,7 @@
             }
         }
         function submitForm(e, callback){
-            var $form = (typeof(e)==='string') ? $(e) : $(e.target);
+            var $form = (typeof(e)==='string') ? $(e).eq(0) : $(e.target);
 
             if ($form.length && $form.is(jQTSettings.formSelector)) {
                 showPageByHref($form.attr('action'), {
@@ -611,7 +611,7 @@
         }
         $.fn.isExternalLink = function(){
             var $el = $(this);
-            return ($el.attr('target') == '_blank' || $el.attr('rel') == 'external' || $el.is('input[type="checkbox"]') || $el.is('a[href^="http://maps.google.com:"], a[href^="mailto:"], a[href^="tel:"], a[href^="javascript:"], a[href*="youtube.com/v"], a[href*="youtube.com/watch"]'));
+            return ($el.attr('target') == '_blank' || $el.attr('rel') == 'external' || $el.is('input[type="checkbox"], input[type="radio"], a[href^="http://maps.google.com:"], a[href^="mailto:"], a[href^="tel:"], a[href^="javascript:"], a[href*="youtube.com/v"], a[href*="youtube.com/watch"]'));
         }
 
         publicObj = {
