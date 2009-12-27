@@ -27,7 +27,7 @@
             $(function(){
                 // Show a swipe event on swipe test
                 $('#swipeme').swipe(function(evt, data) {
-                    $(this).html('You swiped <strong>' + data.direction + '</strong>!');
+                    $(this).html('You swiped <strong>' + data.direction + '/' + data.deltaX +':' + data.deltaY + '</strong>!');
                 });
                 $('a[target="_blank"]').click(function() {
                     if (confirm('This link opens in a new window.')) {

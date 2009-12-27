@@ -472,7 +472,7 @@
             }
         }
         function submitForm(e, callback){
-            var $form = (typeof(e)==='string') ? $(e).eq(0) : $(e.target);
+            var $form = (typeof(e)==='string') ? $(e).eq(0) : ( e.target ? $(e.target) : $(e) );
 
             if ($form.length && $form.is(jQTSettings.formSelector)) {
                 showPageByHref($form.attr('action'), {
@@ -551,7 +551,7 @@
                                 
                 // Check for swipe
                 if (absX > absY && (absX > 35) && deltaT < 1000) {
-                    $el.trigger('swipe', {direction: (deltaX < 0) ? 'left' : 'right'}).unbind('touchmove touchend');
+                    $el.trigger('swipe', {direction: (deltaX < 0) ? 'left' : 'right', deltaX: deltaX, deltaY: deltaY }).unbind('touchmove touchend');
                 } else if (absY > 1) {
                     $el.removeClass('active');
                 }
