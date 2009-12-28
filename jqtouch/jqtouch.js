@@ -333,6 +333,14 @@
                 return false;
             }
             
+            // Error check for fromPage=toPage
+            if(toPage.hasClass('current'))
+            {
+                $.fn.unselect();
+                console.error('Target element is the current page.');
+                return false;
+            }
+            
             // Collapse the keyboard
             $(':focus').blur();
 
