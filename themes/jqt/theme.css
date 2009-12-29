@@ -66,6 +66,10 @@ body.landscape .toolbar > h1 {
     background: none;
     -webkit-border-image: url(img/button.png) 0 5 0 5;
 }
+.button.active, .cancel.active, .add.active {
+    -webkit-border-image: url(img/button_clicked.png) 0 5 0 5;
+    color: #aaa;
+}
 .blueButton {
     -webkit-border-image: url(img/blueButton.png) 0 5 0 5;
     border-width: 0 5px;
