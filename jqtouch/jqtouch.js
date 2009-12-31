@@ -108,8 +108,8 @@
                 }
             }
             if (hairextensions)  { 
-		$head.prepend(hairextensions);
-	    }
+                $head.prepend(hairextensions);
+            }
 
             // Initialize on document load:
             $(document).ready(function(){
@@ -159,6 +159,11 @@
                 {
                     $body.click(function(e){
                         var $el = $(e.target);
+
+                        if ($el.attr('nodeName')!=='A' && $el.attr('nodeName')!=='AREA'){
+                            $el = $el.closest('a, area');
+                        }
+
                         if ($el.isExternalLink())
                         {
                             return true;
@@ -299,9 +304,15 @@
                 goBack(hash);
             }
             // Branch on internal or external href
-            else if (hash && hash!='#') {
-                $el.addClass('active');
-                goTo($(hash).data('referrer', $el), animation, $(this).hasClass('reverse'));
+            else if (hash) {
+                if(hash!='#')
+                {
+                    $el.addClass('active');
+                    goTo($(hash).data('referrer', $el), animation, $(this).hasClass('reverse'));
+                }else {
+                    $el.unselect();
+                    return true;
+                }
             } else {
                 $el.addClass('loading active');
                 showPageByHref($el.attr('href'), {
