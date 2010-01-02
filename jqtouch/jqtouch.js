@@ -303,16 +303,15 @@
             else if ($el.is(jQTSettings.backSelector)) {
                 goBack(hash);
             }
+            // Allow tap on item with no href
+            else if ($el.attr('href') == '#') {
+                $el.unselect();
+                return true;
+            }
             // Branch on internal or external href
-            else if (hash) {
-                if(hash!='#')
-                {
-                    $el.addClass('active');
-                    goTo($(hash).data('referrer', $el), animation, $(this).hasClass('reverse'));
-                }else {
-                    $el.unselect();
-                    return true;
-                }
+            else if (hash && hash!='#') {
+                $el.addClass('active');
+                goTo($(hash).data('referrer', $el), animation, $(this).hasClass('reverse'));
             } else {
                 $el.addClass('loading active');
                 showPageByHref($el.attr('href'), {
