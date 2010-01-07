@@ -70,7 +70,7 @@
                 touchSelector: 'a, .touch',
                 popSelector: '.pop',
                 preloadImages: false,
-                slideSelector: 'body > * > ul li a',
+                slideSelector: '#jqt > * > ul li a',
                 slideupSelector: '.slideup',
                 startupScreen: null,
                 statusBar: 'default', // other options: black-translucent, black
@@ -142,7 +142,7 @@
                 $(jQTSettings.backSelector).tap(liveTap);
                 $(jQTSettings.submitSelector).tap(submitParentForm);
 
-                $body = $('body');
+                $body = $('#jqt');
                 
                 if (jQTSettings.fullScreenClass && window.navigator.standalone == true) {
                     $body.addClass(jQTSettings.fullScreenClass + ' ' + jQTSettings.statusBar);
@@ -183,11 +183,11 @@
                 }
 
                 // Make sure exactly one child of body has "current" class
-                if ($('body > .current').length == 0) {
-                    currentPage = $('body > *:first');
+                if ($('#jqt > .current').length == 0) {
+                    currentPage = $('#jqt > *:first');
                 } else {
-                    currentPage = $('body > .current:first');
-                    $('body > .current').removeClass('current');
+                    currentPage = $('#jqt > .current:first');
+                    $('#jqt > .current').removeClass('current');
                 }
                 
                 // Go to the top of the "current" page

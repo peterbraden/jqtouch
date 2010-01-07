@@ -26,7 +26,7 @@
 
             $(function(){
                 // This prevents scrolling
-                $('body').bind('touchmove',function(){
+                $('#jqt').bind('touchmove',function(){
                     event.preventDefault();
                 });
                 jQT.addAnimation({
@@ -46,27 +46,27 @@
             });
         </script>
         <style type="text/css" media="screen">
-            body {
+            div#jqt {
                 -webkit-transform-origin: 0 50%;
                 -webkit-perspective: 800;
             }
-            .pageflip {
+            div#jqt .pageflip {
                 -webkit-transform-origin: 0 50%;
                 -webkit-animation-duration: .5s;
             }
-            .pageflip.in {
+            div#jqt .pageflip.in {
             	-webkit-animation-name: dontmove;
             	z-index: 0;
             }
-            .pageflip.out {
+            div#jqt .pageflip.out {
             	-webkit-animation-name: pageflipout; /* Chill out, page */
             	z-index: 10;
             }
-            .pageflip.out.reverse {
+            div#jqt .pageflip.out.reverse {
             	z-index: 0;
             	-webkit-animation-name: dontmove;
             }
-            .pageflip.in.reverse {
+            div#jqt .pageflip.in.reverse {
             	z-index: 10;
             	-webkit-animation-name: pageflipin;
             }
@@ -81,20 +81,22 @@
             
             
             /* Just for looks */
-            body > div > div {
+            div#jqt > div > div {
                 font-size: 1.5em; text-align: center; margin: 160px 0 0; font-family: Marker felt;
             }
         </style>
     </head>
     <body>
-        <div id="page1" class="touch">
-            <div>
-                Swipe left to go to the next page.
+        <div id="jqt">
+            <div id="page1" class="touch">
+                <div>
+                    Swipe left to go to the next page.
+                </div>
             </div>
-        </div>
-        <div id="page2" class="touch">
-            <div>
-                Swipe right to go back.                
+            <div id="page2" class="touch">
+                <div>
+                    Swipe right to go back.                
+                </div>
             </div>
         </div>
     </body>

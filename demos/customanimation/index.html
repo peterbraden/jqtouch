@@ -32,22 +32,22 @@
             });
         </script>
         <style type="text/css" media="screen">
-            .reveal.in {
+            div#jqt .reveal.in {
             	-webkit-animation-name: dontmove;
             	z-index: 0;
             }
 
-            .reveal.out {
+            div#jqt .reveal.out {
             	-webkit-animation-name: revealout;
             	z-index: 10;
             }
 
-            .reveal.out.reverse {
+            div#jqt .reveal.out.reverse {
             	z-index: 0;
             	-webkit-animation-name: dontmove;
             }
 
-            .reveal.in.reverse {
+            div#jqt .reveal.in.reverse {
             	z-index: 10;
             	-webkit-animation-name: revealin;
             }
@@ -65,16 +65,18 @@
         </style>
     </head>
     <body>
-        <div id="test">
-            <ul class="rounded">
-                <li><a class="revealme" href="#page2">Test Reveal</a></li>
-            </ul>
-        </div>
-        <div id="page2">
-            <div style="font-size: 1.5em; text-align: center; margin: 160px 0 160px; font-family: Marker felt;">
-                Pretty smooth, eh?            
+        <div id="jqt">
+            <div id="test">
+                <ul class="rounded">
+                    <li><a class="revealme" href="#page2">Test Reveal</a></li>
+                </ul>
             </div>
-            <a style="margin:0 10px;color:rgba(0,0,0,.9)" href="#" class="whiteButton goback">Go back</a>
+            <div id="page2">
+                <div style="font-size: 1.5em; text-align: center; margin: 160px 0 160px; font-family: Marker felt;">
+                    Pretty smooth, eh?            
+                </div>
+                <a style="margin:0 10px;color:rgba(0,0,0,.9)" href="#" class="whiteButton goback">Go back</a>
+            </div>
         </div>
     </body>
 </html>

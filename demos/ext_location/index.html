@@ -20,7 +20,7 @@
 
             $(function(){
                 function setDisplay(text) {
-                    $('.info').empty().append(text)
+                    $('div#jqt .info').empty().append(text)
                 }
                 
                 // We pass "updateLocation" a callback function,
@@ -43,11 +43,13 @@
 
     </head>
     <body>
-        <div>
-            <div class="toolbar">
-                <h1>Geo Location</h1>
+        <div id="jqt">
+            <div>
+                <div class="toolbar">
+                    <h1>Geo Location</h1>
+                </div>
+                <div class="info"></div>
             </div>
-            <div class="info"></div>
         </div>
     </body>
 </html>
