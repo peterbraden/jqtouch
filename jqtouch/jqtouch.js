@@ -160,7 +160,7 @@
                     $body.click(function(e){
                         var $el = $(e.target);
 
-                        if ($el.attr('nodeName')!=='A' && $el.attr('nodeName')!=='AREA'){
+                        if ($el.attr('nodeName')!=='A' && $el.attr('nodeName')!=='AREA' && $el.attr('nodeName')!=='INPUT'){
                             $el = $el.closest('a, area');
                         }
 
