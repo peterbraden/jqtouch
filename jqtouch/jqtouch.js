@@ -111,7 +111,7 @@
                 $head.prepend(hairextensions);
             }
 
-            // Initialize on document load:
+            // Initialize on document ready:
             $(document).ready(function() {
 
                 // Add extensions
@@ -504,7 +504,7 @@
         }
         function handleTouch(e) {
             var $el = $(e.target);
-
+            
             // Only handle touchSelectors
             if (!$(e.target).is(touchSelectors.join(', '))) {
                 var $link = $(e.target).closest('a, area');
@@ -515,7 +515,7 @@
                     return;
                 }
             }
-
+            
             if (e) {
                 var hoverTimeout = null,
                     startX = event.changedTouches[0].clientX,
