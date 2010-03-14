@@ -70,7 +70,7 @@
                 touchSelector: 'a, .touch',
                 popSelector: '.pop',
                 preloadImages: false,
-                slideSelector: '#jqt > * > ul li a',
+                slideSelector: '#jqt > * > ul li a, .slide',
                 slideupSelector: '.slideup',
                 startupScreen: null,
                 statusBar: 'default', // other options: black-translucent, black
