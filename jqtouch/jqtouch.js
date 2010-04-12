@@ -196,6 +196,13 @@
         // PUBLIC FUNCTIONS
         function goBack(to) {
             // Init the param
+            console.log(hist.length);
+            
+            if (hist.length <= 1)
+            {
+                window.history.go(-2);
+            }
+            
             var numberOfPages = Math.min(parseInt(to || 1, 10), hist.length-1),
                 curPage = hist[0];
 
@@ -394,12 +401,13 @@
         }
         function hashCheck() {
             var curid = currentPage.attr('id');
-            if (location.hash == '') {
-                location.hash = '#' + curid;
-            } else if (location.hash != '#' + curid) {
+            if (location.hash != '#' + curid) {
                 clearInterval(hashCheckInterval);
                 goBack(location.hash);
             }
+            else if (location.hash == '') {
+                location.hash = '#' + curid;
+            } 
         }
         function startHashCheck() {
             hashCheckInterval = setInterval(hashCheck, 100);
@@ -498,7 +506,7 @@
             }
         }
         function updateOrientation() {
-            orientation = window.innerWidth < window.innerHeight ? 'profile' : 'landscape';
+            orientation = Math.abs(window.orientation) == 90 ? 'landscape' : 'profile';
             $body.removeClass('profile landscape').addClass(orientation).trigger('turn', {orientation: orientation});
             // scrollTo(0, 0);
         }
