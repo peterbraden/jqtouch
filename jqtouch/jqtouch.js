@@ -492,7 +492,7 @@
         function submitParentForm(e) {
             var $form = $(this).closest('form');
             if ($form.length) {
-                evt = jQuery.Event("submit");
+                var evt = $.Event("submit");
                 evt.preventDefault();
                 $form.trigger(evt);
                 return false;
