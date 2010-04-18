@@ -46,17 +46,34 @@
                     });
                 // Page animations end with AJAX callback event, example 1 (load remote HTML only first time)
                 $('#callback').bind('pageAnimationEnd', function(e, info){
-                    if (!$(this).data('loaded')) {                      // Make sure the data hasn't already been loaded (we'll set 'loaded' to true a couple lines further down)
-                        $(this).append($('<div>Loading</div>').         // Append a placeholder in case the remote HTML takes its sweet time making it back
-                            load('ajax.html .info', function() {        // Overwrite the "Loading" placeholder text with the remote HTML
-                                $(this).parent().data('loaded', true);  // Set the 'loaded' var to true so we know not to re-load the HTML next time the #callback div animation ends
-                            }));
+                    // Make sure the data hasn't already been loaded (we'll set 'loaded' to true a couple lines further down)
+                    if (!$(this).data('loaded')) {
+                        // Append a placeholder in case the remote HTML takes its sweet time making it back
+                        // Then, overwrite the "Loading" placeholder text with the remote HTML
+                        $(this).append($('<div>Loading</div>').load('ajax.html .info', function() {        
+                            // Set the 'loaded' var to true so we know not to reload
+                            // the HTML next time the #callback div animation ends
+                            $(this).parent().data('loaded', true);  
+                        }));
                     }
                 });
                 // Orientation callback event
                 $('#jqt').bind('turn', function(e, data){
                     $('#orient').html('Orientation: ' + data.orientation);
                 });
+                $('#play_movie').bind('tap', function(){
+                    $('#movie').get(0).play();
+                    $(this).removeClass('active');
+                });
+                
+                $('#video').bind('pageAnimationStart', function(e, info){
+                    $('#movie').css('display', 'none');
+                }).bind('pageAnimationEnd', function(e, info){
+                    if (info.direction == 'in')
+                    {
+                        $('#movie').css('display', 'block');
+                    }
+                })
             });
         </script>
         <style type="text/css" media="screen">
@@ -260,6 +277,7 @@
                     <li class="arrow"><a href="#ajax">AJAX</a> <small class="counter">3</small></li>
                     <li class="arrow"><a href="#callbacks">Callback Events</a> <small class="counter">3</small></li>
                     <li class="arrow"><a href="#extensions">Extensions</a> <small class="counter">4</small></li>
+                    <li class="arrow"><a href="#video">Video</a></li>
                     <li class="arrow"><a href="#demos">Demos</a> <small class="counter">2</small></li>
                 </ul>
                 <h2>External Links</h2>
@@ -333,7 +351,15 @@
                     <li class="arrow"><a href="#forms">Forms</a></li>
                 </ul>
             </div>
-
+            <div id="video">
+                <div class="toolbar">
+                    <h1>Video</h1>
+                    <a class="back" href="#">Home</a>
+                </div>
+                <video id="movie" src="video/fireworks-iPhone.m4v" poster="video/fireworks.jpg" width="320" height="426" controls></video>
+                
+                <a href="#" style="margin: 10px;" id="play_movie" class="whiteButton">Play Movie</a>
+            </div>
             <form id="ajax_post" action="ajax_post.php" method="POST" class="form">
                 <div class="toolbar">
                     <h1>Post Demo</h1>

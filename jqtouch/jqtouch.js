@@ -196,8 +196,6 @@
         // PUBLIC FUNCTIONS
         function goBack(to) {
             // Init the param
-            console.log(hist.length);
-            
             if (hist.length <= 1)
             {
                 window.history.go(-2);
@@ -347,6 +345,9 @@
             // Collapse the keyboard
             $(':focus').blur();
 
+            fromPage.css('top', -window.pageYOffset);
+            toPage.css('top', 0);
+
             // Make sure we are scrolled up to hide location bar
             scrollTo(0, 0);
 
@@ -389,7 +390,7 @@
                     toPage.toggleClass('reverse');
                     fromPage.toggleClass('reverse');
                 }
-                toPage.addClass(animation.name + ' in current ');
+                toPage.addClass(animation.name + ' in current');
                 fromPage.addClass(animation.name + ' out');
 
             } else {
