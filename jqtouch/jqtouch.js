@@ -552,7 +552,7 @@
 
                 // Check for swipe
                 if (absX > absY && (absX > 35) && deltaT < 1000) {
-                    $el.trigger('swipe', {direction: (deltaX < 0) ? 'left' : 'right', deltaX: deltaX, deltaY: deltaY }).unbind('touchmove touchend');
+                    $el.trigger('swipe', {direction: (deltaX < 0) ? 'left' : 'right', deltaX: deltaX, deltaY: deltaY }).unbind('touchmove',touchmove).unbind('touchend',touchend);
                 } else if (absY > 1) {
                     $el.removeClass('active');
                 }
@@ -569,7 +569,7 @@
                 } else {
                     $el.removeClass('active');
                 }
-                $el.unbind('touchmove touchend');
+                $el.unbind('touchmove',touchmove).unbind('touchend',touchend);
                 clearTimeout(hoverTimeout);
             }
 
