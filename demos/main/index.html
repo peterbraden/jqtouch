@@ -29,6 +29,9 @@
                 $('#swipeme').swipe(function(evt, data) {
                     $(this).html('You swiped <strong>' + data.direction + '/' + data.deltaX +':' + data.deltaY + '</strong>!');
                 });
+                $('#tapme').tap(function(){
+                    $(this).parent().after('<li>tapped!</li>')
+                })
                 $('a[target="_blank"]').click(function() {
                     if (confirm('This link opens in a new window.')) {
                         return true;
@@ -177,9 +180,10 @@
                     <a class="back" href="#home">Home</a>
                 </div>
                 <ul class="rounded">
-                    <li><a href="#pageevents">Page events</a></li>
-                    <li class="touch" id="swipeme">Swipe me!</li>
                     <li id="orient">Orientation: <strong>profile</strong></li>
+                    <li><a href="#pageevents">Page events</a></li>
+                    <li><a href="#" id="swipeme">Swipe me!</a></li>
+                    <li><a href="#" id="tapme">Tap me!</a></li>
                 </ul>
             </div>
             <div id="demos">
@@ -275,7 +279,7 @@
                     <li class="arrow"><a href="#ui">User Interface</a> <small class="counter">4</small></li>
                     <li class="arrow"><a href="#animations">Animations</a> <small class="counter">8</small></li>
                     <li class="arrow"><a href="#ajax">AJAX</a> <small class="counter">3</small></li>
-                    <li class="arrow"><a href="#callbacks">Callback Events</a> <small class="counter">3</small></li>
+                    <li class="arrow"><a href="#callbacks">Events</a> <small class="counter">3</small></li>
                     <li class="arrow"><a href="#extensions">Extensions</a> <small class="counter">4</small></li>
                     <li class="arrow"><a href="#video">Video</a></li>
                     <li class="arrow"><a href="#demos">Demos</a> <small class="counter">2</small></li>
