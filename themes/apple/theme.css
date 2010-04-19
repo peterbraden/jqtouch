@@ -195,7 +195,7 @@ div#jqt.landscape .toolbar > h1 {
 }
 
 #jqt #plastic ul li.arrow, #jqt #metal ul li.arrow {
-    background-image: url(../images/chevron_dg.png);
+    background-image: url(../img/chevron.png);
     background-position: right center;
     background-repeat: no-repeat;
 }
@@ -326,7 +326,7 @@ div#jqt.landscape .toolbar > h1 {
 
 #jqt ul li select {
     text-indent: 0px;
-    background: transparent url(../images/chevron.png) no-repeat 103% 3px;
+    background: transparent url(../img/chevron.png) no-repeat 103% 3px;
     -webkit-appearance: textfield;
     margin-left: -6px;
     width: 104%;
@@ -480,7 +480,6 @@ div#jqt.landscape .toolbar > h1 {
 #jqt .metal ul li {
     border-top: 1px solid rgb(238,238,238);
     border-bottom: 1px solid rgb(156,158,165);
-    background: url(../images/bgMetal.png) top left repeat-x;
     font-size: 26px;
     text-shadow: #fff 0 1px 0;
 }
@@ -521,8 +520,7 @@ div#jqt.landscape .toolbar > h1 {
 }
 
 #jqt .metal ul li.arrow {
-    background: url(../images/bgMetal.png) top left repeat-x,
-    url(../images/chevron_dg.png) right center no-repeat;
+    background:  url(../img/chevron.png) right center no-repeat;
 }
 
 #jqt .plastic {

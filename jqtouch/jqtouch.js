@@ -232,9 +232,6 @@
         function goTo(toPage, animation, reverse) {
             var fromPage = hist[0].page;
 
-            if (typeof(toPage) === 'string') {
-                toPage = $(toPage);
-            }
             if (typeof(animation) === 'string') {
                 for (var i = animations.length - 1; i >= 0; i--) {
                     if (animations[i].name === animation) {
@@ -242,6 +239,21 @@
                         break;
                     }
                 }
+            }
+            if (typeof(toPage) === 'string') {
+                nextPage = $(toPage);
+                if (nextPage.length < 1)
+                {
+                    showPageByHref(toPage, {
+                        'animation': animation
+                    });
+                    return;
+                }
+                else
+                {
+                    toPage = nextPage;
+                }
+                
             }
             if (animatePages(fromPage, toPage, animation, reverse)) {
                 addPageToHistory(toPage, animation, reverse);
